@@ -71,7 +71,7 @@ public class MainActivity extends SherlockFragmentActivity {
             }
         };
  
-        /** Creating Android Tab */
+        /** Creating Home Tab */
         Tab tab = mActionBar.newTab()
                 .setText("Home")
                 //.setIcon(R.drawable.android)
@@ -79,7 +79,7 @@ public class MainActivity extends SherlockFragmentActivity {
  
         mActionBar.addTab(tab);
  
-        /** Creating Apple Tab */
+        /** Creating Cards Tab */
         tab = mActionBar.newTab()
                 .setText("Cards")
                 //.setIcon(R.drawable.apple)
@@ -87,6 +87,7 @@ public class MainActivity extends SherlockFragmentActivity {
  
         mActionBar.addTab(tab);
         
+        /** Creating Rewards Tab*/
         tab = mActionBar.newTab()
         		.setText("Rewards")
         		.setTabListener(tabListener);
