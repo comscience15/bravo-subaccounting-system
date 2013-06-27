@@ -5,7 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
  
@@ -25,5 +27,20 @@ public class HomeFragment extends SherlockFragment{
         /** Setting the background when view is starting */
         Drawable myDrawable = getResources().getDrawable(R.drawable.background);
         getView().setBackground(myDrawable);
+        
+        /** Getting Scanner icon object on Home page*/
+        final ImageView home_scanner = (ImageView) getView().findViewById(R.id.home_scanner);
+        
+        /** Setting the onClick listener*/
+        OnClickListener icon_listener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(v.equals(home_scanner)) {
+					// Here we should triggle the barcode scanner library
+					System.out.println("@!!!!!!!!!!!!!!!!!!!!!");
+				}
+			}
+        };
+        home_scanner.setOnClickListener(icon_listener);
     }
 }
