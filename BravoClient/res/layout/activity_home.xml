@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="103dp"
-        android:contentDescription="home_page_scanner_icon"
+        android:contentDescription="scanner_icon"
         android:src="@drawable/home_scanner" />
 
 </RelativeLayout>
