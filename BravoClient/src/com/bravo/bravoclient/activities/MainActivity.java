@@ -1,4 +1,4 @@
-package com.bravo.bravoclient;
+package com.bravo.bravoclient.activities;
  
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +10,8 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.adapters.PagerAdapter;
  
 public class MainActivity extends SherlockFragmentActivity {
     ActionBar mActionBar;
