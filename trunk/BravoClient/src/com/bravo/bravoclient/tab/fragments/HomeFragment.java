@@ -1,4 +1,4 @@
-package com.bravo.bravoclient;
+package com.bravo.bravoclient.tab.fragments;
  
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
+import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.R.drawable;
+import com.bravo.bravoclient.R.id;
+import com.bravo.bravoclient.R.layout;
  
 public class HomeFragment extends SherlockFragment{
  
