@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.Window;
  
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -20,15 +21,20 @@ public class MainActivity extends SherlockFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.activity_main);
- 
+               
         /** Getting a reference to action bar of this activity */
         mActionBar = getSupportActionBar();
- 
-        /** Set tab navigation mode */
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
        
-        mActionBar.setBackgroundDrawable(getWallpaper());
+        /** Disable the title bar*/
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        
+        /** Setting tab navigation mode */
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        
+        //mActionBar.setBackgroundDrawable(getWallpaper());
         
         /** Getting a reference to ViewPager from the layout */
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -53,8 +59,6 @@ public class MainActivity extends SherlockFragmentActivity {
  
         /** Setting the FragmentPagerAdapter object to the viewPager object */
         mPager.setAdapter(fragmentPagerAdapter);
- 
-        mActionBar.setDisplayShowTitleEnabled(true);
  
         /** Defining tab listener */
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
@@ -95,15 +99,15 @@ public class MainActivity extends SherlockFragmentActivity {
         		.setTabListener(tabListener);
         
         mActionBar.addTab(tab);
- 
     }
     
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = this.getSupportMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
+    /** This method is going to create the menu inside of the title bar*/
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = this.getSupportMenuInflater();
+//        inflater.inflate(R.menu.main, menu);
+//        return true;
+//    }
  
 }
 
