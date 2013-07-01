@@ -9,24 +9,21 @@ import android.widget.ListView;
  
 import com.actionbarsherlock.app.SherlockListFragment;
  
-public class CardsFragment extends SherlockListFragment{
+public class RewardsTabFragment extends SherlockListFragment{
  
     /** An array of items to display in ArrayList */
-    String apple_versions[] = new String[]{
-        "Mountain Lion",
-        "Lion",
-        "Snow Leopard",
-        "Leopard",
-        "Tiger",
-        "Panther",
-        "Jaguar",
-        "Puma"
+    String android_versions[] = new String[]{
+        "Jelly Bean",
+        "IceCream Sandwich",
+        "HoneyComb",
+        "Ginger Bread",
+        "Froyo"
     };
  
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         /** Creating array adapter to set data in listview */
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getBaseContext(), android.R.layout.simple_list_item_multiple_choice, apple_versions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getBaseContext(), android.R.layout.simple_list_item_multiple_choice, android_versions);
  
         /** Setting the array adapter to the listview */
         setListAdapter(adapter);
@@ -37,9 +34,7 @@ public class CardsFragment extends SherlockListFragment{
     @Override
     public void onStart() {
         super.onStart();
- 
         /** Setting the multiselect choice mode for the listview */
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
- 
     }
 }
