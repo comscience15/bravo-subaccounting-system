@@ -1,8 +1,8 @@
 package com.bravo.bravoclient.adapters;
  
-import com.bravo.bravoclient.tab.fragments.CardsFragment;
-import com.bravo.bravoclient.tab.fragments.HomeFragment;
-import com.bravo.bravoclient.tab.fragments.RewardsFragment;
+import com.bravo.bravoclient.fragments.CardsFragment;
+import com.bravo.bravoclient.fragments.HomeFragment;
+import com.bravo.bravoclient.fragments.RewardsFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
