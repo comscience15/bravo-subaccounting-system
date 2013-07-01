@@ -1,4 +1,4 @@
-package com.bravo.bravoclient.tab.fragments;
+package com.bravo.bravoclient.fragments;
  
 import android.os.Bundle;
 import android.view.LayoutInflater;
