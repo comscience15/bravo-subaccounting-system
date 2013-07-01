@@ -18,7 +18,7 @@ import com.bravo.bravoclient.R.id;
 import com.bravo.bravoclient.R.layout;
 import com.bravo.bravoclient.activities.ScannerActivity;
  
-public class HomeFragment extends SherlockFragment{
+public class HomeTabFragment extends SherlockFragment{
  
 	private Context cxt = null;
 	@Override
