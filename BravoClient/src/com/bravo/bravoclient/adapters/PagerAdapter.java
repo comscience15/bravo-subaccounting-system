@@ -1,8 +1,8 @@
 package com.bravo.bravoclient.adapters;
  
-import com.bravo.bravoclient.fragments.CardsFragment;
-import com.bravo.bravoclient.fragments.HomeFragment;
-import com.bravo.bravoclient.fragments.RewardsFragment;
+import com.bravo.bravoclient.fragments.CardsTabFragment;
+import com.bravo.bravoclient.fragments.HomeTabFragment;
+import com.bravo.bravoclient.fragments.RewardsTabFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,21 +25,21 @@ public class PagerAdapter extends FragmentPagerAdapter{
         switch(arg0){
             /** Home tab is selected */
             case 0:
-                HomeFragment homeFragment = new HomeFragment();
+                HomeTabFragment homeFragment = new HomeTabFragment();
                 data.putInt("current_page", arg0+1);
                 homeFragment.setArguments(data);
                 return homeFragment;
  
             /** Cards tab is selected */
             case 1:
-                CardsFragment cardsFragment = new CardsFragment();
+                CardsTabFragment cardsFragment = new CardsTabFragment();
                 data.putInt("current_page", arg0+1);
                 cardsFragment.setArguments(data);
                 return cardsFragment;
             
             /** Rewards tab is selected */
             case 2:
-            	RewardsFragment rewardsFragment = new RewardsFragment();
+            	RewardsTabFragment rewardsFragment = new RewardsTabFragment();
             	data.putInt("current_page", arg0+1);
             	rewardsFragment.setArguments(data);
             	return rewardsFragment;
