@@ -19,7 +19,11 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 
 /**
- * @author Daniel
+ * This class is the activity for barcode scanning feature on home tab.
+ * It implements the listener interface from HomeScanResultDialog.java.
+ * And calls the zxing barcode scanner project lib to achieve scanning feature
+ * 
+ * @author Daniel Guo
  * 
  */
 public class ScannerActivity extends FragmentActivity implements
@@ -59,12 +63,6 @@ public class ScannerActivity extends FragmentActivity implements
 				}
 			}
 		}
-	}
-		
-	@Override
-	public void onRestart() {
-		super.onRestart();
-		System.out.println("Test back button ");
 	}
 	
 	/**
@@ -107,7 +105,8 @@ public class ScannerActivity extends FragmentActivity implements
 	}
 
 	/**
-	 *  This method is overridden from HomeScanResultDialog, in order to handle the positive button clicked 
+	 *  This method is overridden from HomeScanResultDialog, 
+	 *  in order to handle the positive button clicked 
 	 */
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog) {
@@ -127,7 +126,8 @@ public class ScannerActivity extends FragmentActivity implements
 	}
 
 	/**
-	 *  This method is overridden from HomeScanResultDialog, in order to handle the negative button clicked 
+	 *  This method is overridden from HomeScanResultDialog, 
+	 *  in order to handle the negative button clicked 
 	 */
 	@Override
 	public void onDialogNegativeClick(DialogFragment dialog) {
