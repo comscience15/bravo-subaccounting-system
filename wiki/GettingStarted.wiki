@@ -1,13 +1,14 @@
-#summary One-sentence summary of this page.
+Getting started from checking out the source code and import project libs
 
-= Introduction =
+= Getting Started =
 
-Add your content here.
+1. Checkout all three project from trunk (BravoClient, CaptureActivity, actionbarsherlock)
 
+2. Import all three project to Android Development Tool.
+ADT bundle can be downloaded from http://developer.android.com/sdk/index.html
 
-= Details =
+3. BravoClient is our front end project, and CaputureActivity, actionbarsherlock are our project library. One should make sure to make those two project as Library(click the "is Library" checkbox).
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+4. Add those two project library from BravoClient project(properties--> Android)
+
+5. Running the BravoClient, that should work.
