@@ -14,6 +14,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.adapters.PagerAdapter;
  
+/**
+ * @author Daniel
+ *
+ */
 public class MainActivity extends SherlockFragmentActivity {
     ActionBar mActionBar;
     ViewPager mPager;
@@ -109,6 +113,7 @@ public class MainActivity extends SherlockFragmentActivity {
 //        inflater.inflate(R.menu.main, menu);
 //        return true;
 //    }
+    
     
     @Override
     public void onBackPressed() {
