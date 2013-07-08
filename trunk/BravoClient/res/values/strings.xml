@@ -9,5 +9,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_cards">CardsActivity</string>
     <string name="title_activity_scanner">ScannerActivity</string>
+    <string name="exit_app_toast">Press again to exit</string>
 
 </resources>
