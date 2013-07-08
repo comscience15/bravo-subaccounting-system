@@ -1,9 +1,12 @@
 package com.bravo.bravoclient.activities;
  
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
  
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -14,6 +17,7 @@ import com.bravo.bravoclient.adapters.PagerAdapter;
 public class MainActivity extends SherlockFragmentActivity {
     ActionBar mActionBar;
     ViewPager mPager;
+    boolean doublePressBackButton;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,6 +109,30 @@ public class MainActivity extends SherlockFragmentActivity {
 //        inflater.inflate(R.menu.main, menu);
 //        return true;
 //    }
+    
+    @Override
+    public void onBackPressed() {
+    	if (doublePressBackButton) {
+    		super.onBackPressed();
+    		return;
+    	}
+    	this.doublePressBackButton = true;
+    	
+    	/** Setting the toast*/
+    	Context context = getApplicationContext();
+    	CharSequence text = getString(R.string.exit_app_toast);
+    	int duration = Toast.LENGTH_SHORT;
+    	Toast toast = Toast.makeText(context, text, duration);
+    	toast.show();
+    	
+    	/** Setting boolean variable to false after 3sec*/
+    	new Handler().postDelayed(new Runnable() {
+    		@Override
+    		public void run() {
+    			doublePressBackButton = false;
+    		}
+    	}, 3000);
+    }
  
 }
 
