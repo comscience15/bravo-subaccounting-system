@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>WebApp-Spring</display-name>
+
+	<!-- Enable Spring MVC framework -->
+	<servlet>
+		<servlet-name>mvc-dispatcher</servlet-name>
+		<servlet-class>
+        	org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+    <servlet>
+        <servlet-name>DefaultServlet</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+    </servlet>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>DefaultServlet</servlet-name>-->
+        <!--<url-pattern>\*.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+
+	<servlet-mapping>
+		<servlet-name>mvc-dispatcher</servlet-name>
+		<url-pattern>/service/*</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Open the img folder to the public -->
+	<servlet-mapping>
+    	<servlet-name>DefaultServlet</servlet-name>
+    	<url-pattern>/img/*</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Spring Framework XML setting file location -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+		    /WEB-INF/mvc-dispatcher-servlet.xml,
+			/WEB-INF/spring-database.xml,
+			/WEB-INF/spring-transaction.xml,
+			/WEB-INF/spring-security.xml
+		</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>
+        	org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+	</listener>
+
+
+	<!--
+	The CORS filter with parameters
+	Setup Cross-Origin Resource Sharing (CORS)
+	This is important for browser to accept cross-domain cookie
+	Without this filter, mobile app can't be authenticated
+	http://software.dzhuvinov.com/cors-filter-configuration.html 
+	-->
+	<filter>
+		<filter-name>CORS</filter-name>
+		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+
+		<!-- Note: All parameters are options, if ommitted CORS Filter
+		     will fall back to the respective default values. -->
+		<init-param>
+			<param-name>cors.allowGenericHttpRequests</param-name>
+			<param-value>true</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>cors.allowOrigin</param-name>
+			<param-value>*</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>cors.supportedMethods</param-name>
+			<param-value>GET, HEAD, POST, OPTIONS</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>cors.supportedHeaders</param-name>
+			<param-value>Content-Type, X-Requested-With</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>cors.exposedHeaders</param-name>
+			<param-value></param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>cors.supportsCredentials</param-name>
+			<param-value>true</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>cors.maxAge</param-name>
+			<param-value>3600</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+	<!-- Enable Spring Security (authentication and authority) -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+</web-app>

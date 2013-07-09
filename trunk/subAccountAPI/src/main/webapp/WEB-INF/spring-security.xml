@@ -1,0 +1,210 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <!-- 
+    Pass the following URL pattern without authentication, e.g. img folder 
+    web.xml file setting is required.
+    -->
+    <http pattern="/img/**" security="none" />
+    
+    <!-- 
+    For the requires-channel, if you would like to use ssl connection,
+    please enable the Tomcat SSL connection first, and use a signed public key
+    Otherwise, there would be connection problem.
+    Because brwoser can't accept AJAX call through unsigned CA.
+    
+    Please refer to the following link for more information
+    http://static.springsource.org/spring-security/site/docs/3.1.x/reference/appendix-namespace.html#nsa-web 
+    -->
+	<http 
+	    auto-config="false"
+	    create-session="stateless" 
+	    use-expressions="true"
+	    disable-url-rewriting="true"
+	    name="authenticationFilter" >
+	    
+	    <!-- Authority setup -->
+		<intercept-url pattern="/service/authentication/loginStatus*" access="isAuthenticated()" requires-channel="any" />
+		<intercept-url pattern="/service/authentication/loginFailed*" access="!isAuthenticated()" requires-channel="any" />
+		<intercept-url pattern="/service/authentication/**" access="permitAll" requires-channel="any" />
+		<intercept-url pattern="/service/customer/**" access="hasAnyRole('ROLE_USER')" requires-channel="any" />
+		<intercept-url pattern="/service/merchant/**" access="hasAnyRole('ROLE_MANAGER', 'ROLE_EMPLOYEE')" requires-channel="any" />
+		<intercept-url pattern="/**" access="denyAll" requires-channel="any" />
+		
+		<!-- 
+		If you change the username-parameter (form input name), password-parameter (form input name), 
+		login-processing-url (form action),
+		You have to change the Mobile application, too
+		-->
+		<form-login
+		    authentication-details-source-ref="customDetailsSource"
+		    authentication-success-handler-ref="loginSuccessHandler"
+		    authentication-failure-handler-ref="loginFailureHandler"
+		    login-page="/service/authentication/loginFailed"
+		    login-processing-url="/service/authentication/j_spring_security_check"
+		    username-parameter="j_username"
+		    password-parameter="j_password"
+		    default-target-url="/service/authentication/loginStatus"
+		    always-use-default-target="true"
+		    authentication-failure-url="/service/authentication/loginFailed"
+		    />
+		
+		<access-denied-handler error-page="/service/authentication/loginFailed" />
+		
+		<!-- Must use remember me service for persistent authentication in RESTful API-->
+		<remember-me services-ref="rememberMeServices" key="bnymellon" />
+		
+		<!-- 
+		If you change the login-url (logout link),
+		You have to change the Mobile application, too
+		-->
+		<logout
+		    logout-success-url="/service/authentication/logout"
+		    logout-url="/service/authentication/j_spring_security_logout"
+		    />
+		
+		<port-mappings>
+			<port-mapping http="8080" https="8443"/>
+		</port-mappings>
+	</http>
+    
+	<!-- Begin Setup the remember me service -->
+	<beans:bean id="rememberMeServices"
+    	class="com.bravo.webapp.security.rememberme.CustomPersistentRememberMeServieces">
+        <beans:constructor-arg name="userDetailsService" ref="userDetailsServiceList" />
+        <beans:constructor-arg name="tokenRepository" ref="tokenRepository" />
+        <!-- Must be the same as the setting in rememberMeAuthenticationProvider -->
+        <beans:constructor-arg name="key" value="bnymellon" />
+        <beans:property name="parameter" value="_spring_security_remember_me" />
+        <!-- Could be changed, which is the coolie name to be set in the browser -->
+        <beans:property name="cookieName" value="SPRING_SECURITY_REMEMBER_ME_COOKIE" />
+        <beans:property name="tokenValiditySeconds" value="15552000" />
+        <!-- Must be set as true -->
+        <beans:property name="alwaysRemember" value="true" />
+        <beans:property name="authenticationDetailsSource" ref="customDetailsSource" />
+	</beans:bean>
+	
+	<beans:bean id="userDetailsServiceList"
+	    class="com.bravo.webapp.security.rememberme.CustomJdbcDaoServiceList">
+	    <beans:constructor-arg name="providerManager" ref="authenticationManager" />
+	    <beans:constructor-arg name="customerDAO" ref="customerDAO" />
+	</beans:bean>
+	
+	<beans:bean id="tokenRepository"
+	    class="com.bravo.webapp.security.rememberme.dao.CustomTokenRepositoryImpl">
+	    <beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+	
+	<beans:bean id="rememberMeAuthenticationProvider" 
+	    class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+		<beans:constructor-arg name="key" value="bnymellon"/>
+	</beans:bean>
+	<!-- End setup remember me service -->
+	
+	<!-- Extract more authentication detail information from HTTP request, e.g. customerID, merchantAccNo -->
+	<beans:bean id="customDetailsSource" class="com.bravo.webapp.security.CustomAuthenticationDetailsSource" />
+	
+	<!-- Begin setup the authentication -->
+	<!-- Register the authentication provider -->
+	<authentication-manager alias="authenticationManager" erase-credentials="false">
+	    <authentication-provider ref="rememberMeAuthenticationProvider" />
+		<authentication-provider ref="customerAuthenticationProvider" />
+		<authentication-provider ref="merchantAuthenticationProvider" />
+	</authentication-manager>
+	
+	<!-- Authenticate customer account -->
+	<beans:bean id="customerAuthenticationProvider" class="com.bravo.webapp.security.CustomAuthenticationProvider" >
+	    <beans:constructor-arg name="roleType" value="customer" />
+	    <beans:constructor-arg name="customerDAO" ref="customerDAO" />
+	    <beans:property name="userDetailsService" ref="customerDaoService"/>
+	</beans:bean>
+	
+	<!-- Authenticate merchant account -->
+	<beans:bean id="merchantAuthenticationProvider" class="com.bravo.webapp.security.CustomAuthenticationProvider" >
+	    <beans:constructor-arg name="roleType" value="merchant" />
+	    <beans:property name="userDetailsService" ref="merchantDaoService"/>
+	</beans:bean>
+  	
+	<!-- Retrieve the customer account information from database -->
+	<beans:bean id="customerDaoService" class="com.bravo.webapp.security.dao.CustomJdbcDaoService">
+	    <!-- Default customer role -->
+	    <beans:constructor-arg name="defaultRole" value="ROLE_USER" />
+	    <beans:constructor-arg name="numParams" value="1" />
+	    <beans:property name="dataSource" ref="dataSource" />
+	    <beans:property name="enableAuthorities" value="false" />
+	    <!-- MyAQL query string -->
+	    <beans:property name="usersByUsernameQuery" 
+	        value="select email, password, enabled
+			      	from Customer where email=?"/>
+	</beans:bean>
+  	
+	<!-- Retrieve the merchant account information from database -->
+	<beans:bean id="merchantDaoService" class="com.bravo.webapp.security.dao.CustomJdbcDaoService" >
+	    <!-- Default merchant role -->
+	    <beans:constructor-arg name="defaultRole" value="ROLE_EMPLOYEE" />
+	    <beans:constructor-arg name="numParams" value="2" />
+	    <beans:property name="dataSource" ref="dataSource" />
+	    <beans:property name="enableAuthorities" value="true" />
+	    <!-- MyAQL query string -->
+	    <beans:property name="usersByUsernameQuery" 
+	        value="select email, password, enabled
+					from MerchantLogin where email=? and merchantAccNo=?" />
+	    <beans:property name="authoritiesByUsernameQuery"
+	        value="select u.email, ur.authority 
+	        		from MerchantLogin u, MerchantRole ur 
+					where u.merchantAccNo = ur.merchantAccNo and u.email = ur.email and u.email=? and u.merchantAccNo=?" />
+	</beans:bean>
+	<!-- End setup the authentication -->
+	
+	
+	<!-- Setup the login handler will be executed after authentication -->
+	<beans:bean id="loginSuccessHandler"
+	    class="com.bravo.webapp.security.AjaxAuthenticationSuccessHandler" >
+	    <beans:constructor-arg ref="defaultSuccessHandler"></beans:constructor-arg>
+	    <beans:property name="jsonMessage" value='{"success":true}' />
+	</beans:bean>
+	
+	<beans:bean id="defaultSuccessHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler"/>
+	
+	<beans:bean id="loginFailureHandler"
+	    class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler" >
+	    <beans:property name="defaultFailureUrl" value="/service/authentication/loginFailed" />
+	</beans:bean>
+
+</beans:beans>
+
+
+
+	
+	<!-- <beans:bean id="loginSuccessHandler"
+	    class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler" >
+	    <beans:property name="defaultTargetUrl" value="/service/authentication/loginStatus" />
+	</beans:bean> -->
+	
+	<!-- <beans:bean id="exceptionTranslationFilter" class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<beans:property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
+		<beans:property name="accessDeniedHandler" ref="accessDeniedHandler"/>
+	</beans:bean>
+	
+	<beans:bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+	    <beans:property name="loginFormUrl" value="/service/authentication/login" />
+	</beans:bean>
+
+	<beans:bean id="accessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+		<beans:property name="errorPage" value="/service/authentication/loginFailed"/>
+	</beans:bean>
+	
+	
+	<beans:bean id="customAuthenticationFilter" class="com.bravo.webapp.security.CustomAuthenticationFilter">
+	    <beans:property name="authenticationManager" ref="authenticationManager"/>
+	    <beans:property name="authenticationDetailsSource" ref="customDetailsSource" />
+	    <beans:property name="authenticationSuccessHandler" ref="loginSuccessHandler" />
+		<beans:property name="authenticationFailureHandler" ref="loginFailureHandler" />
+  		<beans:property name="filterProcessesUrl" value="/service/j_spring_security_check"/>
+  	</beans:bean>
+	<beans:bean id="authenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter"></beans:bean> -->

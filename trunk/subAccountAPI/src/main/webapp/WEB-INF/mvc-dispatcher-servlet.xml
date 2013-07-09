@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Application context definition for "dispatcher" DispatcherServlet.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <context:annotation-config />
+ 	
+    <!-- Scan the Controller (@Controller) annotation in the following java package -->
+	<context:component-scan base-package="com.bravo.webapp.security.controller" />
+	<context:component-scan base-package="com.bravo.webapp.controller" />
+    <context:component-scan base-package="com.bravo.webapp.transaction" />
+
+	<!-- Enable the annotation for Spring Framework and JSON object converter -->
+
+	<mvc:annotation-driven />
+ 
+	
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/jsp/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+  
+	
+	<!-- Initial ClearTran instance -->
+  	<bean id="clearTran" class="com.bravo.clearTran.ClearTranAPIController" />    
+    <bean id="api" class="com.bravo.clearTran.ClearTranAPI" />
+    
+    
+    <!-- Initial Transaction Service instance -->
+    <bean id="loginService" class="com.bravo.webapp.transaction.LoginService" />
+    <bean id="customerService" class="com.bravo.webapp.transaction.CustomerService" />
+    <bean id="customerTxService" class="com.bravo.webapp.transaction.CustomerTransactionService" />
+    <bean id="merchantTxService" class="com.bravo.webapp.transaction.MerchantTransactionService" >
+        <!-- 
+        Setup the security time interval in mins
+        If the difference between merchant and customer timestamp is more than this one,
+        reject this transaction.
+        -->
+        <constructor-arg name="timeInterval" type="int" value="5" />
+    </bean>
+    <bean id="checkoutService" class="com.bravo.webapp.transaction.CheckoutService" />
+    
+    <bean id="encryption" class="com.bravo.webapp.util.Encryption">
+        <!-- The encrypt public key length -->
+        <constructor-arg name="encryptBitLen" type="int" value="512" />
+        <constructor-arg name="genNewKey" type="boolean" value="false" />
+    </bean>
+  	
+    
+    <!-- Initial DAO model -->
+	<bean id="customerDAO" class="com.bravo.webapp.dao.impl.JdbcCustomerDAO">
+	    <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    <bean id="cardDAO" class="com.bravo.webapp.dao.impl.JdbcCardDAO">
+	    <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    <bean id="merchantDAO" class="com.bravo.webapp.dao.impl.JdbcMerchantDAO">
+	    <property name="dataSource" ref="dataSource"/>
+    </bean>
+	
+	<bean id="transactionDAO" class="com.bravo.webapp.dao.impl.JdbcTransactionDAO">
+	    <property name="dataSource" ref="dataSource"/>
+    </bean>
+    	 
+    <bean id="creditTransactionDAO" class="com.bravo.webapp.dao.impl.JdbcCreditTransactionDAO">
+	    <property name="dataSource" ref="dataSource"/>
+    </bean>
+    	 
+    <bean id="checkTransactionDAO" class="com.bravo.webapp.dao.impl.JdbcCheckTransactionDAO">
+	    <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    
+    <!-- Error Handler -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"/>
+	
+	<bean id="restExceptionResolver" class="com.bravo.webapp.handler.RestExceptionHandler">
+  		<property name="order" value="100"></property>
+  		<property name="errorResolver">
+    		<bean class="com.bravo.webapp.handler.DefaultRestErrorResolver">
+      			<property name="localeResolver" ref="localeResolver"></property>
+      			<property name="defaultMoreInfoUrl" value="mailto:support@mycompany.com"></property>
+     	 		<property name="exceptionMappingDefinitions">
+        			<map>
+	        			<!-- 404 -->
+	          			<entry key="com.bravo.webapp.exception.UnknownResourceException" value="404, _exmsg"></entry>
+	          			<!-- 500 (catch all): -->
+	          			<entry key="Throwable" value="500, error.internal"></entry>
+        			</map>
+      			</property>
+    		</bean>
+  		</property>
+	</bean>
+	
+</beans>
