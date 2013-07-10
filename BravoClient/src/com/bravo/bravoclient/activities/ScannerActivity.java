@@ -94,6 +94,8 @@ public class ScannerActivity extends FragmentActivity implements
 	public void showDialog() {
 		try {
 			HomeScanResultDialog dialog = new HomeScanResultDialog();
+			/** Making dialog not cancelable when touching outside of the frames*/
+			dialog.setCancelable(false);
 			dialog.setScanResult(scanResult);
 			// dialog.show(getSupportFragmentManager(), "homeScanResultDialog");
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
