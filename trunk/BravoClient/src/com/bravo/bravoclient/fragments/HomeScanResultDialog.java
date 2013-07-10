@@ -58,14 +58,7 @@ public class HomeScanResultDialog extends DialogFragment {
 					homeScanResultListener.onDialogNegativeClick(HomeScanResultDialog.this);
 				}
 			});
-//			.setNeutralButton("Display Result", new DialogInterface.OnClickListener() {
-//				/** Neutral listener*/
-//				@Override
-//				public void onClick(DialogInterface dialog, int which) {
-//					// TODO Auto-generated method stub
-//					homeScanResultListener.onDialogNeutralClick(HomeScanResultDialog.this);
-//				}
-//			});
+//			
 		return resultHandlerDialog.create();
 	}
 	
