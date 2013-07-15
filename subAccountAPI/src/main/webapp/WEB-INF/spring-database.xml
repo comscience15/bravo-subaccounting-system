@@ -6,9 +6,9 @@
     <!-- Database connection setting -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
     	<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-    	<property name="url" value="jdbc:mysql://localhost:3306/bravosubaccounting" />
+    	<property name="url" value="jdbc:mysql://50.156.100.14:3306/bravosubaccounting" />
     	<property name="username" value="root" />
-    	<property name="password" value="" />
+    	<property name="password" value="bravo1" />
 	</bean>
 
 </beans>
