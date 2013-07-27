@@ -15,11 +15,16 @@ import org.springframework.util.Assert;
 import com.bravo.webapp.dao.CustomerDAO;
 import com.bravo.webapp.security.bean.CustomWebAuthenticationDetails;
 
-public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
+import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class CustomAuthenticationProvider extends DaoAuthenticationProvider{
 	private String roleType;
 	private boolean customerFlag;
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
     private CustomerDAO customerDAO;
+    private Logger logger = Logger.getLogger(CustomAuthenticationProvider.class.getName());
 
 	public CustomAuthenticationProvider(String roleType) {
 		this(roleType, null);
@@ -27,6 +32,7 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 	}
 
 	public CustomAuthenticationProvider(String roleType, CustomerDAO customerDAO) {
+        logger.log(Level.INFO, MessageFormat.format("The role type from constructor is: {0}", roleType));
 		this.roleType = roleType;
 		this.customerFlag = true;
 		this.customerDAO = customerDAO;
@@ -39,32 +45,28 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
-		System.out.println(((CustomWebAuthenticationDetails) authentication
-				.getDetails()).getRoleType());
+        logger.log(Level.INFO, MessageFormat.format("The role type from input is: {0}",((CustomWebAuthenticationDetails) authentication
+                .getDetails()).getRoleType()));
 		if (!((CustomWebAuthenticationDetails) authentication.getDetails())
 				.getRoleType().equalsIgnoreCase(roleType)) {
 			// Role Type does not support
-			System.out.println("Role type does not support: supported: "
-					+ roleType
-					+ " input: "
-					+ ((CustomWebAuthenticationDetails) authentication
-							.getDetails()).getRoleType());
+            String msg = MessageFormat.format("Rple type does not support. Supported: {0}. The input is: {1}",
+                    new Object[]{roleType, ((CustomWebAuthenticationDetails) authentication.getDetails()).getRoleType()});
+            logger.log(Level.SEVERE, msg);
 			return null;
 		}
-		System.out.println(authentication.toString());
 
 		Assert.isInstanceOf(
-				UsernamePasswordAuthenticationToken.class,
-				authentication,
-				messages.getMessage(
-						"AbstractUserDetailsAuthenticationProvider.onlySupports",
-						"Only UsernamePasswordAuthenticationToken is supported"));
+                UsernamePasswordAuthenticationToken.class,
+                authentication,
+                messages.getMessage(
+                        "AbstractUserDetailsAuthenticationProvider.onlySupports",
+                        "Only UsernamePasswordAuthenticationToken is supported"));
 
 		// Determine username
 		String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED"
 				: (authentication.getName() + ((CustomWebAuthenticationDetails) authentication
 						.getDetails()).getReqParams());
-		System.out.println("username: " + username);
 
 		boolean cacheWasUsed = true;
 		UserDetails user = this.getUserCache().getUserFromCache(username);
@@ -76,8 +78,7 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 				user = retrieveUser(username,
 						(UsernamePasswordAuthenticationToken) authentication);
 			} catch (UsernameNotFoundException notFound) {
-				logger.debug("User '" + username + "' not found");
-				System.out.println("User '" + username + "' not found");
+                logger.log(Level.WARNING, MessageFormat.format("User {0} not found", username));
 
 				if (hideUserNotFoundExceptions) {
 					throw new BadCredentialsException(
@@ -98,6 +99,8 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 			additionalAuthenticationChecks(user,
 					(UsernamePasswordAuthenticationToken) authentication);
 		} catch (AuthenticationException exception) {
+            // stack trace
+            exception.printStackTrace();
 			if (cacheWasUsed) {
 				// There was a problem, so try again after checking
 				// we're using latest data (i.e. not from the cache)
@@ -126,8 +129,6 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 
 		Authentication auth = createSuccessAuthentication(principalToReturn,
 				authentication, user);
-		System.out.println(auth.toString());
-
 		return auth;
 	}
 
