@@ -120,11 +120,11 @@
 	<beans:bean id="customerAuthenticationProvider" class="com.bravo.webapp.security.CustomAuthenticationProvider" >
 	    <beans:constructor-arg name="roleType" value="customer" />
 	    <beans:constructor-arg name="customerDAO" ref="customerDAO" />
-	    <beans:property name="userDetailsService" ref="customerDaoService"/>
+	    <beans:property name="userDetailsService" ref="customerDaoService" />
 	</beans:bean>
 	
 	<!-- Authenticate merchant account -->
-	<beans:bean id="merchantAuthenticationProvider" class="com.bravo.webapp.security.CustomAuthenticationProvider" >
+	<beans:bean id="merchantAuthenticationProvider" class="com.bravo.webapp.security.MerchantAuthenticationProvider" >
 	    <beans:constructor-arg name="roleType" value="merchant" />
 	    <beans:property name="userDetailsService" ref="merchantDaoService"/>
 	</beans:bean>
