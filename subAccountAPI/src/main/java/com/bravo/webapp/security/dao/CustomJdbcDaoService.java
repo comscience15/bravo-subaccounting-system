@@ -2,10 +2,13 @@ package com.bravo.webapp.security.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.context.ApplicationContextException;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,6 +27,7 @@ public class CustomJdbcDaoService extends JdbcDaoImpl {
 	private String defaultRole;
 	private int numParams;
 	private boolean alwaysAddDefaultRole = true;
+    private Logger logger = Logger.getLogger(CustomJdbcDaoService.class.getName());
 
 	public CustomJdbcDaoService(String defaultRole, int numParams) {
 		super();
@@ -42,15 +46,10 @@ public class CustomJdbcDaoService extends JdbcDaoImpl {
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		// username = prepareParams(username);
 		List<UserDetails> users = loadUsersByUsername(username);
-		System.out.println(username + "@loadUserByUsername");
 
 		if (users.size() == 0) {
-			logger.debug("Query returned no results for user '" + username
-					+ "'");
-			System.out.println("Query returned no results for user '"
-					+ username + "'");
+			logger.log(Level.INFO , MessageFormat.format("Query returned no results for user: {0}", username));
 			throw new UsernameNotFoundException(
 					"Query returned no results for user '" + username + "'");
 		}
@@ -61,12 +60,12 @@ public class CustomJdbcDaoService extends JdbcDaoImpl {
 
 		if (getEnableAuthorities()) {
 			dbAuthsSet.addAll(loadUserAuthorities(username));
-			System.out.println("load Authorities from database");
+            logger.log(Level.INFO, "Load authorities from database");
 		}
 
 		if (getEnableGroups()) {
 			dbAuthsSet.addAll(loadGroupAuthorities(username));
-			System.out.println("load Authorities from database");
+            logger.log(Level.INFO, "Load authorities from database");
 		}
 
 		List<GrantedAuthority> dbAuths = new ArrayList<GrantedAuthority>(
@@ -78,14 +77,9 @@ public class CustomJdbcDaoService extends JdbcDaoImpl {
 		}
 
 		if (dbAuths.size() == 0) {
-			logger.debug("User '" + username
-					+ "' has no authorities and will be treated as 'not found'");
-			System.out
-					.println("User '"
-							+ username
-							+ "' has no authorities and will be treated as 'not found'");
-			throw new UsernameNotFoundException("User '" + username
-					+ "' has no authorities and will be treated as 'not found'");
+            String msg = MessageFormat.format("User {0} has no authorities and will be treated as 'not found'", username);
+			logger.log(Level.WARNING, msg);
+			throw new UsernameNotFoundException(msg);
 		}
 
 		user = createUserDetails(username, user, dbAuths);
@@ -97,20 +91,25 @@ public class CustomJdbcDaoService extends JdbcDaoImpl {
 
 	@Override
 	protected List<UserDetails> loadUsersByUsername(String username) {
-		System.out.println("Get user details: " + username);
+        List<UserDetails> listUserDetails = getJdbcTemplate().query(getUsersByUsernameQuery(),
+                separateField(username), new RowMapper<UserDetails>() {
+            public UserDetails mapRow(ResultSet rs, int rowNum) {
+                String username = null;
+                String password = null;
+                boolean enabled = false;
+                try{
+                    username = rs.getString(1);
+                    password = rs.getString(2);
+                    enabled = rs.getBoolean(3);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return new User(username, password, enabled, true,
+                        true, true, AuthorityUtils.NO_AUTHORITIES);
+            }
 
-		return getJdbcTemplate().query(getUsersByUsernameQuery(),
-				separateField(username), new RowMapper<UserDetails>() {
-					public UserDetails mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						String username = rs.getString(1);
-						String password = rs.getString(2);
-						boolean enabled = rs.getBoolean(3);
-						return new User(username, password, enabled, true,
-								true, true, AuthorityUtils.NO_AUTHORITIES);
-					}
-
-				});
+        });
+		return listUserDetails;
 	}
 
 	@Override
@@ -139,7 +138,11 @@ public class CustomJdbcDaoService extends JdbcDaoImpl {
 		for (int i = 0; i < numParams; i++) {
 			newParams[i] = params[i];
 		}
-		
+
+        for ( String i : newParams) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
 		return newParams;
 	}
 
