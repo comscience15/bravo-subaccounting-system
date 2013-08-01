@@ -24,9 +24,7 @@ public class SplashActivity extends Activity {
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE); // Removes title bar
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN); // Removes
-																// notification
-																// bar
+				WindowManager.LayoutParams.FLAG_FULLSCREEN); // Removes notification bar
 
 		setContentView(R.layout.splash_screen);
 
@@ -51,6 +49,8 @@ public class SplashActivity extends Activity {
 			// Start main activity
 			Intent intent = new Intent(SplashActivity.this, MainActivity.class);
 			SplashActivity.this.startActivity(intent);
+			// Animation can not work
+			//SplashActivity.this.overridePendingTransition(R.anim.splash_enter, R.anim.splash_out);
 			SplashActivity.this.finish();
 		}
 	}

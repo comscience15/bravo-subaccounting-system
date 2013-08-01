@@ -1,6 +1,7 @@
 package com.bravo.bravoclient.activities;
  
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -19,9 +20,10 @@ import com.bravo.bravoclient.adapters.PagerAdapter;
  *
  */
 public class MainActivity extends SherlockFragmentActivity {
-    ActionBar mActionBar;
-    ViewPager mPager;
-    boolean doublePressBackButton;
+    private ActionBar mActionBar;
+    private ViewPager mPager;
+    private boolean doublePressBackButton;
+    private boolean ifLogin;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,10 @@ public class MainActivity extends SherlockFragmentActivity {
         /** Disable the title bar*/
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
+        
+        /** Setting the color of tabs**/
+        mActionBar.setStackedBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar));
+        
         
         /** Setting tab navigation mode */
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -74,6 +80,10 @@ public class MainActivity extends SherlockFragmentActivity {
  
             @Override
             public void onTabSelected(Tab tab, FragmentTransaction ft) {
+            	/** If Cards tab is selected*/
+            	if (tab.getPosition() == 1) {
+            		showLoginActivity();
+            	}
                 mPager.setCurrentItem(tab.getPosition());
             }
  
@@ -118,8 +128,10 @@ public class MainActivity extends SherlockFragmentActivity {
     @Override
     public void onBackPressed() {
     	if (doublePressBackButton) {
-    		super.onBackPressed();
-    		return;
+    		Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
     	}
     	this.doublePressBackButton = true;
     	
@@ -138,7 +150,30 @@ public class MainActivity extends SherlockFragmentActivity {
     		}
     	}, 3000);
     }
- 
+    
+//    /**
+//     * 
+//     */
+//    public void showLoginForm() {
+//    	try {
+//    		LoginDialog dialog = new LoginDialog();
+//    		
+//    		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//			ft.add(dialog, null);
+//			ft.commitAllowingStateLoss();
+//    	} catch (Exception e) {
+//    		System.err.println("Can not open dialog: \n" + e.toString());
+//    	}
+//    }
+    
+    /**
+     * 
+     */
+    public void showLoginActivity() {
+    	Intent toLoginActivity = new Intent(MainActivity.this.getApplicationContext(), LoginActivity.class);
+    	MainActivity.this.startActivity(toLoginActivity);
+    	MainActivity.this.overridePendingTransition(R.anim.login_enter, R.anim.login_out);
+    }
 }
 
 

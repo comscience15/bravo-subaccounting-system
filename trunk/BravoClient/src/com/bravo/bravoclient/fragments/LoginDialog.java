@@ -18,19 +18,25 @@ import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.util.HttpResponseHandler;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * @author Daniel
  *
  */
 public class LoginDialog extends DialogFragment {
+	private static EditText usernameView;
+	private static EditText passwordView;
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -38,22 +44,23 @@ public class LoginDialog extends DialogFragment {
 
 		/** Configure the customized view */
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-		loginDialog.setView(inflater.inflate(R.layout.dialog_signin, null));
+		loginDialog.setView(inflater.inflate(R.layout.dialog_login, null));
 
+		usernameView = (EditText) getActivity().findViewById(R.id.username);
+		passwordView = (EditText) getActivity().findViewById(R.id.password);
+		
 		/** Configure the dialog */
 		this.setCancelable(false);
-		loginDialog.setPositiveButton("Sign In",
+		loginDialog.setPositiveButton("Log In",
 				new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						System.out.println("Doing the http request begin");
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								loginHttpRequest();
+								loginValidation();
 							}
-							
 						}).start();
 						
 					}
@@ -79,7 +86,13 @@ public class LoginDialog extends DialogFragment {
 		return loginDialog.create();
 	}
 	
-	private void loginHttpRequest() {
+	
+	/**
+	 * Generate the login http post request
+	 * @param username
+	 * @param password
+	 */
+	private void loginHttpRequest(String username, String password) {
 		/**Creating Http Client*/
 		HttpClient httpClient = new DefaultHttpClient();
 		
@@ -91,8 +104,8 @@ public class LoginDialog extends DialogFragment {
 		
 		/**Creating parameters*/
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
-		nameValuePair.add(new BasicNameValuePair("j_username", "ashish"));
-		nameValuePair.add(new BasicNameValuePair("j_password", "bnym"));
+		nameValuePair.add(new BasicNameValuePair("j_username", username));
+		nameValuePair.add(new BasicNameValuePair("j_password", password));
 		nameValuePair.add(new BasicNameValuePair("j_domain", "200"));
 		nameValuePair.add(new BasicNameValuePair("j_roletype", "customer"));
 		
@@ -125,5 +138,52 @@ public class LoginDialog extends DialogFragment {
 			System.err.println("IO Exception: " + e.toString());
 		    //e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * The login validation
+	 * @param username
+	 * @param password
+	 */
+	private void loginValidation() {
+		final String username;
+		final String password;
+		
+		if (usernameView != null) {
+		    username = usernameView.getText().toString();
+		} else {username = "";}
+		
+		if (passwordView != null) {
+			password = passwordView.getText().toString();
+		} else {password = "";}
+	 
+		if (!username.matches("[a-z0-9A-Z.]+@[a-z0-9A-Z.]+[a-z0-9A-Z]+") ) {
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					/** Setting the toast*/
+			    	Context context = getActivity().getApplicationContext();
+			    	int duration = Toast.LENGTH_SHORT;
+			    	CharSequence text = getString(R.string.invalid_username);
+			    	Toast toast = Toast.makeText(context, text, duration);
+			    	toast.show();
+			    	
+				}});
+			
+		} else if (!password.matches("[a-z0-9A-Z]+") || !(password.length() >=6)){
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					/** Setting the toast*/
+			    	Context context = getActivity().getApplicationContext();
+			    	int duration = Toast.LENGTH_SHORT;
+			    	CharSequence text = getString(R.string.invalid_password);
+			    	Toast toast = Toast.makeText(context, text, duration);
+			    	toast.show();
+				}});
+		} else {
+			loginHttpRequest(username, password);
+		}
+		
 	}
 }
