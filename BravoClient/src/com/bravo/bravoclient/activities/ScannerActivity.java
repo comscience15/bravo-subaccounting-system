@@ -3,8 +3,8 @@ package com.bravo.bravoclient.activities;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.R.layout;
 import com.bravo.bravoclient.R.menu;
-import com.bravo.bravoclient.fragments.HomeScanResultDialog;
-import com.bravo.bravoclient.fragments.HomeScanResultDialog.HomeScanResultListener;
+import com.bravo.bravoclient.fragments.ScanResultDialog;
+import com.bravo.bravoclient.fragments.ScanResultDialog.ScanResultListener;
 
 import android.os.Bundle;
 import android.app.ActionBar;
@@ -27,7 +27,7 @@ import android.view.Window;
  * 
  */
 public class ScannerActivity extends FragmentActivity implements
-		HomeScanResultListener {
+		ScanResultListener {
 	private String scanResult;
 	private String format;
 
@@ -60,6 +60,7 @@ public class ScannerActivity extends FragmentActivity implements
 					startActivity(toMainPageIntent);
 				} catch (Exception e) {
 					// go to main page exception, we should some how catch it
+					System.err.println("Can not catch the scanning result: " + e.toString());
 				}
 			}
 		}
@@ -85,6 +86,7 @@ public class ScannerActivity extends FragmentActivity implements
 			startActivityForResult(zxingIntent, 0);
 		} catch (Exception e) {
 			// Barcode scanner exception, we should somehow catch it
+			System.err.println("Can not start barcode scanner: " + e.toString());
 		}
 	}
 	
@@ -93,9 +95,9 @@ public class ScannerActivity extends FragmentActivity implements
 	 */
 	public void showDialog() {
 		try {
-			HomeScanResultDialog dialog = new HomeScanResultDialog();
-			/** Making dialog not cancelable when touching outside of the frames*/
-			dialog.setCancelable(false);
+			ScanResultDialog dialog = new ScanResultDialog();
+			dialog.setPositiveButtonMsg(getString(R.string.home_scanner_positive_button));
+			dialog.setNegativeButtonMsg(getString(R.string.home_scanner_negative_button));
 			dialog.setScanResult(scanResult);
 			// dialog.show(getSupportFragmentManager(), "homeScanResultDialog");
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -124,6 +126,7 @@ public class ScannerActivity extends FragmentActivity implements
 			finish();
 		} catch (Exception e) {
 			// google search exception, we should some how catch it
+			System.err.println("Can not go to search: " + e.toString());
 		}
 	}
 
@@ -138,6 +141,7 @@ public class ScannerActivity extends FragmentActivity implements
 			startActivity(toMainPageIntent);
 		} catch (Exception e) {
 			// go back exception, we should some how catch it
+			System.err.println("Can not cancle the dialog: " + e.toString());
 		}
 	}
 }

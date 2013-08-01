@@ -13,9 +13,6 @@ import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
-import com.bravo.bravoclient.R.drawable;
-import com.bravo.bravoclient.R.id;
-import com.bravo.bravoclient.R.layout;
 import com.bravo.bravoclient.activities.ScannerActivity;
  
 public class HomeTabFragment extends SherlockFragment{
@@ -34,7 +31,7 @@ public class HomeTabFragment extends SherlockFragment{
     public void onStart() {
         super.onStart();
         /** Setting the background when view is starting */
-        Drawable myDrawable = getResources().getDrawable(R.drawable.background);
+        Drawable myDrawable = getResources().getDrawable(R.drawable.solid_background);
         getView().setBackground(myDrawable);
         
         /** Getting Scanner icon object on Home page*/
