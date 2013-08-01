@@ -10,5 +10,14 @@
     <string name="title_activity_cards">CardsActivity</string>
     <string name="title_activity_scanner">ScannerActivity</string>
     <string name="exit_app_toast">Press again to exit</string>
+    <string name="invalid_username">Please verify the username</string>
+    <string name="invalid_password">Please verify the password</string>
+    <string name="home_scanner_positive_button">Go Search</string>
+    <string name="home_scanner_negative_button">Cancel</string>
+    <string name="IP_Address">http://192.168.123.102:8080/subAccountAPI/</string>
+    <!-- <string name="IP_Address">http://192.168.123.102:8080/subAccountAPI/</string> -->
+    <!-- <string name="IP_Address">http://10.0.2.2:8080/subAccountAPI/</string> -->
+
+    <string name="title_activity_login">LoginActivity</string>
 
 </resources>
