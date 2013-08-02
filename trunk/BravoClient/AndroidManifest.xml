@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -29,7 +29,8 @@
         </activity>
         <activity
             android:name="com.bravo.bravoclient.activities.MainActivity"
-            android:label="@string/home" >
+            android:label="@string/home" 
+            android:theme="@style/AppTheme">
         </activity>
 
         <!-- This will refer to the barcode lib -->
@@ -57,6 +58,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bravo.bravoclient.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.bravo.bravoclient.activities.LoginActivity"
+            android:label="@string/title_activity_login" >
         </activity>
     </application>
 
