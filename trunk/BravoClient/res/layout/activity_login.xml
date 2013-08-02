@@ -41,7 +41,8 @@
           android:padding="10dip"
           android:layout_below="@id/header">
           <!--  Email -->
-          <EditText android:layout_width="fill_parent"
+          <EditText  android:id="@+id/email"
+              	android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:layout_marginBottom="20dip"
@@ -51,7 +52,8 @@
                 android:minHeight="45dp"
                 android:background="@drawable/edit_text"/>
           <!--  Password -->
-          <EditText android:layout_width="fill_parent"
+          <EditText android:id="@+id/password"
+              	android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:singleLine="true"
@@ -61,13 +63,13 @@
                 android:minHeight="45dp"
                 android:background="@drawable/edit_text"/>
           <!-- Login button -->
-          <Button android:id="@+id/btnLogin"
+          <Button android:id="@+id/loginBtn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
                 android:text="Login"/>
           <!-- Register button -->
-          <Button android:id="@+id/btnRegister"
+          <Button android:id="@+id/registerBtn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
