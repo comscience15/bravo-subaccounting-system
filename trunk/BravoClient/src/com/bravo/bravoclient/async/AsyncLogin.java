@@ -90,7 +90,8 @@ public class AsyncLogin extends AsyncTask<String, Void, String> {
 		    
 		    String loginStatus = responseHandler.parseJson(response, "status");
 		    System.out.println("Status: " + loginStatus);
-		    return loginStatus;
+		    // loginStatus is null means login successfully, see API document for details
+		    return loginStatus == null ? "200" : loginStatus;
 		 
 		} catch (ClientProtocolException e) {
 		    // writing exception to log
