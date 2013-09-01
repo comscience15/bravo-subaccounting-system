@@ -156,20 +156,6 @@ public class MainActivity extends SherlockFragmentActivity {
     	}, 3000);
     }
     
-//    /**
-//     * 
-//     */
-//    public void showLoginForm() {
-//    	try {
-//    		LoginDialog dialog = new LoginDialog();
-//    		
-//    		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//			ft.add(dialog, null);
-//			ft.commitAllowingStateLoss();
-//    	} catch (Exception e) {
-//    		System.err.println("Can not open dialog: \n" + e.toString());
-//    	}
-//    }
     
     /**
      * When Card tab has been selected, this will forward to LoginActivity
