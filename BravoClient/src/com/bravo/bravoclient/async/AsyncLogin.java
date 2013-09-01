@@ -25,7 +25,7 @@ import android.os.AsyncTask;
 /**
  * This is for operation of login, running in background
  * @author Daniel
- *
+ * @email danniel1205@gmail.com
  */
 public class AsyncLogin extends AsyncTask<String, Void, String> {
 	private Context context;
@@ -38,6 +38,9 @@ public class AsyncLogin extends AsyncTask<String, Void, String> {
 		return loginHttpRequest(loginInfo[0], loginInfo[1], loginInfo[2]);
 	}
 	
+	/**
+	 * @param The parameter is from doInBackground()
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		System.err.println(result);
