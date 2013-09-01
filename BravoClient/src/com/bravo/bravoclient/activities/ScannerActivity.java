@@ -1,15 +1,10 @@
 package com.bravo.bravoclient.activities;
 
 import com.bravo.bravoclient.R;
-import com.bravo.bravoclient.R.layout;
-import com.bravo.bravoclient.R.menu;
 import com.bravo.bravoclient.fragments.ScanResultDialog;
 import com.bravo.bravoclient.fragments.ScanResultDialog.ScanResultListener;
 
 import android.os.Bundle;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.support.v4.app.DialogFragment;
