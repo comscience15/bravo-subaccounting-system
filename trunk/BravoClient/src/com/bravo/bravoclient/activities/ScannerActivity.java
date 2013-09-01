@@ -1,8 +1,8 @@
 package com.bravo.bravoclient.activities;
 
 import com.bravo.bravoclient.R;
-import com.bravo.bravoclient.fragments.ScanResultDialog;
-import com.bravo.bravoclient.fragments.ScanResultDialog.ScanResultListener;
+import com.bravo.bravoclient.dialogs.ScanResultDialog;
+import com.bravo.bravoclient.dialogs.ScanResultDialog.ScanResultListener;
 
 import android.os.Bundle;
 import android.app.SearchManager;

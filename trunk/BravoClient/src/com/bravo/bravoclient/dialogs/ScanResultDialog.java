@@ -1,4 +1,4 @@
-package com.bravo.bravoclient.fragments;
+package com.bravo.bravoclient.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
