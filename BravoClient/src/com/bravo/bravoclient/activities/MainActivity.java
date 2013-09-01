@@ -16,14 +16,16 @@ import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.adapters.PagerAdapter;
  
 /**
+ * This is the first activity after Splash screen
  * @author Daniel
+ * @email danniel1205@gmail.com
  *
  */
 public class MainActivity extends SherlockFragmentActivity {
     private ActionBar mActionBar;
     private ViewPager mPager;
     private boolean doublePressBackButton;
-    private boolean ifLogin;
+    private boolean ifLogin; // this is for future use, in order to remember if user has been logged in already
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +127,9 @@ public class MainActivity extends SherlockFragmentActivity {
 //    }
     
     
+    /**
+     * Override the onBackPressed(), double click back button to exit the app
+     */
     @Override
     public void onBackPressed() {
     	if (doublePressBackButton) {
@@ -167,7 +172,7 @@ public class MainActivity extends SherlockFragmentActivity {
 //    }
     
     /**
-     * 
+     * When Card tab has been selected, this will forward to LoginActivity
      */
     public void showLoginActivity() {
     	Intent toLoginActivity = new Intent(MainActivity.this.getApplicationContext(), LoginActivity.class);
