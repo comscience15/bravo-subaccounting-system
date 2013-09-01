@@ -16,10 +16,14 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
+import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.util.HttpResponseHandler;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 /**
@@ -27,8 +31,9 @@ import android.os.AsyncTask;
  * @author Daniel
  * @email danniel1205@gmail.com
  */
-public class AsyncLogin extends AsyncTask<String, Void, String> {
+public class AsyncLogin extends AsyncTask<String, Void, String> implements BravoAlertDialog{
 	private Context context;
+	private Builder alertDialogBuilder;
 	public AsyncLogin(Context context) {
 		this.context = context;
 	}
@@ -44,13 +49,16 @@ public class AsyncLogin extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPostExecute(String result) {
 		System.err.println(result);
+		/** if login successfully, forward to Main activity temporarily**/
 		if (result != null && !result.equals("404")) {
 			Intent toLoginActivity = new Intent(context, MainActivity.class);
 	    	context.startActivity(toLoginActivity);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
+		} else {
+			/** if login unsuccessfully, showing the alert dialog**/
+			alertDialog();
 		}
 	}
-	
 	
 	/**
 	 * Generate the login http post request
@@ -108,6 +116,51 @@ public class AsyncLogin extends AsyncTask<String, Void, String> {
 		    //e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * The method is going to show alert dialog
+	 */
+	public void alertDialog() {
+		setAlertDialogBuilder();
+		setTitle("Login Failed", alertDialogBuilder);
+		setMessage("Please check your authentication or network connection", alertDialogBuilder);
+		setButton("OK", alertDialogBuilder);
+		showDialog(alertDialogBuilder);
+	}
+	
+	/**
+	 *  This method should complete all the configuration of alert dialog builder, like cancelable
+	 */
+	@Override
+	public Builder setAlertDialogBuilder() {
+		alertDialogBuilder = new AlertDialog.Builder(context);
+		alertDialogBuilder.setCancelable(true);
+		return alertDialogBuilder;
+	}
+
+	@Override
+	public void setTitle(String title, Builder alertDialogBuilder) {
+		alertDialogBuilder.setTitle(title);
+	}
+
+	@Override
+	public void setMessage(String message, Builder alertDialogBuilder) {
+		alertDialogBuilder.setMessage(message);
+	}
+
+	@Override
+	public void setButton(String name, Builder alertDialogBuilder) {
+		alertDialogBuilder.setNegativeButton(name, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+	}
+
+	@Override
+	public void showDialog(Builder alertDialogBuilder) {
+		alertDialogBuilder.create().show();
 	}
 	
 	
