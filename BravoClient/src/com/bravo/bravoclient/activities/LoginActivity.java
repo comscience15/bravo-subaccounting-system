@@ -16,6 +16,7 @@ import android.widget.EditText;
  * This class is for log in activity, and login info validation
  * The network request part is in AsyncLogin.java
  * @author Daniel
+ * @email danniel1205@gmail.com
  *
  */
 public class LoginActivity extends Activity {
@@ -113,6 +114,7 @@ public class LoginActivity extends Activity {
 		loginBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				/** When login button is pressed, it will go to asynchronized task for process **/
 				new AsyncLogin(LoginActivity.this).execute(username, password, ip);
 				//loginHttpRequest(username, password);
 			}
@@ -122,7 +124,7 @@ public class LoginActivity extends Activity {
 		registerBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+			  // TODO	
 			}
 		});
 		
@@ -135,10 +137,22 @@ public class LoginActivity extends Activity {
     	LoginActivity.this.overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 	}
 	
+	/**
+	 * Get the username, this is aim to avoid null point exception
+	 * when user types nothing
+	 * @param usernameView
+	 * @return 
+	 */
 	private String getUsername(EditText usernameView) {
 		return usernameView == null ? "" : usernameView.getText().toString(); 
 	}
 	
+	/**
+	 * Get the password, this is aim to avoid null point exception
+	 * when user types nothing
+	 * @param passwordView
+	 * @return
+	 */
 	private String getPassword(EditText passwordView) {
 		return passwordView == null ? "" : passwordView.getText().toString();
 	}
