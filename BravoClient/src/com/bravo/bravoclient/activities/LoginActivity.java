@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 /**
@@ -39,6 +40,7 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE); // Removes title bar
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // Stop keyboard automatically generated
 		setContentView(R.layout.activity_login);
 		
 		ip = getString(R.string.IP_Address);
@@ -124,7 +126,8 @@ public class LoginActivity extends Activity {
 		registerBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-			  // TODO	
+				Intent toRegisterActivity = new Intent(LoginActivity.this.getApplicationContext(), RegisterActivity.class);
+				LoginActivity.this.startActivity(toRegisterActivity);
 			}
 		});
 		
