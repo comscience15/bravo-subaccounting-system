@@ -10,8 +10,14 @@
     <string name="title_activity_cards">CardsActivity</string>
     <string name="title_activity_scanner">ScannerActivity</string>
     <string name="exit_app_toast">Press again to exit</string>
-    <string name="invalid_username">Please verify the username</string>
+    <string name="invalid_username">Please verify the email</string>
     <string name="invalid_password">Please verify the password</string>
+    <string name="reg_password_not_match">Password is not match</string>
+    <string name="reg_invalid_username">Please type in the valid email</string>
+    <string name="reg_invalid_password">Password should not be empty or less than 6 characters</string>
+    <string name="reg_invalid_street">Please verify the street</string>
+    <string name="reg_invalid_city">Please verify the city</string>
+    <string name="reg_invalid_zipCode">Please verify the zipCode</string>
     <string name="home_scanner_positive_button">Go Search</string>
     <string name="home_scanner_negative_button">Cancel</string>
     <string name="IP_Address">http://50.156.100.14:8080/subAccountAPI/</string>
