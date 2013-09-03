@@ -91,6 +91,7 @@ public class ScannerActivity extends FragmentActivity implements
 	public void showDialog() {
 		try {
 			ScanResultDialog dialog = new ScanResultDialog();
+			dialog.setCancelable(false); // After the setting, the dialog will not be closed by touching other places
 			dialog.setPositiveButtonMsg(getString(R.string.home_scanner_positive_button));
 			dialog.setNegativeButtonMsg(getString(R.string.home_scanner_negative_button));
 			dialog.setScanResult(scanResult);
