@@ -43,6 +43,7 @@ public class ScanResultDialog extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState){
 		resultHandlerDialog = new AlertDialog.Builder(getActivity());
+		//resultHandlerDialog.setCancelable(false);
 		resultHandlerDialog.setTitle("Barcode Scanner")
 			.setMessage("The result of scanning: \n" + scanResult)
 			.setPositiveButton(positiveButtonMessage, new DialogInterface.OnClickListener() {
@@ -60,8 +61,7 @@ public class ScanResultDialog extends DialogFragment {
 					// TODO Auto-generated method stub
 					ScanResultListener.onDialogNegativeClick(ScanResultDialog.this);
 				}
-			})
-			.setCancelable(false);
+			});
 
 		return resultHandlerDialog.create();
 	}
