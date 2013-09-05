@@ -17,30 +17,22 @@ import org.apache.http.message.BasicNameValuePair;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
-import com.bravo.bravoclient.util.BravoAlertDialogInterface;
 import com.bravo.bravoclient.util.HttpResponseHandler;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-/**
- * This is for operation of login, running in background
- * @author Daniel
- * @email danniel1205@gmail.com
- */
-public class AsyncLogin extends AsyncTask<String, Void, String>{
+
+public class AsyncRegister extends AsyncTask<String, Void, String>{
 	private Context context;
-	public AsyncLogin(Context context) {
+	public AsyncRegister(Context context) {
 		this.context = context;
 	}
 	
 	@Override
-	protected String doInBackground(String... loginInfo) {
-		return loginHttpRequest(loginInfo[0], loginInfo[1], loginInfo[2]);
+	protected String doInBackground(String... registerInfo) {
+		return  registerHttpRequest(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6]);
 	}
 	
 	/**
@@ -49,29 +41,24 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		System.err.println(result);
-		/** if login successfully, forward to Main activity temporarily**/
+		/** if register successfully, forward to Main activity temporarily**/
 		if (result != null && !result.equals("404")) {
 			Intent toLoginActivity = new Intent(context, MainActivity.class);
 	    	context.startActivity(toLoginActivity);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
-			/** if login unsuccessfully, showing the alert dialog**/
+			/** if register unsuccessfully, showing the alert dialog**/
 			new BravoAlertDialog(context).alertDialog("Login Failed", "Please check your authentication or network connection");
 		}
 	}
 	
-	/**
-	 * Generate the login http post request
-	 * @param username
-	 * @param password
-	 */
-	private String loginHttpRequest(String username, String password, String IP) {
+	private String registerHttpRequest(String username, String password, String street, String city, String state, String zipCode, String IP) {
 		/**Creating Http Client*/
 		HttpClient httpClient = new DefaultHttpClient();
 		
 		/**Creating login post*/
 		final String ip = IP; //context.getString(R.string.IP_Address);
-		final String path = "service/authentication/j_spring_security_check";
+		final String path = "service/authentication/signup";
 		final String URL = ip + path;
 		HttpPost loginPost = new HttpPost(URL);
 		
@@ -79,6 +66,10 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
 		nameValuePair.add(new BasicNameValuePair("j_username", username));
 		nameValuePair.add(new BasicNameValuePair("j_password", password));
+		nameValuePair.add(new BasicNameValuePair("street", street));
+		nameValuePair.add(new BasicNameValuePair("city", city));
+		nameValuePair.add(new BasicNameValuePair("state", state));
+		nameValuePair.add(new BasicNameValuePair("zip", zipCode)); // Should change the back end to "zipCode"
 		nameValuePair.add(new BasicNameValuePair("j_domain", "200"));
 		nameValuePair.add(new BasicNameValuePair("j_roletype", "customer"));
 		
@@ -99,10 +90,10 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		 
 		    HttpResponseHandler responseHandler = new HttpResponseHandler();
 		    
-		    String loginStatus = responseHandler.parseJson(response, "status");
-		    System.out.println("Status: " + loginStatus);
+		    String registerStatus = responseHandler.parseJson(response, "status");
+		    System.out.println("Status: " + registerStatus);
 		    // loginStatus is null means login successfully, see API document for details
-		    return loginStatus == null ? "200" : loginStatus;
+		    return registerStatus == null ? "200" : registerStatus;
 		 
 		} catch (ClientProtocolException e) {
 		    // writing exception to log
@@ -117,10 +108,8 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 			return null;
 		}
 	}
+	
+	
 
-	
-	
-	
-	
-	
+
 }

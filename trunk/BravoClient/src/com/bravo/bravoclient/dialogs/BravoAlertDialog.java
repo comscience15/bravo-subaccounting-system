@@ -1,34 +1,62 @@
 package com.bravo.bravoclient.dialogs;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.Context;
+import android.content.DialogInterface;
 
-public interface BravoAlertDialog {
+import com.bravo.bravoclient.util.BravoAlertDialogInterface;
+
+public class BravoAlertDialog implements BravoAlertDialogInterface{
+	private Context context;
+	private Builder alertDialogBuilder;
+	
+	public BravoAlertDialog(Context context) {
+		this.context = context;
+	}
+	
 	/**
-	 * This method should complete all the configuration of alert dialog builder, like cancelable
-	 * @return
+	 * The method is going to show alert dialog
 	 */
-	public AlertDialog.Builder setAlertDialogBuilder();
+	public void alertDialog(String title, String msg) {
+		setAlertDialogBuilder();
+		setTitle(title, alertDialogBuilder);
+		setMessage(msg, alertDialogBuilder);
+		setButton("OK", alertDialogBuilder);
+		showDialog(alertDialogBuilder);
+	}
+	
 	/**
-	 * Setting the title for dialog
-	 * @param title
-	 * @param alertDialogBuilder
+	 *  This method should complete all the configuration of alert dialog builder, like cancelable
 	 */
-	public void setTitle(String title, AlertDialog.Builder alertDialogBuilder);
-	/**
-	 * Setting the message to display
-	 * @param message
-	 * @param alertDialogBuilder
-	 */
-	public void setMessage(String message, AlertDialog.Builder alertDialogBuilder);
-	/**
-	 * Setting the button action which should also be added an listener
-	 * @param name
-	 * @param alertDialogBuilder
-	 */
-	public void setButton(String name, AlertDialog.Builder alertDialogBuilder);
-	/**
-	 * Showing Dialog
-	 * @param alertDialogBuilder
-	 */
-	public void showDialog(AlertDialog.Builder alertDialogBuilder);
+	@Override
+	public Builder setAlertDialogBuilder() {
+		alertDialogBuilder = new AlertDialog.Builder(context);
+		alertDialogBuilder.setCancelable(true);
+		return alertDialogBuilder;
+	}
+
+	@Override
+	public void setTitle(String title, Builder alertDialogBuilder) {
+		alertDialogBuilder.setTitle(title);
+	}
+
+	@Override
+	public void setMessage(String message, Builder alertDialogBuilder) {
+		alertDialogBuilder.setMessage(message);
+	}
+
+	@Override
+	public void setButton(String name, Builder alertDialogBuilder) {
+		alertDialogBuilder.setNegativeButton(name, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+	}
+
+	@Override
+	public void showDialog(Builder alertDialogBuilder) {
+		alertDialogBuilder.create().show();
+	}
 }

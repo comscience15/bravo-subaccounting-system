@@ -11,6 +11,7 @@
         android:background="#FFFFBB33"
         android:contentDescription="@string/app_name" />
         -->
+        <!-- 
     <EditText
         android:id="@+id/username"
         android:inputType="textEmailAddress"
@@ -33,5 +34,6 @@
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
         android:hint="Password:"/>
+        -->
         
 </LinearLayout>
