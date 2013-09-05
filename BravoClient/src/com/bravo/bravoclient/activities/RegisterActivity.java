@@ -1,6 +1,7 @@
 package com.bravo.bravoclient.activities;
 
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.async.AsyncRegister;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -73,6 +74,7 @@ public class RegisterActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				System.out.println(username + "\n" + password + "\n" + confirmPassword + "\n" + street +"\n"+ state +"\n"+ zipCode +"\n");
+				new AsyncRegister(RegisterActivity.this).execute(username, password, street, city, state, zipCode, getString(R.string.IP_Address));
 			}
 		});
 	}
