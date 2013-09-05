@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <TextView  android:layout_width="fill_parent" android:layout_height="wrap_content" android:background="#ff000000" android:text="@string/hello"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <TextView  android:layout_width="fill_parent" android:layout_height="wrap_content" android:background="#ff654321" android:layout_weight="1" android:text="1"/>
+        <TextView  android:layout_width="fill_parent" android:layout_height="wrap_content" android:background="#fffedcba" android:layout_weight="2"  android:text="2"/>
+    </LinearLayout>
+</LinearLayout>
+ -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" 
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="horizontal" 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="30dp">
+	    
+	    <ImageView
+	        android:id="@+id/logo"
+	        android:layout_width="fill_parent"
+	        android:layout_height="25dp"
+	        android:layout_gravity="center"
+	        android:layout_marginLeft="8dp"
+	        android:layout_marginRight="8dp"
+	        android:background="@drawable/bravo" />
+	    
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="horizontal" 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content">
+	    <RelativeLayout 
+            xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent">
+	        
+		    <TextView
+		        android:id="@+id/balanceText"
+		        style="@style/CardTextViewTheme.CenterVertical"
+		        android:textAppearance="?android:attr/textAppearanceMedium"
+		        android:text="@string/balance" />
+		    
+	        <EditText
+		        android:id="@+id/cardBalanceEditText"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_toRightOf="@id/balanceText"
+		        android:layout_centerVertical="true"
+		        android:textColor="#FFFFFF"
+		        android:ems="10" >
+		        <requestFocus />
+		    </EditText>
+		
+		    <ImageView
+		        android:id="@+id/cardRefreshButton"
+		        style="@style/CardImageViewTheme.CenterVertical"
+		        android:layout_toRightOf="@id/cardBalanceEditText"
+		        android:src="@drawable/refresh_button" />
+		    
+	    </RelativeLayout>
+	    
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+	    
+        <RelativeLayout 
+            xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1">
+	        
+			<ImageView
+		        android:id="@+id/cardPayButton"
+		        style="@style/CardImageViewTheme.CenterHorizontal"
+		        android:src="@drawable/pay" />
+		    
+		    <TextView 
+		        android:id="@+id/cardPayText"
+		        style="@style/CardTextViewTheme.CenterHorizontal"
+		        android:layout_below="@id/cardPayButton"
+		        android:text="@string/pay"/>
+        </RelativeLayout>
+        
+        <RelativeLayout 
+            xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1">
+	        
+		    
+		    <ImageView
+		        android:id="@+id/cardReloadButton"
+		        style="@style/CardImageViewTheme.CenterHorizontal"
+		        android:src="@drawable/reload" />
+		    
+		    <TextView 
+		        android:id="@+id/cardReloadText"
+		        style="@style/CardTextViewTheme.CenterHorizontal"
+		        android:layout_below="@id/cardReloadButton"
+		        android:text="@string/reload"/>
+        </RelativeLayout>
+        
+        <RelativeLayout 
+            xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1">
+	        
+		    <ImageView
+		        android:id="@+id/cardSelfCheckoutButton"
+		        style="@style/CardImageViewTheme.CenterHorizontal"
+		        android:src="@drawable/self_checkout" />
+		    
+		    <TextView
+		        android:id="@+id/cardSelfCheckoutText"
+		        style="@style/CardTextViewTheme.CenterHorizontal"
+		        android:layout_below="@id/cardSelfCheckoutButton"
+		        android:text="@string/self_checkout" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="horizontal" 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content">
+	    
+        <RelativeLayout 
+            xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1">
+	        
+		    <ImageView
+		        android:id="@+id/cardSendGiftButton"
+		        style="@style/CardImageViewTheme.CenterHorizontal"
+		        android:src="@drawable/send_gift" />
+		    
+		    <TextView 
+		        android:id="@+id/cardSendGiftText"
+		        style="@style/CardTextViewTheme.CenterHorizontal"
+		        android:layout_below="@id/cardSendGiftButton"
+		        android:text="@string/send_gift"/>
+        </RelativeLayout>
+        
+        <RelativeLayout 
+            xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1">
+	        
+		    <ImageView
+		        android:id="@+id/cardReceiveMoneyButton"
+		        style="@style/CardImageViewTheme.CenterHorizontal"
+		        android:src="@drawable/receive_money" />
+		    
+		    <TextView 
+		        android:id="@+id/cardReceiveMoneyText"
+				style="@style/CardTextViewTheme.CenterHorizontal"
+		        android:layout_below="@id/cardReceiveMoneyButton"
+		        android:text="@string/receive_money"/>
+        </RelativeLayout>
+	    
+        <RelativeLayout 
+            xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1">
+	        
+		    <ImageView
+		        android:id="@+id/cardTransactionHistoryButton"
+		        style="@style/CardImageViewTheme.CenterHorizontal"
+		        android:src="@drawable/transaction_history" />
+		    
+		    <TextView 
+		        android:id="@+id/cardTransactionHistoryText"
+				style="@style/CardTextViewTheme.CenterHorizontal"
+		        android:layout_below="@id/cardTransactionHistoryButton"
+		        android:text="@string/transaction_history"/>
+        </RelativeLayout>
+	    
+    </LinearLayout>
+
+</LinearLayout>
