@@ -28,7 +28,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 /**
- * This is for operation of login, running in background
+ * This class is implementing async login, running in background
  * @author Daniel
  * @email danniel1205@gmail.com
  */
