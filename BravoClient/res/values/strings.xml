@@ -20,6 +20,14 @@
     <string name="reg_invalid_zipCode">Please verify the zipCode</string>
     <string name="home_scanner_positive_button">Go Search</string>
     <string name="home_scanner_negative_button">Cancel</string>
+    <string name="balance">Balance</string>
+    <string name="pay">Pay</string>
+    <string name="reload">Reload</string>
+    <string name="self_checkout">Self Checkout</string>
+    <string name="send_gift">Send Gift</string>
+    <string name="receive_money">Receive Money</string>
+    <string name="transaction_history">Transaction History</string>
+    
     <string name="IP_Address">http://50.156.100.14:8080/subAccountAPI/</string>
     <!-- <string name="IP_Address">http://10.0.2.2:8080/subAccountAPI/</string> -->
 
