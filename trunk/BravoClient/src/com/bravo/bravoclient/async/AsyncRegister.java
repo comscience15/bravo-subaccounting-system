@@ -108,8 +108,4 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 			return null;
 		}
 	}
-	
-	
-
-
 }
