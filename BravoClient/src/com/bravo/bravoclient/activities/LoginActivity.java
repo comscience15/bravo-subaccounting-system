@@ -22,8 +22,8 @@ import android.widget.EditText;
  */
 public class LoginActivity extends Activity {
 	/** Declaring buttons**/
-	private Button loginBtn;
-	private Button registerBtn;
+	private static Button loginBtn;
+	private static Button registerBtn;
 	
 	/** Declaring text fields**/
 	private static EditText usernameField;
@@ -46,19 +46,19 @@ public class LoginActivity extends Activity {
 		ip = getString(R.string.IP_Address);
 		
 		/** Declaring buttons**/
-		loginBtn = (Button) findViewById(R.id.loginBtn);
+		loginBtn = (Button) findViewById(R.id.login_loginBtn);
 		loginBtn.setEnabled(false);
-		registerBtn = (Button) findViewById(R.id.registerBtn);
+		registerBtn = (Button) findViewById(R.id.login_registerBtn);
 		
 		/** Declaring text fields**/
-		usernameField = (EditText) findViewById(R.id.email);
-		passwordField = (EditText) findViewById(R.id.password);
+		usernameField = (EditText) findViewById(R.id.login_email);
+		passwordField = (EditText) findViewById(R.id.login_password);
 		
 		/** Declaring the username watcher**/
 		TextWatcher usernameWatcher = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String usernameTemp = getUsername(usernameField);
+				final String usernameTemp = getEditTextValue(usernameField);
 				if (!usernameValidation(usernameTemp)) {
 					loginBtn.setEnabled(false);
 					isValidU = false;
@@ -84,7 +84,7 @@ public class LoginActivity extends Activity {
 		TextWatcher passwordWatcher = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String passwordTemp = getPassword(passwordField);
+				final String passwordTemp = getEditTextValue(passwordField);
 				if (!passwordValidation(passwordTemp)) {
 					loginBtn.setEnabled(false);
 					isValidP = false;
@@ -158,6 +158,15 @@ public class LoginActivity extends Activity {
 	 */
 	private String getPassword(EditText passwordView) {
 		return passwordView == null ? "" : passwordView.getText().toString();
+	}
+	
+	/**
+	 * Get the value of a edit text field
+	 * @param field
+	 * @return
+	 */
+	private String getEditTextValue(EditText field) {
+		return field == null ? "" : field.getText().toString(); 
 	}
 	
 	
