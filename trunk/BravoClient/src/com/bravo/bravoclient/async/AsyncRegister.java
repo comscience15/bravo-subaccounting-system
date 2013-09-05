@@ -23,7 +23,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-
+/**
+ * This class is implementing async login, running in background
+ * @author Daniel
+ * @email danniel1205@gmail.com
+ *
+ */
 public class AsyncRegister extends AsyncTask<String, Void, String>{
 	private Context context;
 	public AsyncRegister(Context context) {

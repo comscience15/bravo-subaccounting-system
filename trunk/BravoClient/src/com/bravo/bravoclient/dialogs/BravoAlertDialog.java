@@ -7,6 +7,13 @@ import android.content.DialogInterface;
 
 import com.bravo.bravoclient.util.BravoAlertDialogInterface;
 
+/**
+ * This class is general implementation for alert dialog which is
+ * implemented BravoAlertDialogInterface
+ * @author Daniel
+ * @email danniel1205@gmail.com
+ *
+ */
 public class BravoAlertDialog implements BravoAlertDialogInterface{
 	private Context context;
 	private Builder alertDialogBuilder;

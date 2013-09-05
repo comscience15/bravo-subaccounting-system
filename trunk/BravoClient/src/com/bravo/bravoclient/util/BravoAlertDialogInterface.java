@@ -2,6 +2,12 @@ package com.bravo.bravoclient.util;
 
 import android.app.AlertDialog;
 
+/**
+ * This is the interface of alter dialog
+ * @author Daniel
+ * @email danniel1205@gmail.com
+ *
+ */
 public interface BravoAlertDialogInterface {
 	/**
 	 * This method should complete all the configuration of alert dialog builder, like cancelable
