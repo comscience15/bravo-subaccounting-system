@@ -1,12 +1,9 @@
 package com.bravo.bravoclient.fragments;
  
-import java.util.HashMap;
-import java.util.Map;
-
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,20 +15,18 @@ import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
- 
+
 public class CardsTabFragment extends SherlockFragment{
 
-	private Context cxt = null;
 	/** cards页面菜单按钮所使用的图片 */
-	private final static Map<Integer,Integer> imageViewBg = new HashMap<Integer,Integer>();
+	private final SparseIntArray imageViewBg = new SparseIntArray();
 	/** cards页面菜单按钮被按下时所使用的图片 */
-	private final static Map<Integer,Integer> imageViewPressedBg = new HashMap<Integer,Integer>();
+	private final static SparseIntArray imageViewPressedBg = new SparseIntArray();
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		/** Create the customized view for Card Tab*/
 		View v = inflater.inflate(R.layout.activity_card, null);
-		cxt = getActivity().getApplicationContext();
 	    return v;
     }
     
@@ -93,12 +88,12 @@ public class CardsTabFragment extends SherlockFragment{
 				ImageView iv = (ImageView)v;
 				if(event.getAction()==MotionEvent.ACTION_DOWN){
 					//为按钮更换被按下时的图片
-					if(imageViewPressedBg.containsKey(iv.getId())){
+					if(imageViewPressedBg.indexOfKey(iv.getId()) >= 0){
 						iv.setImageResource(imageViewPressedBg.get(iv.getId()));
 					}
 				}else if(event.getAction()==MotionEvent.ACTION_UP){
 					//为按钮恢复正常显示时的图片
-					if(imageViewBg.containsKey(iv.getId())){
+					if(imageViewBg.indexOfKey(iv.getId()) >= 0){
 						iv.setImageResource(imageViewBg.get(iv.getId()));
 					}
 				}
