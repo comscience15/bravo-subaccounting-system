@@ -2,6 +2,11 @@ package com.bravo.bravoclient.async;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +16,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -48,11 +54,12 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	 */
 	@Override
 	protected void onPostExecute(String result) {
-		System.err.println(result);
+		System.err.println("Result code is: " + result);
 		/** if login successfully, forward to Main activity temporarily**/
 		if (result != null && !result.equals("404")) {
-			Intent toLoginActivity = new Intent(context, MainActivity.class);
-	    	context.startActivity(toLoginActivity);
+			Intent toCardsFragment = new Intent(context, MainActivity.class);
+			toCardsFragment.putExtra("Activity", "Login");
+	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
 			/** if login unsuccessfully, showing the alert dialog**/
@@ -67,7 +74,7 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	 */
 	private String loginHttpRequest(String username, String password, String IP) {
 		/**Creating Http Client*/
-		HttpClient httpClient = new DefaultHttpClient();
+		DefaultHttpClient httpClient = new DefaultHttpClient();
 		
 		/**Creating login post*/
 		final String ip = IP; //context.getString(R.string.IP_Address);
@@ -96,11 +103,18 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		/**Making HTTP Request*/
 		try {
 		    HttpResponse response = httpClient.execute(loginPost);
-		 
+		    
+		    List<Cookie> cookies = httpClient.getCookieStore().getCookies();
+		    for (Cookie c : cookies) {
+		    	System.err.println("Cookie is:\n Comment:" + c.getComment() +"\n CommentURL:" + c.getCommentURL() 
+		    			+"\n Domain:" + c.getDomain() +"\n Name:" + c.getName() +"\n Path:" + c.getPath() +"\n Value:" + c.getValue()
+		    			+"\n Version:" + c.getVersion() +"\n");
+		    }
+		    
 		    HttpResponseHandler responseHandler = new HttpResponseHandler();
 		    
 		    String loginStatus = responseHandler.parseJson(response, "status");
-		    System.out.println("Status: " + loginStatus);
+		    System.out.println("Status: " + loginStatus); // This should be deleted after release
 		    // loginStatus is null means login successfully, see API document for details
 		    return loginStatus == null ? "200" : loginStatus;
 		 
