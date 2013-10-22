@@ -1,7 +1,7 @@
 package com.bravo.webapp.bean;
 
 // Mapping to the table BNYAdmin
-public class BNYMAdmin {
+public class BravoAdmin {
 	
 	private String email;		// 20
 	private String password;	// 50
