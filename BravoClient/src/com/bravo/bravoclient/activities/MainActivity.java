@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.WindowManager;
 import android.widget.Toast;
  
 import com.actionbarsherlock.app.ActionBar;
@@ -24,14 +25,18 @@ import com.bravo.bravoclient.adapters.PagerAdapter;
 public class MainActivity extends SherlockFragmentActivity {
     private ActionBar mActionBar;
     private ViewPager mPager;
+    private Tab homeTab, cardsTab, rewardsTab;
+    private Intent getIntentSource;
     private boolean doublePressBackButton;
-    private boolean ifLogin; // this is for future use, in order to remember if user has been logged in already
+    private static boolean ifLogin = false; // this is for future use, in order to remember if user has been logged in already
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.activity_main);
+        
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // Stop keyboard automatically generated
                
         /** Getting a reference to action bar of this activity */
         mActionBar = getSupportActionBar();
@@ -84,7 +89,8 @@ public class MainActivity extends SherlockFragmentActivity {
             public void onTabSelected(Tab tab, FragmentTransaction ft) {
             	/** If Cards tab is selected*/
             	if (tab.getPosition() == 1) {
-            		showLoginActivity();
+            		/** Check if user has been login already**/
+            		if(!ifLogin) showLoginActivity();
             	}
                 mPager.setCurrentItem(tab.getPosition());
             }
@@ -95,27 +101,35 @@ public class MainActivity extends SherlockFragmentActivity {
         };
  
         /** Creating Home Tab */
-        Tab tab = mActionBar.newTab()
+        homeTab = mActionBar.newTab()
                 .setText("Home")
                 //.setIcon(R.drawable.android)
                 .setTabListener(tabListener);
  
-        mActionBar.addTab(tab);
+        mActionBar.addTab(homeTab);
  
         /** Creating Cards Tab */
-        tab = mActionBar.newTab()
+        cardsTab = mActionBar.newTab()
                 .setText("Cards")
                 //.setIcon(R.drawable.apple)
                 .setTabListener(tabListener);
- 
-        mActionBar.addTab(tab);
+        mActionBar.addTab(cardsTab);
         
         /** Creating Rewards Tab*/
-        tab = mActionBar.newTab()
+        rewardsTab = mActionBar.newTab()
         		.setText("Rewards")
         		.setTabListener(tabListener);
         
-        mActionBar.addTab(tab);
+        mActionBar.addTab(rewardsTab);
+
+        /** Get the resource of intent **/
+        getIntentSource = getIntent();
+        String fromActivity = getIntentSource.getStringExtra("Activity");
+        if(fromActivity != null && fromActivity.equals("Login")) {
+        	ifLogin = true;
+        	cardsTab.select();
+        }
+        
     }
     
     /** This method is going to create the menu inside of the title bar*/
