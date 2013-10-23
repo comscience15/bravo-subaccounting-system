@@ -18,9 +18,9 @@ import com.bravo.bravoclient.R;
 
 public class CardsTabFragment extends SherlockFragment{
 
-	/** cards页面菜单按钮所使用的图片 */
+	/** Store the button icons used in Card Tab */
 	private final SparseIntArray imageViewBg = new SparseIntArray();
-	/** cards页面菜单按钮被按下时所使用的图片 */
+	/** Store the pressed button icons used in Card Tab */
 	private final static SparseIntArray imageViewPressedBg = new SparseIntArray();
 	
     @Override
@@ -38,7 +38,7 @@ public class CardsTabFragment extends SherlockFragment{
         Drawable myDrawable = getResources().getDrawable(R.drawable.solid_background);
         getView().setBackground(myDrawable);
         
-        // cards页面的六个按钮。五个菜单按钮，一个查询按钮。按钮都用ImageView实现 
+        // the seven buttons in  Card Tab,six for menu,one for refresh
         final ImageView cardPayButton = (ImageView) getView().findViewById(R.id.cardPayButton);
         final ImageView cardReloadButton = (ImageView) getView().findViewById(R.id.cardReloadButton);
         final ImageView cardSelfCheckoutButton = (ImageView) getView().findViewById(R.id.cardSelfCheckoutButton);
@@ -47,7 +47,6 @@ public class CardsTabFragment extends SherlockFragment{
         final ImageView cardReceiveMoneyButton = (ImageView) getView().findViewById(R.id.cardReceiveMoneyButton);
         final ImageView cardRefreshButton = (ImageView) getView().findViewById(R.id.cardRefreshButton);
         
-        // 监听按钮单击事件 
         OnClickListener buttonListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -70,7 +69,7 @@ public class CardsTabFragment extends SherlockFragment{
 				}
 			}
         };
-        // 为页面上的按钮添加单击事件的监听
+        // add the onClick listener for buttons
         cardPayButton.setOnClickListener(buttonListener);
         cardReloadButton.setOnClickListener(buttonListener);
         cardSelfCheckoutButton.setOnClickListener(buttonListener);
@@ -79,20 +78,19 @@ public class CardsTabFragment extends SherlockFragment{
         cardReceiveMoneyButton.setOnClickListener(buttonListener);
         cardRefreshButton.setOnClickListener(buttonListener);
         
-        // 初始化 按钮——图片 对应关系的map，用于按钮被按下时更换图标
         initImageViewBgMap(cardPayButton, cardReloadButton, cardSelfCheckoutButton, cardSendGiftButton, cardTransactionHistoryButton, cardReceiveMoneyButton);
-        // 监听屏幕触碰事件，仅能处理ImageView的按下及抬起两个事件。
+        
         OnTouchListener buttonTouchListener = new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				ImageView iv = (ImageView)v;
 				if(event.getAction()==MotionEvent.ACTION_DOWN){
-					//为按钮更换被按下时的图片
+					// when pressed, use the pressed button icon
 					if(imageViewPressedBg.indexOfKey(iv.getId()) >= 0){
 						iv.setImageResource(imageViewPressedBg.get(iv.getId()));
 					}
 				}else if(event.getAction()==MotionEvent.ACTION_UP){
-					//为按钮恢复正常显示时的图片
+					// when released, use the normal button icon
 					if(imageViewBg.indexOfKey(iv.getId()) >= 0){
 						iv.setImageResource(imageViewBg.get(iv.getId()));
 					}
@@ -100,7 +98,7 @@ public class CardsTabFragment extends SherlockFragment{
 				return false;
 			}
 		};
-		//为菜单按钮添加触碰事件监听
+		// add the touch listener for buttons
 		cardPayButton.setOnTouchListener(buttonTouchListener);
 		cardReloadButton.setOnTouchListener(buttonTouchListener);
 		cardSelfCheckoutButton.setOnTouchListener(buttonTouchListener);
@@ -111,7 +109,7 @@ public class CardsTabFragment extends SherlockFragment{
     }
 
     /**
-     * 初始化imageViewBg与imageViewPressedBg
+     * initialize imageViewBg and imageViewPressedBg
      * @param cardPayButton
      * @param cardReloadButton
      * @param cardSelfCheckoutButton
