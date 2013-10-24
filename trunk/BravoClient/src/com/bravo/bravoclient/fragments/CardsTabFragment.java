@@ -16,11 +16,15 @@ import android.widget.ImageView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
 
+/**
+ * The class is for cards tab
+ * @author Jia Wenlong
+ */
 public class CardsTabFragment extends SherlockFragment{
 
-	/** Store the button icons used in Card Tab */
+	/** Declare the button icons used in Card Tab */
 	private final SparseIntArray imageViewBg = new SparseIntArray();
-	/** Store the pressed button icons used in Card Tab */
+	/** Declare the pressed button icons used in Card Tab */
 	private final static SparseIntArray imageViewPressedBg = new SparseIntArray();
 	
     @Override
@@ -38,7 +42,7 @@ public class CardsTabFragment extends SherlockFragment{
         Drawable myDrawable = getResources().getDrawable(R.drawable.solid_background);
         getView().setBackground(myDrawable);
         
-        // the seven buttons in  Card Tab,six for menu,one for refresh
+        // The seven buttons in  Card Tab,six for menu,one for refresh
         final ImageView cardPayButton = (ImageView) getView().findViewById(R.id.cardPayButton);
         final ImageView cardReloadButton = (ImageView) getView().findViewById(R.id.cardReloadButton);
         final ImageView cardSelfCheckoutButton = (ImageView) getView().findViewById(R.id.cardSelfCheckoutButton);
