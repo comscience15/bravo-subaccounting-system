@@ -57,19 +57,20 @@ public class CardsTabFragment extends SherlockFragment{
 				EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
 				cardBalanceEditText.setHint("noButton Clicked!");
 				if(v.equals(cardPayButton)) {
-					cardBalanceEditText.setHint("PayButton Clicked!");
+					// TODO: when pay button be pressed
+					
 				} else if (v.equals(cardReloadButton)){
-					cardBalanceEditText.setHint("ReloadButton Clicked!");
+					// TODO: when reload button be pressed
 				} else if (v.equals(cardSelfCheckoutButton)){
-					cardBalanceEditText.setHint("SelfCheckoutButton Clicked!");
+					// TODO: when selfCheckout button be pressed
 				} else if (v.equals(cardSendGiftButton)){
-					cardBalanceEditText.setHint("SendGiftButton Clicked!");
+					// TODO: when send gift button be pressed
 				} else if (v.equals(cardTransactionHistoryButton)){
-					cardBalanceEditText.setHint("TransactionHistoryButton Clicked!");
+					// TODO: when transaction history button be pressed
 				} else if (v.equals(cardReceiveMoneyButton)){
-					cardBalanceEditText.setHint("ReceiveMoneyButton Clicked!");
+					// TODO: when receive money button be pressed
 				} else if (v.equals(cardRefreshButton)){
-					cardBalanceEditText.setHint("RefreshButton Clicked!");
+					// TODO: when refresh button be pressed
 				}
 			}
         };
