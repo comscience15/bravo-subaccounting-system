@@ -53,7 +53,7 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
 			/** if register unsuccessfully, showing the alert dialog**/
-			new BravoAlertDialog(context).alertDialog("Login Failed", "Please check your authentication or network connection");
+			new BravoAlertDialog(context).showDialog("Register Failed", "Please check your authentication or network connection", "OK");
 		}
 	}
 	

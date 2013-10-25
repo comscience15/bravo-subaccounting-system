@@ -20,17 +20,7 @@ public class BravoAlertDialog implements BravoAlertDialogInterface{
 	
 	public BravoAlertDialog(Context context) {
 		this.context = context;
-	}
-	
-	/**
-	 * The method is going to show alert dialog
-	 */
-	public void alertDialog(String title, String msg) {
 		setAlertDialogBuilder();
-		setTitle(title, alertDialogBuilder);
-		setMessage(msg, alertDialogBuilder);
-		setButton("OK", alertDialogBuilder);
-		showDialog(alertDialogBuilder);
 	}
 	
 	/**
@@ -38,6 +28,7 @@ public class BravoAlertDialog implements BravoAlertDialogInterface{
 	 */
 	@Override
 	public Builder setAlertDialogBuilder() {
+		System.out.println("SetAlertDialogBuilder is called"); // should be removed
 		alertDialogBuilder = new AlertDialog.Builder(context);
 		alertDialogBuilder.setCancelable(true);
 		return alertDialogBuilder;
@@ -63,7 +54,27 @@ public class BravoAlertDialog implements BravoAlertDialogInterface{
 	}
 
 	@Override
-	public void showDialog(Builder alertDialogBuilder) {
+	public void showDialog() {
+		System.out.println("showDialog() is called"); // should be removed
 		alertDialogBuilder.create().show();
+	}
+	
+	/**
+	 * This should be used to display the dialog instead of showDialog()
+	 * @param title
+	 * @param msg
+	 * @param buttonMsg
+	 */
+	public void showDialog(String title, String msg, String buttonMsg) {
+		setDialog(title, msg, buttonMsg);
+		showDialog();
+	}
+
+	@Override
+	public void setDialog(String title, String msg, String buttonMsg) {
+		System.out.println("setDialog is called"); // should be removed
+		setTitle(title, alertDialogBuilder);
+		setMessage(msg, alertDialogBuilder);
+		setButton(buttonMsg, alertDialogBuilder);
 	}
 }
