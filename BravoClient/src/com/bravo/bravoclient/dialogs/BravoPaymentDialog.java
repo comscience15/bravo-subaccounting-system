@@ -21,6 +21,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+/**
+ * This class is the dialog implementation for QRcode payment
+ * @author Daniel
+ *
+ */
 public class BravoPaymentDialog implements BravoAlertDialogInterface{
 	private Builder alertDialogBuilder;
 	private Context context;
