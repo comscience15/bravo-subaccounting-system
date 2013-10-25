@@ -14,6 +14,11 @@ public interface BravoAlertDialogInterface {
 	 * @return
 	 */
 	public AlertDialog.Builder setAlertDialogBuilder();
+	
+	/**
+	 * This method is used to configure the dialog
+	 */
+	public void setDialog(String title, String msg, String buttonMsg);
 	/**
 	 * Setting the title for dialog
 	 * @param title
@@ -36,5 +41,5 @@ public interface BravoAlertDialogInterface {
 	 * Showing Dialog
 	 * @param alertDialogBuilder
 	 */
-	public void showDialog(AlertDialog.Builder alertDialogBuilder);
+	public void showDialog();
 }

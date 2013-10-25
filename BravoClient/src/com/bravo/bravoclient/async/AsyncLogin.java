@@ -63,7 +63,8 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
 			/** if login unsuccessfully, showing the alert dialog**/
-			new BravoAlertDialog(context).alertDialog("Login Failed", "Please check your authentication or network connection");
+			System.out.println("Debugging for showing login dialog"); // this should be removed
+			new BravoAlertDialog(context).showDialog("Login Failed", "Please check your authentication or network connection", "OK");
 		}
 	}
 	
