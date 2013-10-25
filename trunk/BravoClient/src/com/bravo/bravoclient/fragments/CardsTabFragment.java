@@ -60,7 +60,7 @@ public class CardsTabFragment extends SherlockFragment{
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
 					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
-					paymentDialog.generateQRCode();
+					paymentDialog.generateQRCode("bravo, it is working now!!!!");
 				} else if (v.equals(cardReloadButton)){
 					// TODO: when reload button be pressed
 				} else if (v.equals(cardSelfCheckoutButton)){
