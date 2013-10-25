@@ -15,13 +15,14 @@ import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
 
 /**
  * The class is for cards tab
  * @author Jia Wenlong
+ * @author Daniel
  */
 public class CardsTabFragment extends SherlockFragment{
-
 	/** Declare the button icons used in Card Tab */
 	private final SparseIntArray imageViewBg = new SparseIntArray();
 	/** Declare the pressed button icons used in Card Tab */
@@ -58,7 +59,8 @@ public class CardsTabFragment extends SherlockFragment{
 				cardBalanceEditText.setHint("noButton Clicked!");
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
-					
+					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
+					paymentDialog.generateQRCode();
 				} else if (v.equals(cardReloadButton)){
 					// TODO: when reload button be pressed
 				} else if (v.equals(cardSelfCheckoutButton)){
@@ -146,4 +148,6 @@ public class CardsTabFragment extends SherlockFragment{
         	imageViewPressedBg.put(cardReceiveMoneyButton.getId(),R.drawable.receive_money_pressed);
         }
 	}
+	
+	
 }
