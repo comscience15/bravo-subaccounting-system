@@ -98,10 +98,7 @@ public class BravoPaymentDialog implements BravoAlertDialogInterface{
 		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
 		lp.copyFrom(dialog.getWindow().getAttributes());
 		lp.width = (int) (windowSize.x * 2/3);
-		System.out.println("Width is:" + lp.width); // this should be deleted after debugging
-				
 		lp.height = (int) (windowSize.y * 2/3);
-		System.out.println("Height is:" + lp.height); // this should be deleted after debugging
 				
 		dialog.getWindow().setAttributes(lp);
 		
@@ -130,19 +127,16 @@ public class BravoPaymentDialog implements BravoAlertDialogInterface{
 		dialog.show();
 	}
 	
-	public void generateQRCode() {
-		
-		
+	public void generateQRCode(String msg) {
 		// Get the dimension for qrcode displaying
 		int dialogHeight = getHeight();
 		int dialogWidth = getWidth();
 		int dimension = dialogHeight < dialogWidth ? dialogHeight : dialogWidth;
-		System.err.println("dimension: " + dimension);
 				
 		// This intent is used for qrcode library
 		Intent intent = new Intent();
 		intent.setAction(Intents.Encode.ACTION);
-		intent.putExtra(Intents.Encode.DATA, "TEST");
+		intent.putExtra(Intents.Encode.DATA, msg);
 		intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
 				
 		try {
