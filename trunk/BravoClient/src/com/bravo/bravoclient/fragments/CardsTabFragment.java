@@ -20,7 +20,7 @@ import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
 /**
  * The class is for cards tab
  * @author Jia Wenlong
- * @author Daniel
+ * @author Daniel danniel1205@gmail.com
  */
 public class CardsTabFragment extends SherlockFragment{
 	/** Declare the button icons used in Card Tab */
