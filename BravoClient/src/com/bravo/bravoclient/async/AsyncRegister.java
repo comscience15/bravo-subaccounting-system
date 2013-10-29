@@ -50,8 +50,9 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 		System.err.println(result);
 		/** if register successfully, forward to Main activity temporarily**/
 		if (result != null && !result.equals("404")) {
-			Intent toLoginActivity = new Intent(context, MainActivity.class);
-	    	context.startActivity(toLoginActivity);
+			Intent toCardsFragment = new Intent(context, MainActivity.class);
+			toCardsFragment.putExtra("Activity", "Register");
+	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
 			/** if register unsuccessfully, showing the alert dialog**/
