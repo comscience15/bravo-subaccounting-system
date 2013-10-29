@@ -126,7 +126,8 @@ public class MainActivity extends SherlockFragmentActivity {
         /** Get the resource of intent **/
         getIntentSource = getIntent();
         String fromActivity = getIntentSource.getStringExtra("Activity");
-        if(fromActivity != null && fromActivity.equals("Login")) {
+        // enable the page jumping from login and register directly to cards fragment
+        if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register"))) {
         	ifLogin = true;
         	cardsTab.select();
         }
