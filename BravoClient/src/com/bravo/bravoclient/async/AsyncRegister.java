@@ -17,6 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
+import com.bravo.bravoclient.util.APICallsFactory;
 import com.bravo.bravoclient.util.HttpResponseHandler;
 
 import android.app.Activity;
@@ -37,7 +38,8 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 	
 	@Override
 	protected String doInBackground(String... registerInfo) {
-		return  registerHttpRequest(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6]);
+		return APICallsFactory.register(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6]);
+		//return  registerHttpRequest(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6]);
 	}
 	
 	/**

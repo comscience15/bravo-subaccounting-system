@@ -23,6 +23,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
+import com.bravo.bravoclient.util.APICallsFactory;
 import com.bravo.bravoclient.util.BravoAlertDialogInterface;
 import com.bravo.bravoclient.util.HttpResponseHandler;
 
@@ -46,7 +47,8 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	
 	@Override
 	protected String doInBackground(String... loginInfo) {
-		return loginHttpRequest(loginInfo[0], loginInfo[1], loginInfo[2]);
+		return APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2]);
+		//return loginHttpRequest(loginInfo[0], loginInfo[1], loginInfo[2]);
 	}
 	
 	/**
