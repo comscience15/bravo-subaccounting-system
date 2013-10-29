@@ -2,7 +2,9 @@ package com.bravo.bravoclient.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -32,12 +34,14 @@ public class APICallsFactory {
 	private static HttpResponse doHttpPost(String URL, List<NameValuePair> nameValuePair) {
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(URL);
-		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
-		} catch (UnsupportedEncodingException e) {
-			System.err.println("Encoding Parameter Exception: " + e.toString());
-			e.printStackTrace();
-			return null;
+		if (nameValuePair !=  null) {
+			try {
+				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
+			} catch (UnsupportedEncodingException e) {
+				System.err.println("Encoding Parameter Exception: " + e.toString());
+				e.printStackTrace();
+				return null;
+			}
 		}
 		
 		try {
@@ -111,6 +115,36 @@ public class APICallsFactory {
 		String registerStatus = new HttpResponseHandler().parseJson(response, "status");
 		// loginStatus is null means login successfully, see API document for details
 	    return registerStatus == null ? "200" : registerStatus;
+	}
+	
+	/**
+	 * Get public key API
+	 * @param IP
+	 * @return
+	 */
+	public static Hashtable<String, BigInteger> getPublicKey(String IP) {
+		final String ip = IP; //context.getString(R.string.IP_Address);
+		final String path = "service/customer/transaction/getkey";
+		final String URL = ip + path;
+		
+		HttpResponse response = doHttpPost(URL, null);
+		HttpResponseHandler responseHandler = new HttpResponseHandler();
+		String e = responseHandler.parseJson(response, "e");
+		String n = responseHandler.parseJson(response, "n");
+		String maxdigits = responseHandler.parseJson(response, "maxdigits");
+		
+		System.out.println("e: " + e + " n: " + n + "max:" + maxdigits);
+		
+		BigInteger eInt = new BigInteger(e, 16);
+		BigInteger nInt = new BigInteger(n, 16);
+		BigInteger maxInt = new BigInteger(maxdigits, 16);
+		
+		Hashtable<String, BigInteger> publickey = new Hashtable<String, BigInteger>();
+		publickey.put("e", eInt);
+		publickey.put("n", nInt);
+		publickey.put("maxidigits", maxInt);
+		
+		return publickey;
 	}
 
 }
