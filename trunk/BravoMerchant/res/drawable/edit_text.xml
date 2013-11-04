@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- The theme configuration when text field is selected -->
+	<item android:state_focused="true">
+    	<shape>
+        	<gradient android:startColor="#FFFFFF"
+            	android:centerColor="#FFFFFF" android:endColor="#FFFFFF" />
+        	<corners android:radius="7dp" />
+        	<padding android:left="10dp" android:top="6dp" android:right="10dp"
+            	android:bottom="6dp" />
+    	</shape>
+	</item>
+	<!-- The theme configuration when text field is not selected -->
+	<item>
+    	<shape>
+        	<gradient android:startColor="#9F9E9C"
+            	android:centerColor="#9F9E9C" android:endColor="#9F9E9C"
+            	android:angle="270" android:centerX="0.5" android:centerY="0.5" />
+        	<corners android:radius="7dp" />
+        	<padding android:left="10dp" android:top="6dp" android:right="10dp"
+           		android:bottom="6dp" />
+    	</shape>
+	</item>
+</selector>

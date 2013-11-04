@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BravoMerchant</string>
+    <string name="app_short_name">Merchant</string>
+    
+    <string name="IP_Address">http://50.156.103.190:8080/subAccountAPI/</string>
+    
+    <string name="menu_settings">Settings</string>
+    
+    <string name="title_activity_splash">SplashActivity</string>
+    
+    <string name="logout">Logout</string>
+    <string name="title_activity_main">MERCHANT POS</string>
+    <string name="desc_scanner_icon">home_page_scanner_icon</string>
+    
+    
+    <string name="title_activity_login">Login</string>
+    <string name="invalid_username">Please verify the email</string>
+    <string name="invalid_password">Please verify the password</string>
+    
+    <string name="home_scanner_positive_button">Go Search</string>
+    <string name="home_scanner_negative_button">Cancel</string>
+    <string name="title_activity_scanner">ScannerActivity</string>
+    
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="reg_password_not_match">Password is not match</string>
+    <string name="reg_invalid_username">Please type in the valid email</string>
+    <string name="reg_invalid_password">Password should not be empty or less than 6 characters</string>
+    <string name="reg_invalid_street">Please verify the street</string>
+    <string name="reg_invalid_city">Please verify the city</string>
+    <string name="reg_invalid_zipCode">Please verify the zipCode</string>
+    
+    <string name="exit_app_toast">Press again to exit</string>
+    
+    <string name="state_promote">Choose State</string>
+    <!-- The array list of states or provinces -->
+    <string-array name="state_array">
+        <item>Alabama</item>
+        <item>Alaska</item>
+        <item>Arizona</item>
+        <item>Arkansas</item>
+        <item>California</item>
+        <item>Colorado</item>
+        <item>Connecticut</item>
+        <item>Delaware</item>
+        <item>Florida</item>
+        <item>Georgia</item>
+        <item>Hawaii</item>
+        <item>Idaho</item>
+        <item>Illinois</item>
+        <item>Indiana</item>
+        <item>Iowa</item>
+        <item>Kansas</item>
+        <item>Kentucky</item>
+        <item>Louisiana</item>
+        <item>Maine</item>
+        <item>Maryland</item>
+        <item>Massachusetts</item>
+        <item>Michigan</item>
+        <item>Minnesota</item>
+        <item>Mississippi</item>
+        <item>Missouri</item>
+        <item>Montana</item>
+        <item>Nebraska</item>
+        <item>Nevada</item>
+        <item>New Hampshire</item>
+        <item>New Jersey</item>
+        <item>New Mexico</item>
+        <item>New York</item>
+        <item>North Carolina</item>
+        <item>North Dakota</item>
+        <item>Ohio</item>
+        <item>Oklahoma</item>
+        <item>Oregon</item>
+        <item>Pennsylvania</item>
+        <item>Rhode Island</item>
+        <item>South Carolina</item>
+        <item>South Dakota</item>
+        <item>Tennessee</item>
+        <item>Texas</item>
+        <item>Utah</item>
+        <item>Vermont</item>
+        <item>Virginia</item>
+        <item>Washington</item>
+        <item>West Virginia</item>
+        <item>Wisconsin</item>
+        <item>Wyoming</item>
+    </string-array>
+
+
+</resources>
