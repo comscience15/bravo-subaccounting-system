@@ -2,6 +2,8 @@ package com.bravo.webapp.security.rememberme;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +28,8 @@ import com.bravo.webapp.security.rememberme.dao.CustomPersistentTokenRepository;
 
 public class CustomPersistentRememberMeServieces extends
 		PersistentTokenBasedRememberMeServices {
-	private CustomPersistentTokenRepository tokenRepository;
+    private final Logger logger = Logger.getLogger(CustomPersistentRememberMeServieces.this.getClass().getName());
+    private CustomPersistentTokenRepository tokenRepository;
 	private String username;
 	private String domain;
 	private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
@@ -49,9 +52,7 @@ public class CustomPersistentRememberMeServieces extends
 		String roleType = details.getRoleType();
 		username = roleType + ":" + username;
 
-		System.out
-				.println("Creating new persistent login for user " + username);
-		logger.debug("Creating new persistent login for user " + username);
+       	logger.log(Level.INFO , "Creating new persistent login for user " + username);
 
 		PersistentRememberMeToken persistentToken = new PersistentRememberMeToken(
 				username, generateSeriesData(), generateTokenData(), new Date());
@@ -59,7 +60,7 @@ public class CustomPersistentRememberMeServieces extends
 			tokenRepository.createNewToken(persistentToken);
 			addCookie(persistentToken, request, response);
 		} catch (DataAccessException e) {
-			logger.error("Failed to save persistent token ", e);
+			logger.log(Level.SEVERE , "Failed to save persistent token ", e);
 		}
 	}
 
@@ -116,6 +117,9 @@ public class CustomPersistentRememberMeServieces extends
 		final String presentedSeries = cookieTokens[0];
 		final String presentedToken = cookieTokens[1];
 
+        logger.info("cookieToken[0]" + presentedSeries);
+        logger.info("cookieToken[1]" + presentedToken);
+
 		PersistentRememberMeToken token = tokenRepository
 				.getTokenForSeries(presentedSeries);
 
@@ -151,13 +155,7 @@ public class CustomPersistentRememberMeServieces extends
 
 		// Token also matches, so login is valid. Update the token value,
 		// keeping the *same* series number.
-		if (logger.isDebugEnabled()) {
-			logger.debug("Refreshing persistent login token for user '"
-					+ token.getUsername() + "', series '" + token.getSeries()
-					+ "'");
-		}
-		System.out
-				.println("Refreshing persistent login token for user '"
+		logger.log(Level.INFO , "Refreshing persistent login token for user '"
 						+ token.getUsername() + "', series '"
 						+ token.getSeries() + "'");
 
@@ -173,12 +171,14 @@ public class CustomPersistentRememberMeServieces extends
 			addCookie(newToken, request, response);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
-			logger.error("Failed to update token: ", e);
+			logger.log(Level.SEVERE, "Failed to update token: ", e);
 			throw new RememberMeAuthenticationException(
 					"Autologin failed due to data access problem");
 		}
 
 		username = token.getUsername() + ":" + domain;
+
+        logger.log(Level.INFO, "load user:" + username + " by cookie");
 
 		return getUserDetailsService().loadUserByUsername(username);
 	}
