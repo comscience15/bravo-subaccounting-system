@@ -13,6 +13,8 @@ import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,16 +31,20 @@ import com.bravo.webapp.exception.UnknownResourceException;
 public class Encryption {
 	private int encryptBitLen = 512;
 	private boolean genNewKey;
+    private final Logger logger = Logger.getLogger(Encryption.this.getClass().getName());
 
 	public Encryption() {
+        logger.log(Level.INFO, "The empty Encryption C is called");
 		this.encryptBitLen = 512;
 	}
 
 	public Encryption(int encryptBit) {
-		this(encryptBit, false);
+        this(encryptBit, false);
+        logger.log(Level.INFO, "The one arg Encryption C is called");
 	}
 
 	public Encryption(int encryptBitLen, boolean genNewKey) {
+        logger.log(Level.INFO, "The two arg Encryption C is called");
 		this.encryptBitLen = encryptBitLen;
 		this.genNewKey = genNewKey;
 	}
@@ -122,12 +128,12 @@ public class Encryption {
 		try {
 
 			if (genNewKey) {
-
+                logger.log(Level.INFO, "Getting new public keys");
 				keys = loadKeyPair(path, "RSA");
 
 			} else {
 				genNewKey = true;
-
+                logger.log(Level.INFO, "Getting old public key");
 				keys = jCryptionUtil.generateKeypair(encryptBitLen);
 				saveKeyPair(path, keys);
 

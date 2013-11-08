@@ -17,14 +17,20 @@ import com.bravo.webapp.security.LoginInformation;
 import com.bravo.webapp.security.bean.LoginStatusBean;
 import com.bravo.webapp.transaction.LoginService;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @Controller
 @RequestMapping("/authentication")
 public class LoginController {
-
+    private final Logger logger = Logger.getLogger(LoginController.this.getClass().getName());
 	@Autowired
 	private LoginService loginService;
 
-	@RequestMapping(value = "/loginStatus")
+    public LoginController() {
+    }
+
+    @RequestMapping(value = "/loginStatus")
 	public @ResponseBody
 	String loginStatus() {
 		System.out.println("Login Status");
@@ -44,8 +50,9 @@ public class LoginController {
 	@RequestMapping(value = "/logout")
 	public @ResponseBody
 	LoginStatusBean logout() {
+        // did not really logged out !!!!!!!!!!!!!!!!!!!!!!!!!!
 		Authentication auth = LoginInformation.getAuthentication();
-
+        logger.log(Level.INFO, "logout user is :" + auth.getName());
 		return new LoginStatusBean(true, false, auth.getName(),
 				"Logout Successful.");
 
