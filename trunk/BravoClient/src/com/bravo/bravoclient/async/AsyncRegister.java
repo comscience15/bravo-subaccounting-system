@@ -38,7 +38,7 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 	
 	@Override
 	protected String doInBackground(String... registerInfo) {
-		return APICallsFactory.register(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6]);
+		return APICallsFactory.register(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6], context);
 		//return  registerHttpRequest(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6]);
 	}
 	
@@ -52,6 +52,7 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 		if (result != null && !result.equals("404")) {
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "Register");
+			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
@@ -95,10 +96,8 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 		/**Making HTTP Request*/
 		try {
 		    HttpResponse response = httpClient.execute(loginPost);
-		 
-		    HttpResponseHandler responseHandler = new HttpResponseHandler();
 		    
-		    String registerStatus = responseHandler.parseJson(response, "status");
+		    String registerStatus = HttpResponseHandler.parseJson(response, "status");
 		    System.out.println("Status: " + registerStatus);
 		    // loginStatus is null means login successfully, see API document for details
 		    return registerStatus == null ? "200" : registerStatus;
