@@ -10,6 +10,8 @@ import java.util.Hashtable;
 
 import javax.crypto.Cipher;
 
+import android.content.Context;
+
 /**
  * This class is used for generating encrypted info by using RSA algorithm
  * @author Daniel danniel1205@gmail.com
@@ -20,9 +22,11 @@ public class Encryption {
 	private static String data;
 	private static PublicKey publicKey;
 	private static String IP;
+	private Context context;
 	
-	public Encryption(String data) {
+	public Encryption(String data, Context context) {
 		this.data = data;
+		this.context = context;
 	}
 	
 	/**
@@ -30,7 +34,12 @@ public class Encryption {
 	 * @return
 	 */
 	public String generateEncryptedData() {
-		return encrypt(data, publicKey);
+		if (publicKey != null) {
+			return encrypt(data, publicKey);
+		} else {
+			System.out.println("public key is null");
+			return null;
+		}
 	}
 	
 	/**
@@ -41,30 +50,35 @@ public class Encryption {
 		PublicKey pub = null;
 		
 		// Call the api in order to get the exponent and modulus which are used by RSA for generating the public key
-		Hashtable<String, BigInteger> publicKeyTable = APICallsFactory.getPublicKey(IP);	
-		BigInteger exponent = publicKeyTable.get("e");
-		BigInteger modulus = publicKeyTable.get("n");
+		Hashtable<String, BigInteger> publicKeyTable = APICallsFactory.getPublicKey(IP, context);	
+		if (publicKeyTable != null) {
 		
-		RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, exponent);
+			BigInteger exponent = publicKeyTable.get("e");
+			BigInteger modulus = publicKeyTable.get("n");
 		
+			RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, exponent);
 		
-		try {
-			// Get the instance of key factory
-			factory = KeyFactory.getInstance(ALGORITHM);
-		} catch (NoSuchAlgorithmException e) {
-			System.err.println("Failed to get key factory");
-			e.printStackTrace();
+			try {
+				// Get the instance of key factory
+				factory = KeyFactory.getInstance(ALGORITHM);
+			} catch (NoSuchAlgorithmException e) {
+				System.err.println("Failed to get key factory");
+				e.printStackTrace();
+			}
+			try {
+				// Generate the public key
+				pub = factory.generatePublic(spec);
+				publicKey = pub;
+			} catch (InvalidKeySpecException e) {
+				System.err.println("Invalid public key");
+				e.printStackTrace();
+			}
+			return publicKey;
+		} else {
+			System.err.println("publicKeyTable from Encryption is null");
+			publicKey = null;
+			return null;
 		}
-		try {
-			// Generate the public key
-			pub = factory.generatePublic(spec);
-			publicKey = pub;
-		} catch (InvalidKeySpecException e) {
-			System.err.println("Invalid public key");
-			e.printStackTrace();
-		}
-		
-		return pub;
 	}
 	
 	/**
