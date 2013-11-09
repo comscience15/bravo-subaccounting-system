@@ -25,6 +25,7 @@ import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.util.APICallsFactory;
 import com.bravo.bravoclient.util.BravoAlertDialogInterface;
+import com.bravo.bravoclient.util.Encryption;
 import com.bravo.bravoclient.util.HttpResponseHandler;
 
 import android.app.Activity;
@@ -40,6 +41,7 @@ import android.os.AsyncTask;
  * @email danniel1205@gmail.com
  */
 public class AsyncLogin extends AsyncTask<String, Void, String>{
+	public static Encryption EncryptionObj;
 	private Context context;
 	public AsyncLogin(Context context) {
 		this.context = context;
@@ -47,8 +49,12 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	
 	@Override
 	protected String doInBackground(String... loginInfo) {
-		return APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2]);
-		//return loginHttpRequest(loginInfo[0], loginInfo[1], loginInfo[2]);
+		String loginStatus = APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2], context);
+		
+		EncryptionObj = new Encryption("Test", context);
+		EncryptionObj.getPublicKey(loginInfo[2]);
+		
+		return loginStatus;
 	}
 	
 	/**
@@ -56,11 +62,13 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	 */
 	@Override
 	protected void onPostExecute(String result) {
-		System.err.println("Result code is: " + result);
 		/** if login successfully, forward to Main activity temporarily**/
 		if (result != null && !result.equals("404")) {
+			
+			
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "Login");
+			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
@@ -114,9 +122,7 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		    			+"\n Version:" + c.getVersion() +"\n");
 		    }
 		    
-		    HttpResponseHandler responseHandler = new HttpResponseHandler();
-		    
-		    String loginStatus = responseHandler.parseJson(response, "status");
+		    String loginStatus = HttpResponseHandler.parseJson(response, "status");
 		    System.out.println("Status: " + loginStatus); // This should be deleted after release
 		    // loginStatus is null means login successfully, see API document for details
 		    return loginStatus == null ? "200" : loginStatus;

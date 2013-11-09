@@ -90,8 +90,8 @@ public class MainActivity extends SherlockFragmentActivity {
             	/** If Cards tab is selected*/
             	if (tab.getPosition() == 1) {
             		/** Check if user has been login already**/
-            		//if(!ifLogin) showLoginActivity();
-            		cardsTab.select();
+            		if(!ifLogin) showLoginActivity();
+            		//cardsTab.select();
             	}
                 mPager.setCurrentItem(tab.getPosition());
             }
@@ -177,7 +177,7 @@ public class MainActivity extends SherlockFragmentActivity {
      * When Card tab has been selected, this will forward to LoginActivity
      */
     public void showLoginActivity() {
-    	Intent toLoginActivity = new Intent(MainActivity.this.getApplicationContext(), LoginActivity.class);
+    	Intent toLoginActivity = new Intent(getApplicationContext(), LoginActivity.class);
     	MainActivity.this.startActivity(toLoginActivity);
     	MainActivity.this.overridePendingTransition(R.anim.login_enter, R.anim.login_out);
     }
