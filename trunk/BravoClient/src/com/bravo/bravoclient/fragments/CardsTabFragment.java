@@ -15,7 +15,9 @@ import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
+import com.bravo.bravoclient.util.Encryption;
 
 /**
  * The class is for cards tab
@@ -59,8 +61,18 @@ public class CardsTabFragment extends SherlockFragment{
 				cardBalanceEditText.setHint("noButton Clicked!");
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
+					
+					if (AsyncLogin.EncryptionObj == null) System.err.println("EncryptionObj is null from Cards Fragment"); // debug
+					else System.err.println("EncryptionObj is not null"); // debug
+					
+					String encryptedData = AsyncLogin.EncryptionObj.generateEncryptedData();
+					
+					System.err.println("Encrypted data is: " + encryptedData); // debug
+					
+					// Generate QRCode for encrypted data
 					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
-					paymentDialog.generateQRCode("bravo, it is working now!!!!");
+					paymentDialog.generateQRCode(encryptedData);
+					
 				} else if (v.equals(cardReloadButton)){
 					// TODO: when reload button be pressed
 				} else if (v.equals(cardSelfCheckoutButton)){
