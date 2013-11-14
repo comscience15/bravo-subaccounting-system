@@ -62,13 +62,8 @@ public class CardsTabFragment extends SherlockFragment{
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
 					
-					if (AsyncLogin.EncryptionObj == null) System.err.println("EncryptionObj is null from Cards Fragment"); // debug
-					else System.err.println("EncryptionObj is not null"); // debug
-					
+					// Generate the encrypted data, the public key has already gotten when login
 					String encryptedData = AsyncLogin.EncryptionObj.generateEncryptedData();
-					
-					System.err.println("Encrypted data is: " + encryptedData); // debug
-					
 					// Generate QRCode for encrypted data
 					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
 					paymentDialog.generateQRCode(encryptedData);

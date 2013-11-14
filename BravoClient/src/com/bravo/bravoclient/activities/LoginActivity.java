@@ -118,7 +118,6 @@ public class LoginActivity extends Activity {
 			public void onClick(View v) {
 				/** When login button is pressed, it will go to asynchronized task for process **/
 				new AsyncLogin(LoginActivity.this).execute(username, password, ip);
-				//loginHttpRequest(username, password);
 			}
 		});
 		
