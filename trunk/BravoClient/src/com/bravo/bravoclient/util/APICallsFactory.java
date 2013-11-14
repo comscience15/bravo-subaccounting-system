@@ -64,7 +64,9 @@ public class APICallsFactory {
 			  
 			    System.out.println("Cookie Value is: " + cookieValue);
 			  
+			    // Created the private local file which contains the cookie from server side
 			    FileOutputStream cookieFile = requestContext.openFileOutput("Cookie", Context.MODE_PRIVATE);
+			    
 			    cookieFile.write(cookieValue.getBytes());
 			    cookieFile.close();
 			
