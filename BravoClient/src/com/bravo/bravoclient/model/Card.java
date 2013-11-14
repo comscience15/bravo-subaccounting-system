@@ -2,7 +2,7 @@ package com.bravo.bravoclient.model;
 
 public class Card {
 	private String cardId;
-	private int loyaltyPoint;
+	private double loyaltyPoint;
 	private String merchantAccNo;
 	private double balance;
 	
@@ -14,7 +14,7 @@ public class Card {
 		this.cardId = cardId;
 	}
 	
-	public int getLoyaltyPoint() {
+	public double getLoyaltyPoint() {
 		return loyaltyPoint;
 	}
 	
