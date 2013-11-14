@@ -23,7 +23,7 @@ import android.content.Context;
 
 /**
  * This class will handle and manage all api calls to server
- * @author Daniel
+ * @author Daniel danniel1205@gmail.com
  *
  */
 public class APICallsFactory {
@@ -56,6 +56,7 @@ public class APICallsFactory {
 		try {
 			HttpResponse response = httpClient.execute(httpPost);
 			
+			// Going to get the cookie only when login and register
 			if (APIName.equals("login") || APIName.equals("register")) {
 			    // Get the cookies from server
 			    List<Cookie> cookies = httpClient.getCookieStore().getCookies();
@@ -67,12 +68,6 @@ public class APICallsFactory {
 			    cookieFile.write(cookieValue.getBytes());
 			    cookieFile.close();
 			
-//		      for (Cookie c : cookies) {
-//		    	  System.err.println("Cookie is:\n Comment:" + c.getComment() +"\n CommentURL:" + c.getCommentURL() 
-//		    		  	+"\n Domain:" + c.getDomain() +"\n Name:" + c.getName() +"\n Path:" + c.getPath() +"\n Value:" + c.getValue()
-//		    			+"\n Version:" + c.getVersion() +"\n");
-//		      }
-			  
 			}
 		    
 			return response;

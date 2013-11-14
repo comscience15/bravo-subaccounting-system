@@ -49,8 +49,12 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	
 	@Override
 	protected String doInBackground(String... loginInfo) {
-		String loginStatus = APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2], context);
+		// loginInfo[0] = username
+		// loginInfo[1] = password
+		// loginInfo[2] = IP
+ 		String loginStatus = APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2], context);
 		
+		// After login, we should get the public key at the same time 
 		EncryptionObj = new Encryption("Test", context);
 		EncryptionObj.getPublicKey(loginInfo[2]);
 		
