@@ -32,8 +32,21 @@ import org.apache.http.protocol.HTTP;
 import android.content.Context;
 
 public class BravoHttpsClient {
+	private static DefaultHttpClient httpsClient = null;
 	
-	private static DefaultHttpClient createHttpsClient(Context androidContext) throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
+	/**
+	 * This method is going to create a customized http client
+	 * @param androidContext We are using androidContext to get the assets folder
+	 * @return
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws CertificateException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
+	private static DefaultHttpClient createHttpsClient(Context androidContext) 
+			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
 		
 		// Set the https parameters
 		HttpParams params = new BasicHttpParams();
@@ -61,30 +74,19 @@ public class BravoHttpsClient {
 	 * @param URL
 	 * @param nameValuePair: the parameters
 	 * @return
+	 * @throws IOException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyStoreException 
+	 * @throws CertificateException 
+	 * @throws UnrecoverableKeyException 
+	 * @throws KeyManagementException 
 	 */
-	public static HttpResponse doHttpsPost(String URL, List<NameValuePair> nameValuePair, String cookie, String APIName, Context requestContext) {
-		DefaultHttpClient httpsClient = null;
-		try {
-			httpsClient = BravoHttpsClient.createHttpsClient(requestContext);
-		} catch (KeyManagementException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (UnrecoverableKeyException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (CertificateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (KeyStoreException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	public static HttpResponse doHttpsPost(String URL, List<NameValuePair> nameValuePair, String cookie, String APIName, Context androidContext) 
+			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
+		
+		if (httpsClient == null) httpsClient = BravoHttpsClient.createHttpsClient(androidContext);
+		
+		System.out.println("httpClient is: " + httpsClient); // debug
 		
 		HttpPost httpsPost = new HttpPost(URL);
 		
@@ -112,7 +114,7 @@ public class BravoHttpsClient {
 			    System.out.println("Cookie Value is: " + cookieValue);
 			  
 			    // Created the private local file which contains the cookie from server side
-			    FileOutputStream cookieFile = requestContext.openFileOutput("Cookie", Context.MODE_PRIVATE);
+			    FileOutputStream cookieFile = androidContext.openFileOutput("Cookie", Context.MODE_PRIVATE);
 			    
 			    cookieFile.write(cookieValue.getBytes());
 			    cookieFile.close();
