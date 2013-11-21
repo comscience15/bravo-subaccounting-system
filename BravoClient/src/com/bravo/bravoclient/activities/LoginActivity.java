@@ -117,7 +117,7 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				/** When login button is pressed, it will go to asynchronized task for process **/
-				new AsyncLogin(LoginActivity.this).execute(username, password, ip);
+				new AsyncLogin(LoginActivity.this).execute(username, password, "customer", "200" ,ip);
 			}
 		});
 		

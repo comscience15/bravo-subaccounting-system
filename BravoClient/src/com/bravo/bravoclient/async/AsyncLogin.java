@@ -1,38 +1,20 @@
 package com.bravo.bravoclient.async;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
-import java.net.HttpCookie;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
-import com.bravo.bravoclient.util.APICallsFactory;
-import com.bravo.bravoclient.util.BravoAlertDialogInterface;
 import com.bravo.bravoclient.util.Encryption;
-import com.bravo.bravoclient.util.HttpResponseHandler;
+import com.bravo.https.apicalls.CommonAPICalls;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 /**
@@ -51,12 +33,32 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	protected String doInBackground(String... loginInfo) {
 		// loginInfo[0] = username
 		// loginInfo[1] = password
-		// loginInfo[2] = IP
- 		String loginStatus = APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2], context);
+ 		String loginStatus = null;
+		try {
+			loginStatus = CommonAPICalls.login(loginInfo[0], loginInfo[1], loginInfo[2], loginInfo[3], loginInfo[4], context);
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnrecoverableKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2], context);
 		
 		// After login, we should get the public key at the same time 
 		EncryptionObj = new Encryption("Test", context);
-		EncryptionObj.getPublicKey(loginInfo[2]);
+		EncryptionObj.getPublicKey(loginInfo[4]);
 		
 		return loginStatus;
 	}
@@ -81,73 +83,4 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 			new BravoAlertDialog(context).showDialog("Login Failed", "Please check your authentication or network connection", "OK");
 		}
 	}
-	
-	/**
-	 * Generate the login http post request
-	 * @param username
-	 * @param password
-	 */
-	private String loginHttpRequest(String username, String password, String IP) {
-		/**Creating Http Client*/
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		
-		/**Creating login post*/
-		final String ip = IP; //context.getString(R.string.IP_Address);
-		final String path = "service/authentication/j_spring_security_check";
-		final String URL = ip + path;
-		HttpPost loginPost = new HttpPost(URL);
-		
-		/**Creating parameters*/
-		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
-		nameValuePair.add(new BasicNameValuePair("j_username", username));
-		nameValuePair.add(new BasicNameValuePair("j_password", password));
-		nameValuePair.add(new BasicNameValuePair("j_domain", "200"));
-		nameValuePair.add(new BasicNameValuePair("j_roletype", "customer"));
-		
-		/**URL encoding the post parameters*/
-		try {
-		    loginPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
-		}
-		catch (UnsupportedEncodingException e) {
-		    // writing error to Log
-			System.err.println("Encoding Parameter Exception: " + e.toString());
-		    //e.printStackTrace();
-			return null;
-		}
-		
-		/**Making HTTP Request*/
-		try {
-		    HttpResponse response = httpClient.execute(loginPost);
-		    
-		    List<Cookie> cookies = httpClient.getCookieStore().getCookies();
-		    for (Cookie c : cookies) {
-		    	System.err.println("Cookie is:\n Comment:" + c.getComment() +"\n CommentURL:" + c.getCommentURL() 
-		    			+"\n Domain:" + c.getDomain() +"\n Name:" + c.getName() +"\n Path:" + c.getPath() +"\n Value:" + c.getValue()
-		    			+"\n Version:" + c.getVersion() +"\n");
-		    }
-		    
-		    String loginStatus = HttpResponseHandler.parseJson(response, "status");
-		    System.out.println("Status: " + loginStatus); // This should be deleted after release
-		    // loginStatus is null means login successfully, see API document for details
-		    return loginStatus == null ? "200" : loginStatus;
-		 
-		} catch (ClientProtocolException e) {
-		    // writing exception to log
-			System.err.println("Client Protocol Exception: " + e.toString());
-		    //e.printStackTrace();
-			return null;
-		         
-		} catch (IOException e) {
-		    // writing exception to log
-			System.err.println("IO Exception: " + e.toString());
-		    //e.printStackTrace();
-			return null;
-		}
-	}
-
-	
-	
-	
-	
-	
 }
