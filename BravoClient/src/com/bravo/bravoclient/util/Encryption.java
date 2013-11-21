@@ -1,14 +1,21 @@
 package com.bravo.bravoclient.util;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyFactory;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Hashtable;
 
 import javax.crypto.Cipher;
+
+import com.bravo.https.apicalls.CommonAPICalls;
 
 import android.content.Context;
 
@@ -50,7 +57,28 @@ public class Encryption {
 		PublicKey pub = null;
 		
 		// Call the api in order to get the exponent and modulus which are used by RSA for generating the public key
-		Hashtable<String, BigInteger> publicKeyTable = APICallsFactory.getPublicKey(IP, context);	
+		Hashtable<String, BigInteger> publicKeyTable = null;
+		try {
+			publicKeyTable = CommonAPICalls.getPublicKey(IP, context);
+		} catch (KeyManagementException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnrecoverableKeyException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (CertificateException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (KeyStoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}	
 		if (publicKeyTable != null) {
 		
 			BigInteger exponent = publicKeyTable.get("e");
