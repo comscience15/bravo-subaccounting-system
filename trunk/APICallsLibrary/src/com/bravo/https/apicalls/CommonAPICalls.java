@@ -28,14 +28,17 @@ public class CommonAPICalls {
 	 * Login API Call
 	 * @param username
 	 * @param password
+	 * @param roleType
+	 * @param domain by defult it is "200"
 	 * @param IP
+	 * @param androidContext
 	 * @return
-	 * @throws IOException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws KeyStoreException 
-	 * @throws CertificateException 
-	 * @throws UnrecoverableKeyException 
-	 * @throws KeyManagementException 
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws CertificateException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
 	 */
 	public static String login(String username, String password, String roleType, String domain, String IP, Context androidContext) 
 			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
@@ -65,6 +68,8 @@ public class CommonAPICalls {
 	 * @param city
 	 * @param state
 	 * @param zipCode
+	 * @param roleType
+	 * @param domain
 	 * @param IP
 	 * @return
 	 * @throws IOException 
@@ -75,7 +80,7 @@ public class CommonAPICalls {
 	 * @throws KeyManagementException 
 	 */
 	public static String register(String username, String password, String street, String city, String state, String zipCode, 
-			String IP, String roleType, String domain, Context androidContext) 
+			 String roleType, String domain, String IP, Context androidContext) 
 			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
 		final String ip = IP;
 		final String path = "service/authentication/signup";
