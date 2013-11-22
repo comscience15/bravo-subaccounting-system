@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.async.AsyncLogin;
+import com.bravo.bravoclient.async.AsyncRegister;
 import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
 import com.bravo.bravoclient.util.Encryption;
 
@@ -63,7 +64,9 @@ public class CardsTabFragment extends SherlockFragment{
 					// TODO: when pay button be pressed
 					
 					// Generate the encrypted data, the public key has already gotten when login
-					String encryptedData = AsyncLogin.EncryptionObj.generateEncryptedData();
+					Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
+					String encryptedData = encryptionObj.generateEncryptedData();
+					
 					// Generate QRCode for encrypted data
 					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
 					paymentDialog.generateQRCode(encryptedData);

@@ -41,6 +41,9 @@ public class RegisterActivity extends Activity {
 	private static String city;
 	private static String state;
 	private static String zipCode;
+	private static final String roleType = "customer";
+	private static final String domain = "200";
+	private static String ip;
 	
 	private boolean isValidUsername = false;
 	private boolean isValidPassword = false;
@@ -55,6 +58,8 @@ public class RegisterActivity extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE); // Setting the window for No title
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // Stop keyboard automatically generated
 		setContentView(R.layout.activity_register);
+		
+		ip = getString(R.string.IP_Address);
 		
 		registerBtn = (Button) findViewById(R.id.register_Btn);
 		registerBtn.setEnabled(false);
@@ -73,8 +78,8 @@ public class RegisterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				System.out.println(username + "\n" + password + "\n" + confirmPassword + "\n" + street +"\n"+ state +"\n"+ zipCode +"\n");
-				new AsyncRegister(getApplicationContext()).execute(username, password, street, city, state, zipCode, getString(R.string.IP_Address));
+				System.out.println(username + "\n" + password + "\n" + confirmPassword + "\n" + street +"\n"+ state +"\n"+ zipCode +"\n"); // debug
+				new AsyncRegister(RegisterActivity.this).execute(username, password, street, city, state, zipCode, roleType, domain, ip);
 			}
 		});
 	}

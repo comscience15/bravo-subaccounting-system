@@ -1,24 +1,17 @@
 package com.bravo.bravoclient.async;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
-import com.bravo.bravoclient.util.APICallsFactory;
-import com.bravo.bravoclient.util.HttpResponseHandler;
+import com.bravo.bravoclient.util.Encryption;
+import com.bravo.https.apicalls.CommonAPICalls;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,14 +25,51 @@ import android.os.AsyncTask;
  */
 public class AsyncRegister extends AsyncTask<String, Void, String>{
 	private Context context;
+	public static Encryption EncryptionObj;
 	public AsyncRegister(Context context) {
 		this.context = context;
 	}
 	
 	@Override
 	protected String doInBackground(String... registerInfo) {
-		return APICallsFactory.register(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6], context);
-		//return  registerHttpRequest(registerInfo[0], registerInfo[1], registerInfo[2], registerInfo[3], registerInfo[4], registerInfo[5], registerInfo[6]);
+		final String username = registerInfo[0];
+		final String password = registerInfo[1];
+		final String street = registerInfo[2];
+		final String city = registerInfo[3];
+		final String state = registerInfo[4];
+		final String zipCode = registerInfo[5];
+		final String roleType = registerInfo[6];
+		final String domain = registerInfo[7];
+		final String ip = registerInfo[8];
+		
+		String registerStatus = null;
+		
+		try {
+			registerStatus = CommonAPICalls.register(username, password, street, city, state, zipCode, roleType, domain, ip, context);
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnrecoverableKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// After login, we should get the public key at the same time 
+		EncryptionObj = new Encryption("Test", context);
+		EncryptionObj.getPublicKey(ip);
+		return registerStatus;
 	}
 	
 	/**
@@ -58,61 +88,6 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 		} else {
 			/** if register unsuccessfully, showing the alert dialog**/
 			new BravoAlertDialog(context).showDialog("Register Failed", "Please check your authentication or network connection", "OK");
-		}
-	}
-	
-	private String registerHttpRequest(String username, String password, String street, String city, String state, String zipCode, String IP) {
-		/**Creating Http Client*/
-		HttpClient httpClient = new DefaultHttpClient();
-		
-		/**Creating login post*/
-		final String ip = IP; //context.getString(R.string.IP_Address);
-		final String path = "service/authentication/signup";
-		final String URL = ip + path;
-		HttpPost loginPost = new HttpPost(URL);
-		
-		/**Creating parameters*/
-		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
-		nameValuePair.add(new BasicNameValuePair("j_username", username));
-		nameValuePair.add(new BasicNameValuePair("j_password", password));
-		nameValuePair.add(new BasicNameValuePair("street", street));
-		nameValuePair.add(new BasicNameValuePair("city", city));
-		nameValuePair.add(new BasicNameValuePair("state", state));
-		nameValuePair.add(new BasicNameValuePair("zip", zipCode)); // Should change the back end to "zipCode"
-		nameValuePair.add(new BasicNameValuePair("j_domain", "200"));
-		nameValuePair.add(new BasicNameValuePair("j_roletype", "customer"));
-		
-		/**URL encoding the post parameters*/
-		try {
-		    loginPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
-		}
-		catch (UnsupportedEncodingException e) {
-		    // writing error to Log
-			System.err.println("Encoding Parameter Exception: " + e.toString());
-		    //e.printStackTrace();
-			return null;
-		}
-		
-		/**Making HTTP Request*/
-		try {
-		    HttpResponse response = httpClient.execute(loginPost);
-		    
-		    String registerStatus = HttpResponseHandler.parseJson(response, "status");
-		    System.out.println("Status: " + registerStatus);
-		    // loginStatus is null means login successfully, see API document for details
-		    return registerStatus == null ? "200" : registerStatus;
-		 
-		} catch (ClientProtocolException e) {
-		    // writing exception to log
-			System.err.println("Client Protocol Exception: " + e.toString());
-		    //e.printStackTrace();
-			return null;
-		         
-		} catch (IOException e) {
-		    // writing exception to log
-			System.err.println("IO Exception: " + e.toString());
-		    //e.printStackTrace();
-			return null;
 		}
 	}
 }

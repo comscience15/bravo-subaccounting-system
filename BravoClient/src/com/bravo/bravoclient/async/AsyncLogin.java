@@ -31,11 +31,16 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	
 	@Override
 	protected String doInBackground(String... loginInfo) {
-		// loginInfo[0] = username
-		// loginInfo[1] = password
- 		String loginStatus = null;
+
+		final String username = loginInfo[0];
+		final String password = loginInfo[1];
+		final String roletype = loginInfo[2];
+		final String domain = loginInfo[3];
+		final String ip = loginInfo[4];
+		
+		String loginStatus = null;
 		try {
-			loginStatus = CommonAPICalls.login(loginInfo[0], loginInfo[1], loginInfo[2], loginInfo[3], loginInfo[4], context);
+			loginStatus = CommonAPICalls.login(username, password, roletype, domain, ip, context);
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,7 +63,7 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		
 		// After login, we should get the public key at the same time 
 		EncryptionObj = new Encryption("Test", context);
-		EncryptionObj.getPublicKey(loginInfo[4]);
+		EncryptionObj.getPublicKey(ip);
 		
 		return loginStatus;
 	}
