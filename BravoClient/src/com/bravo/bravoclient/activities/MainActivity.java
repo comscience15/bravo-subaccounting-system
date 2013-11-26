@@ -134,15 +134,6 @@ public class MainActivity extends SherlockFragmentActivity {
         
     }
     
-    /** This method is going to create the menu inside of the title bar*/
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = this.getSupportMenuInflater();
-//        inflater.inflate(R.menu.main, menu);
-//        return true;
-//    }
-    
-    
     /**
      * Override the onBackPressed(), double click back button to exit the app
      */
