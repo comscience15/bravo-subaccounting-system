@@ -65,7 +65,7 @@ public class CardsTabFragment extends SherlockFragment{
 					
 					// Generate the encrypted data, the public key has already gotten when login
 					Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
-					String encryptedData = encryptionObj.generateEncryptedData();
+					String encryptedData = encryptionObj.generateEncryptedData("Test");
 					
 					// Generate QRCode for encrypted data
 					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());

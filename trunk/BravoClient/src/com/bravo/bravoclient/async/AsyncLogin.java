@@ -59,10 +59,10 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}//APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2], context);
+		}
 		
 		// After login, we should get the public key at the same time 
-		EncryptionObj = new Encryption("Test", context);
+		EncryptionObj = new Encryption(context);
 		EncryptionObj.getPublicKey(ip);
 		
 		return loginStatus;
