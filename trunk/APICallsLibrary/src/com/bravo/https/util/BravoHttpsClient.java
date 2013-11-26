@@ -9,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -86,8 +88,6 @@ public class BravoHttpsClient {
 		
 		if (httpsClient == null) httpsClient = BravoHttpsClient.createHttpsClient(androidContext);
 		
-		System.out.println("httpClient is: " + httpsClient); // debug
-		
 		HttpPost httpsPost = new HttpPost(URL);
 		
 		if (cookie != null)	httpsPost.setHeader("Cookie", cookie);
@@ -106,19 +106,17 @@ public class BravoHttpsClient {
 			HttpResponse response = httpsClient.execute(httpsPost);
 			
 			// Going to get the cookie only when login and register
-			if (APIName.equals("login") || APIName.equals("register")) {
 			    // Get the cookies from server
-			    List<Cookie> cookies = httpsClient.getCookieStore().getCookies();
-			    String cookieValue = cookies.get(0).getName()+ "=" + cookies.get(0).getValue();
+			List<Cookie> cookies = httpsClient.getCookieStore().getCookies();
+			String cookieValue = cookies.get(0).getName()+ "=" + cookies.get(0).getValue();
 			  
-			    System.out.println("Cookie Value is: " + cookieValue);
+			System.out.println("Cookie has been updated, Cookie Value is: " + cookieValue); // debug
 			  
-			    // Created the private local file which contains the cookie from server side
-			    FileOutputStream cookieFile = androidContext.openFileOutput("Cookie", Context.MODE_PRIVATE);
+			// Created the private local file which contains the cookie from server side
+			FileOutputStream cookieFile = androidContext.openFileOutput("Cookie", Context.MODE_PRIVATE);
 			    
-			    cookieFile.write(cookieValue.getBytes());
-			    cookieFile.close();
-			}
+			cookieFile.write(cookieValue.getBytes());
+			cookieFile.close();
 		    
 			return response;
 		} catch (ClientProtocolException e) {
