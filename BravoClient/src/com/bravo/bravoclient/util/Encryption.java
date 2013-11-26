@@ -26,13 +26,10 @@ import android.content.Context;
  */
 public class Encryption {
 	private static final String ALGORITHM = "RSA";
-	private static String data;
 	private static PublicKey publicKey;
-	private static String IP;
 	private Context context;
 	
-	public Encryption(String data, Context context) {
-		this.data = data;
+	public Encryption(Context context) {
 		this.context = context;
 	}
 	
@@ -40,7 +37,7 @@ public class Encryption {
 	 * Generate the encrypted data, one should get the public key first
 	 * @return
 	 */
-	public String generateEncryptedData() {
+	public String generateEncryptedData(String data) {
 		if (publicKey != null) {
 			return encrypt(data, publicKey);
 		} else {

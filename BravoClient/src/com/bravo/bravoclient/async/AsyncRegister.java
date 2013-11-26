@@ -67,7 +67,7 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 		}
 		
 		// After login, we should get the public key at the same time 
-		EncryptionObj = new Encryption("Test", context);
+		EncryptionObj = new Encryption(context);
 		EncryptionObj.getPublicKey(ip);
 		return registerStatus;
 	}
