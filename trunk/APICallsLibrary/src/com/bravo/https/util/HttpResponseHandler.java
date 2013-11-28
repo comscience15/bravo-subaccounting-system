@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,6 +81,25 @@ public class HttpResponseHandler {
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Parse the httpResponse to the array of JSONObject
+	 * @param httpResponse
+	 * @return
+	 * @throws JSONException
+	 */
+	public static ArrayList<JSONObject> toArrayList(HttpResponse httpResponse) throws JSONException {
+		String jsonString = toString(httpResponse);
+		JSONArray jsonArray = new JSONArray(jsonString); 
+		
+		ArrayList<JSONObject> jsonArrayList = new ArrayList<JSONObject>();
+		
+		for (int jsonArraySize=0; jsonArraySize < jsonArray.length(); jsonArraySize ++) {
+			jsonArrayList.add(jsonArray.getJSONObject(jsonArraySize));
+		}
+		
+		return jsonArrayList;
 	}
 
 }
