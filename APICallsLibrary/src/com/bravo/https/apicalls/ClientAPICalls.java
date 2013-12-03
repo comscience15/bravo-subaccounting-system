@@ -27,7 +27,8 @@ public class ClientAPICalls {
 		logger = Logger.getLogger(ClientAPICalls.class.getName());
 	}
 	/**
-	 * 
+	 * This method is to get the cardList from server
+	 * The request should bundle with latest got cookie in order to pass the authentication
 	 * @param IP
 	 * @param androidContext
 	 * @return
