@@ -13,13 +13,13 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	
 	private static final String DATABASE_NAME = "BRAVO_DB";
 	private static final int DATABASE_VERSION = 1;
-	private static final String TABLE_NAME = "CARD";
-	private static final String COLUMN_CARD_ID = "CARD_ID";
-	private static final String COLUMN_LOYALTY_POINT = "LOYALTY_POINT";
-	private static final String COLUMN_MERCHANT_ACCOUNT_NUMBER = "MERCHANT_ACC_NO";
-	private static final String COLUMN_BALANCE = "BALANCE";
+	public static final String TABLE_NAME = "CARD";
+	public static final String COLUMN_CARD_ID = "CARD_ID";
+	public static final String COLUMN_LOYALTY_POINT = "LOYALTY_POINT";
+	public static final String COLUMN_MERCHANT_ACCOUNT_NUMBER = "MERCHANT_ACC_NO";
+	public static final String COLUMN_BALANCE = "BALANCE";
 	
-	private static final String CREATE_DB = "CREATE TABLE {1} ({2} TEXT PRIMARY KEY, {3} REAL, {4} TEXT, {5} REAL NOT NULL);";
+	private static final String CREATE_DB = "CREATE TABLE {0} ({1} TEXT PRIMARY KEY, {2} REAL, {3} TEXT, {4} REAL NOT NULL);";
 	
 	public SQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
