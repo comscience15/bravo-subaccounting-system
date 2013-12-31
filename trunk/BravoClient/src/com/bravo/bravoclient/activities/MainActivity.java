@@ -90,7 +90,7 @@ public class MainActivity extends SherlockFragmentActivity {
             	/** If Cards tab is selected*/
             	if (tab.getPosition() == 1) {
             		/** Check if user has been login already**/
-            		if(!ifLogin) showLoginActivity();
+            		if(ifLogin == false) showLoginActivity();
             		//cardsTab.select();
             	}
                 mPager.setCurrentItem(tab.getPosition());
