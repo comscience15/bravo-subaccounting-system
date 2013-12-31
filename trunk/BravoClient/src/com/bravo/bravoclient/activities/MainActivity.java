@@ -15,6 +15,7 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.adapters.PagerAdapter;
+import com.bravo.bravoclient.async.AsyncGetCardsList;
  
 /**
  * This is the first activity after Splash screen
@@ -130,6 +131,7 @@ public class MainActivity extends SherlockFragmentActivity {
         if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register"))) {
         	ifLogin = true;
         	cardsTab.select();
+        	new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address));
         }
         
     }
