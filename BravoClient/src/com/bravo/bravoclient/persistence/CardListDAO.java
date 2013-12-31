@@ -1,8 +1,12 @@
 package com.bravo.bravoclient.persistence;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.bravo.bravoclient.model.Card;
 
@@ -70,10 +74,18 @@ public class CardListDAO {
 	 * Insert card list into the local database
 	 * @param cardList
 	 */
-	public void insertCards(ArrayList<Card> cardList) {
-		for (Card card : cardList) {
-			insertCard(card);
-		} 
+	public void insertCards(ArrayList<JSONObject> cardList) {
+		Iterator<JSONObject> cardListIterator = cardList.iterator();
+		try {
+			while (cardListIterator.hasNext()) {
+				Card card = JSONToCard(cardListIterator.next());
+				insertCard(card);
+			}
+		} catch (JSONException e) {
+			logger.log(Level.SEVERE, "Failed to parse JSONObject to card");
+		} finally {
+			
+		}
 	}
 	
 	/**
@@ -98,7 +110,15 @@ public class CardListDAO {
 	 * Delete all card
 	 */
 	public void deleteAllCards() {
-		
+		localDB.beginTransaction();
+		try {
+			int numberAffected = localDB.delete(SQLiteHelper.TABLE_NAME, null , null);
+			logger.log(Level.INFO, "Cards have been deleted from db, " + numberAffected + " cards have been deleted" );
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Failed to delete all cards from db");
+		} finally {
+			localDB.endTransaction();
+		}
 	}
 	
 	/**
@@ -107,7 +127,19 @@ public class CardListDAO {
 	 * @return
 	 */
 	public Card getCard(String cardID) {
-		return null;
+		Card card = null;
+		localDB.beginTransaction();
+		try {
+			Cursor cursor = localDB.query(SQLiteHelper.TABLE_NAME, allColumns, SQLiteHelper.COLUMN_CARD_ID + "=?", new String[] { cardID }, null, null, null);
+			localDB.setTransactionSuccessful();
+			cursor.moveToFirst();
+			card = cursorToCard(cursor);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Failed to get particular card in db");
+		} finally {
+			localDB.endTransaction();
+		}
+		return card;
 	}
 	
 	/**
@@ -124,7 +156,7 @@ public class CardListDAO {
 			logger.log(Level.INFO, "Get card list with: " + cursor.getCount() + "cards");
 			
 			cursor.moveToFirst();
-			while (!cursor.isAfterLast()) {
+			while (cursor.isAfterLast() == false) {
 				Card card = cursorToCard(cursor);
 				cardList.add(card);
 				cursor.moveToNext();
@@ -144,6 +176,15 @@ public class CardListDAO {
 		card.setLoyaltyPoint(cursor.getInt(1));
 		card.setMerchantAccNo(cursor.getString(2));
 		card.setBalance(cursor.getDouble(3));
+		return card;
+	}
+	
+	private Card JSONToCard(JSONObject JSONCard) throws JSONException {
+		Card card = new Card();
+		card.setCardId(JSONCard.getString("cardID"));
+		card.setLoyaltyPoint(JSONCard.getInt("loyaltyPoint"));
+		card.setMerchantAccNo(JSONCard.getString("merchantAccNo"));
+		card.setBalance(JSONCard.getDouble("balance"));
 		return card;
 	}
 	
