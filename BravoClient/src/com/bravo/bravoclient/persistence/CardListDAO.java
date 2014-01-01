@@ -131,6 +131,33 @@ public class CardListDAO {
 		localDB.beginTransaction();
 		try {
 			Cursor cursor = localDB.query(SQLiteHelper.TABLE_NAME, allColumns, SQLiteHelper.COLUMN_CARD_ID + "=?", new String[] { cardID }, null, null, null);
+			
+			logger.log(Level.INFO, "Get the card with card ID" + cardID);
+			
+			localDB.setTransactionSuccessful();
+			cursor.moveToFirst();
+			card = cursorToCard(cursor);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Failed to get particular card in db");
+		} finally {
+			localDB.endTransaction();
+		}
+		return card;
+	}
+	
+	/**
+	 * Get the particular card based on the RowID
+	 * @param ColumnId
+	 * @return
+	 */
+	public Card getCard(int RowID) {
+		Card card = null;
+		localDB.beginTransaction();
+		try {
+			Cursor cursor = localDB.query(SQLiteHelper.TABLE_NAME, allColumns, SQLiteHelper.COLUMN_ID + "=?", new String[] { String.valueOf(RowID) }, null, null, null);
+			
+			logger.log(Level.INFO, "Get the " + RowID + " card");
+			
 			localDB.setTransactionSuccessful();
 			cursor.moveToFirst();
 			card = cursorToCard(cursor);
