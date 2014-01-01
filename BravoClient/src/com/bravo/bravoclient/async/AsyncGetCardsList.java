@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.ClientAPICalls;
 
 import android.content.Context;
@@ -27,6 +28,10 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 		final String ip = params[0];
 		try {
 			ArrayList<JSONObject> cardList = ClientAPICalls.getCardListByCustID(ip, context);
+			CardListDAO cardListDAO = new CardListDAO(context);
+			cardListDAO.openDB();
+			cardListDAO.insertCards(cardList);
+			cardListDAO.closeDB();
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
