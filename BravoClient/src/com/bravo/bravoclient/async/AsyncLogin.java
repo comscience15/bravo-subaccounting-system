@@ -75,16 +75,12 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	protected void onPostExecute(String result) {
 		/** if login successfully, forward to Main activity temporarily**/
 		if (result != null && !result.equals("404")) {
-			
-			
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "Login");
 			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
-			/** if login unsuccessfully, showing the alert dialog**/
-			System.out.println("Debugging for showing login dialog"); // this should be removed
 			new BravoAlertDialog(context).showDialog("Login Failed", "Please check your authentication or network connection", "OK");
 		}
 	}
