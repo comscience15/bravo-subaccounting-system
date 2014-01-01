@@ -131,6 +131,7 @@ public class MainActivity extends SherlockFragmentActivity {
         if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register"))) {
         	ifLogin = true;
         	cardsTab.select();
+        	// Get card list in background once login successfully
         	new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address));
         }
         
