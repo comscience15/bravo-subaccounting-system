@@ -178,14 +178,15 @@ public class LoginActivity extends Activity {
 	 */
 	private boolean usernameValidation(String username) {
 		/** The username right now is not email address **/
-		if (!username.matches("[a-z0-9A-Z.]+@[a-z0-9A-Z.]+[a-z0-9A-Z]+") ) {
-			return false;
-		} else {
-			return true;
-		}
+//		if (!username.matches("[a-z0-9A-Z.]+@[a-z0-9A-Z.]+[a-z0-9A-Z]+") ) {
+//			return false;
+//		} else {
+//			return true;
+//		}
 //		if (!username.matches("[a-z0-9A-Z.]+")) {
 //			return false;
 //		} else return true;
+		return true;
 	}
 	
 	/**
