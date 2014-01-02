@@ -1,5 +1,8 @@
 package com.bravo.bravoclient.fragments;
  
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,9 +18,13 @@ import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.activities.MainActivity;
+import com.bravo.bravoclient.async.AsyncGetCardsList;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
 import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
+import com.bravo.bravoclient.model.Card;
+import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.bravoclient.util.Encryption;
 
 /**
@@ -30,6 +37,7 @@ public class CardsTabFragment extends SherlockFragment{
 	private final SparseIntArray imageViewBg = new SparseIntArray();
 	/** Declare the pressed button icons used in Card Tab */
 	private final static SparseIntArray imageViewPressedBg = new SparseIntArray();
+	private Logger logger = Logger.getLogger(CardsTabFragment.class.getName());
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -63,9 +71,13 @@ public class CardsTabFragment extends SherlockFragment{
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
 					
+					// TODO: This should be changed once the listView has been implemented
+					Card defaultCard = getDefaultCard();
+					logger.log(Level.INFO, "Default cardID is: " + defaultCard.getCardId());
+					
 					// Generate the encrypted data, the public key has already gotten when login
 					Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
-					String encryptedData = encryptionObj.generateEncryptedData("Test");
+					String encryptedData = encryptionObj.generateEncryptedData(defaultCard.getCardId());
 					
 					// Generate QRCode for encrypted data
 					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
@@ -83,6 +95,7 @@ public class CardsTabFragment extends SherlockFragment{
 					// TODO: when receive money button be pressed
 				} else if (v.equals(cardRefreshButton)){
 					// TODO: when refresh button be pressed
+		        	new AsyncGetCardsList(getActivity()).execute(getString(R.string.IP_Address));
 				}
 			}
         };
@@ -159,5 +172,12 @@ public class CardsTabFragment extends SherlockFragment{
         }
 	}
 	
+	private Card getDefaultCard() {
+		CardListDAO cardListDAO = new CardListDAO(getActivity());
+		cardListDAO.openDB();
+		Card card = cardListDAO.getCard(0);
+		cardListDAO.closeDB();	
+		return card;
+	}
 	
 }
