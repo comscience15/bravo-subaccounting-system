@@ -20,7 +20,7 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	public static final String COLUMN_MERCHANT_ACCOUNT_NUMBER = "MERCHANT_ACC_NO";
 	public static final String COLUMN_BALANCE = "BALANCE";
 	
-	private static final String CREATE_DB = "CREATE TABLE {0} ({1} INTEGER PRIMARY KEY 	AUTOINCREMENT, {2} TEXT NOT NULL, " +
+	private static final String CREATE_DB = "CREATE TABLE {0} ({1} INTEGER NOT NULL, {2} TEXT PRIMARY KEY, " +
 			"{3} REAL NOT NULL, {4} TEXT NOT NULL, {5} REAL NOT NULL, UNIQUE ({1}, {2}));";
 	
 	public SQLiteHelper(Context context) {
@@ -40,5 +40,9 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		onCreate(db);
 	}
-
+	
+	@Override
+	public void onOpen(SQLiteDatabase db) {
+		
+	}
 }
