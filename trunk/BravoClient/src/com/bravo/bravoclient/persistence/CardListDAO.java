@@ -1,5 +1,6 @@
 package com.bravo.bravoclient.persistence;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 public class CardListDAO {
 	private Logger logger = Logger.getLogger(CardListDAO.class.getName());
@@ -30,6 +32,7 @@ public class CardListDAO {
 	 * Open a the database for reading and writing
 	 */
 	public void openDB() {
+		logger.log(Level.INFO, "Open DB");
 		localDB = localDBHelper.getWritableDatabase();
 	}
 	
@@ -37,20 +40,23 @@ public class CardListDAO {
 	 * Close the opened database
 	 */
 	public void closeDB() {
+		logger.log(Level.INFO, "Close DB");
 		localDBHelper.close();
 	}
 
 	/**
-	 * Insert single card into local databse
+	 * Insert single card into local database
 	 * @param card
 	 */
-	public void insertCard(Card card) {
+	public void insertCard(Card card, int insertRowID) {
 		String cardID = card.getCardId();
 		double loyaltyPoint = card.getLoyaltyPoint();
 		String merchantAccNo = card.getMerchantAccNo();
 		double balance = card.getBalance();
+		int rowID = insertRowID;
 		
 		ContentValues values = new ContentValues();
+		values.put(SQLiteHelper.COLUMN_ID, rowID);
 		values.put(SQLiteHelper.COLUMN_CARD_ID, cardID);
 		values.put(SQLiteHelper.COLUMN_LOYALTY_POINT, loyaltyPoint);
 		values.put(SQLiteHelper.COLUMN_MERCHANT_ACCOUNT_NUMBER, merchantAccNo);
@@ -59,15 +65,13 @@ public class CardListDAO {
 		localDB.beginTransaction();
 		try {
 			long insertId = localDB.insert(SQLiteHelper.TABLE_NAME, null, values);
-			logger.log(Level.INFO, "Card has been insterted into the db with the insertID: " + insertId);
+			logger.log(Level.INFO, "Card has been insterted into the db with the insertID: " + insertId + " , the rowID is: " + rowID);
 			localDB.setTransactionSuccessful();
 		} catch (Exception e){
 			logger.log(Level.SEVERE, "Falied to insert card into db");
 		} finally {
 			localDB.endTransaction();
 		}
-		
-		
 	}
 	
 	/**
@@ -75,11 +79,15 @@ public class CardListDAO {
 	 * @param cardList
 	 */
 	public void insertCards(ArrayList<JSONObject> cardList) {
+		// Delete all current cards before inserting cardList
+		deleteAllCards();
+		
 		Iterator<JSONObject> cardListIterator = cardList.iterator();
+		int nextRowID = getNumberOfRows();
 		try {
 			while (cardListIterator.hasNext()) {
 				Card card = JSONToCard(cardListIterator.next());
-				insertCard(card);
+				insertCard(card, nextRowID++);
 			}
 		} catch (JSONException e) {
 			logger.log(Level.SEVERE, "Failed to parse JSONObject to card");
@@ -113,6 +121,7 @@ public class CardListDAO {
 		localDB.beginTransaction();
 		try {
 			int numberAffected = localDB.delete(SQLiteHelper.TABLE_NAME, null , null);
+			localDB.setTransactionSuccessful();
 			logger.log(Level.INFO, "Cards have been deleted from db, " + numberAffected + " cards have been deleted" );
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Failed to delete all cards from db");
@@ -155,12 +164,12 @@ public class CardListDAO {
 		localDB.beginTransaction();
 		try {
 			Cursor cursor = localDB.query(SQLiteHelper.TABLE_NAME, allColumns, SQLiteHelper.COLUMN_ID + "=?", new String[] { String.valueOf(RowID) }, null, null, null);
-			
-			logger.log(Level.INFO, "Get the " + RowID + " card");
-			
 			localDB.setTransactionSuccessful();
 			cursor.moveToFirst();
 			card = cursorToCard(cursor);
+			
+			logger.log(Level.INFO, MessageFormat.format("Get the {0} card with cardID {1}", new Object[] {RowID, card.getCardId()}));
+
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Failed to get particular card in db");
 		} finally {
@@ -180,7 +189,7 @@ public class CardListDAO {
 		try {
 			Cursor cursor = localDB.query(SQLiteHelper.TABLE_NAME, allColumns, null, null, null, null, null);
 			localDB.setTransactionSuccessful();
-			logger.log(Level.INFO, "Get card list with: " + cursor.getCount() + "cards");
+			logger.log(Level.INFO, "Get card list with: " + cursor.getCount() + " cards");
 			
 			cursor.moveToFirst();
 			while (cursor.isAfterLast() == false) {
@@ -213,6 +222,20 @@ public class CardListDAO {
 		card.setMerchantAccNo(JSONCard.getString("merchantAccNo"));
 		card.setBalance(JSONCard.getDouble("balance"));
 		return card;
+	}
+	
+	private int getNumberOfRows() {
+		localDB.beginTransaction();
+		try {
+		Cursor cursor = localDB.query(SQLiteHelper.TABLE_NAME, allColumns, null, null, null, null, null);
+		localDB.setTransactionSuccessful();
+		return cursor.getCount();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Failed to get the current row ID");
+			throw new SQLiteException();
+		} finally {
+			localDB.endTransaction();
+		}
 	}
 	
 }
