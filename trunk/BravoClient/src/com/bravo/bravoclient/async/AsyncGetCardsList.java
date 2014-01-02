@@ -7,6 +7,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +21,7 @@ import android.os.AsyncTask;
 
 public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 	private Context context;
+	private Logger logger = Logger.getLogger(AsyncGetCardsList.class.getName());
 	public AsyncGetCardsList(Context context) {
 		this.context = context;
 	}
