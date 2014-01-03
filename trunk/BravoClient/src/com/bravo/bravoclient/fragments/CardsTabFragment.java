@@ -4,12 +4,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -53,6 +56,15 @@ public class CardsTabFragment extends SherlockFragment{
         // Setting the background when view is starting
         Drawable myDrawable = getResources().getDrawable(R.drawable.solid_background);
         getView().setBackground(myDrawable);
+        
+        // Get the device screen dimension and calculate the perfect image size
+        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+		Point windowSize = new Point();
+		wm.getDefaultDisplay().getSize(windowSize);
+		
+    	ImageView cardView = (ImageView) getView().findViewById(R.id.card);
+    	cardView.getLayoutParams().height = (int) (windowSize.y * 1.2/4);
+    	cardView.getLayoutParams().width = (int) (windowSize.x * 3/4);
         
         // The seven buttons in  Card Tab,six for menu,one for refresh
         final ImageView cardPayButton = (ImageView) getView().findViewById(R.id.cardPayButton);
