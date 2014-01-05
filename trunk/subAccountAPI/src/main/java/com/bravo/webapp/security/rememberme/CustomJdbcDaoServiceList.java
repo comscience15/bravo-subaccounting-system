@@ -3,6 +3,8 @@ package com.bravo.webapp.security.rememberme;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -19,6 +21,7 @@ public class CustomJdbcDaoServiceList implements UserDetailsService {
 	private Map<String, UserDetailsService> userDetailServiceMap;
 	private Map<String, Boolean> customerMap;
 	private CustomerDAO customerDAO;
+    private Logger logger = Logger.getLogger(CustomJdbcDaoServiceList.class.getName());
 
 	public CustomJdbcDaoServiceList(ProviderManager providerManager,
 			JdbcCustomerDAO customerDAO) {
@@ -36,6 +39,7 @@ public class CustomJdbcDaoServiceList implements UserDetailsService {
 						customProvider.getUserDetailsService());
 				customerMap.put(customProvider.getRoleType(),
 						customProvider.isCustomerFlag());
+                logger.log(Level.INFO, "userDetailServiceMap put role type is: " + customProvider.getRoleType());
 			}
 		}
 

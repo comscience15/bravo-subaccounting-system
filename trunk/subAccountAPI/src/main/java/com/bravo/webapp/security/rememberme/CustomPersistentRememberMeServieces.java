@@ -117,11 +117,11 @@ public class CustomPersistentRememberMeServieces extends
 		final String presentedSeries = cookieTokens[0];
 		final String presentedToken = cookieTokens[1];
 
-        logger.info("cookieToken[0]" + presentedSeries);
-        logger.info("cookieToken[1]" + presentedToken);
-
 		PersistentRememberMeToken token = tokenRepository
 				.getTokenForSeries(presentedSeries);
+
+        logger.log(Level.INFO, "cookieToken[0]" + presentedSeries);
+        logger.log(Level.INFO, "cookieToken[1]" + presentedToken  + "    Get token from repository: " +  token.getTokenValue());
 
 		if (token == null) {
 			// No series match, so we can't authenticate using this cookie
@@ -178,7 +178,7 @@ public class CustomPersistentRememberMeServieces extends
 
 		username = token.getUsername() + ":" + domain;
 
-        logger.log(Level.INFO, "load user:" + username + " by cookie");
+        logger.log(Level.INFO, "Load user:" + username + " by cookie");
 
 		return getUserDetailsService().loadUserByUsername(username);
 	}
