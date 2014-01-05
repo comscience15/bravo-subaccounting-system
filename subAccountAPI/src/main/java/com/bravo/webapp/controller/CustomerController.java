@@ -3,6 +3,8 @@ package com.bravo.webapp.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ import com.bravo.webapp.transaction.CustomerService;
 @Controller
 @RequestMapping("/customer/account")
 public class CustomerController {
+
+    private Logger logger = Logger.getLogger(CustomerController.class.getName());
 
 	@Autowired
 	private CustomerService customerService;
@@ -101,6 +105,7 @@ public class CustomerController {
 	@RequestMapping(method = RequestMethod.POST, value = "/getCardListByCustID", produces = "application/json")
 	public @ResponseBody
 	List<Card> getCardListByCustID() {
+        logger.log(Level.INFO, "Get card list by customer ID");
 
 		List<Card> cardList = customerService.getCardListByCustID();
 		if (cardList == null || cardList.isEmpty()) {
