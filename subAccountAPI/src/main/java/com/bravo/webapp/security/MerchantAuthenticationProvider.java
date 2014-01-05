@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
@@ -41,19 +42,19 @@ public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
-        logger.info("The roletype from input is: " + ((CustomWebAuthenticationDetails) authentication
+        logger.log(Level.INFO, "The roletype from input is: " + ((CustomWebAuthenticationDetails) authentication
                 .getDetails()).getRoleType());
 		if (((CustomWebAuthenticationDetails) authentication.getDetails())
 				.getRoleType().equalsIgnoreCase(roleType) == false) {
 			// Role Type does not support
-            logger.severe("Role type does not support: supported: "
+            logger.log(Level.SEVERE, "Role type does not support: supported: "
                     + roleType
                     + " input: "
                     + ((CustomWebAuthenticationDetails) authentication
                     .getDetails()).getRoleType());
 			return null;
 		}
-		System.out.println(authentication.toString());
+        logger.log(Level.INFO, authentication.toString());
 
 		Assert.isInstanceOf(
 				UsernamePasswordAuthenticationToken.class,
@@ -77,7 +78,7 @@ public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 				user = retrieveUser(username,
 						(UsernamePasswordAuthenticationToken) authentication);
 			} catch (UsernameNotFoundException notFound) {
-                logger.severe("User '" + username + "' not found");
+                logger.log(Level.SEVERE, "User '" + username + "' not found");
 
 				if (hideUserNotFoundExceptions) {
 					throw new BadCredentialsException(
@@ -126,7 +127,7 @@ public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 
 		Authentication auth = createSuccessAuthentication(principalToReturn,
 				authentication, user);
-		System.out.println(auth.toString());
+        logger.log(Level.INFO, auth.toString());
 
 		return auth;
 	}
