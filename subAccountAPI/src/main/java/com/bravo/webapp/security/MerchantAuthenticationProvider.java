@@ -14,11 +14,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
+import java.util.logging.Logger;
+
 public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 	private String roleType;
 	private boolean customerFlag;
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
     private CustomerDAO customerDAO;
+    private Logger logger = Logger.getLogger(MerchantAuthenticationProvider.class.getName());
 
 	public MerchantAuthenticationProvider(String roleType) {
 		this(roleType, null);
@@ -26,7 +29,6 @@ public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 	}
 
 	public MerchantAuthenticationProvider(String roleType, CustomerDAO customerDAO) {
-        System.out.println("The role type from constructor is " + roleType);
 		this.roleType = roleType;
 		this.customerFlag = true;
 		this.customerDAO = customerDAO;
@@ -39,16 +41,16 @@ public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
-		System.out.println("The roletype from input is: " + ((CustomWebAuthenticationDetails) authentication
-				.getDetails()).getRoleType());
-		if (!((CustomWebAuthenticationDetails) authentication.getDetails())
-				.getRoleType().equalsIgnoreCase(roleType)) {
+        logger.info("The roletype from input is: " + ((CustomWebAuthenticationDetails) authentication
+                .getDetails()).getRoleType());
+		if (((CustomWebAuthenticationDetails) authentication.getDetails())
+				.getRoleType().equalsIgnoreCase(roleType) == false) {
 			// Role Type does not support
-			System.err.println("Role type does not support: supported: "
-					+ roleType
-					+ " input: "
-					+ ((CustomWebAuthenticationDetails) authentication
-							.getDetails()).getRoleType());
+            logger.severe("Role type does not support: supported: "
+                    + roleType
+                    + " input: "
+                    + ((CustomWebAuthenticationDetails) authentication
+                    .getDetails()).getRoleType());
 			return null;
 		}
 		System.out.println(authentication.toString());
@@ -64,7 +66,6 @@ public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 		String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED"
 				: (authentication.getName() + ((CustomWebAuthenticationDetails) authentication
 						.getDetails()).getReqParams());
-		System.out.println("username: " + username);
 
 		boolean cacheWasUsed = true;
 		UserDetails user = this.getUserCache().getUserFromCache(username);
@@ -76,8 +77,7 @@ public class MerchantAuthenticationProvider extends DaoAuthenticationProvider {
 				user = retrieveUser(username,
 						(UsernamePasswordAuthenticationToken) authentication);
 			} catch (UsernameNotFoundException notFound) {
-				logger.debug("User '" + username + "' not found");
-				System.out.println("User '" + username + "' not found");
+                logger.severe("User '" + username + "' not found");
 
 				if (hideUserNotFoundExceptions) {
 					throw new BadCredentialsException(
