@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,6 +43,8 @@ public class CustomerTransactionController {
 
 	@Autowired
 	private Encryption encryption;
+
+    private Logger logger = Logger.getLogger(CustomerTransactionController.class.getName());
 
 	// Load money to the customer card
 	@RequestMapping(method = RequestMethod.POST, value = "/loadMoney", produces = "application/json")
@@ -229,13 +233,15 @@ public class CustomerTransactionController {
 	@RequestMapping(method = RequestMethod.POST, value = "/getKey")
 	public @ResponseBody
 	String getKey(HttpServletRequest request) {
-		System.out.println("Get Key");
+
+        logger.log(Level.INFO, "Get Key is called");
 
 		String path = request.getSession().getServletContext()
 				.getRealPath("/WEB-INF");
 
 		String result = encryption.keyGeneration(path);
-		System.out.println(result);
+
+        logger.log(Level.INFO, "Key is: " + result);
 
 		return result;
 	}
