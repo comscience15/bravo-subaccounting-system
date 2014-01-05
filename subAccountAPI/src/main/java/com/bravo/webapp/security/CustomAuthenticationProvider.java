@@ -32,7 +32,6 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider{
 	}
 
 	public CustomAuthenticationProvider(String roleType, CustomerDAO customerDAO) {
-        logger.log(Level.INFO, MessageFormat.format("The role type from constructor is: {0}", roleType));
 		this.roleType = roleType;
 		this.customerFlag = true;
 		this.customerDAO = customerDAO;
