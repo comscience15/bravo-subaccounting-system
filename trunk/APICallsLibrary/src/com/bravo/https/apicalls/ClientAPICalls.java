@@ -66,7 +66,7 @@ public class ClientAPICalls {
 		
 		String cookie = new String(cookieByte);
 		
-		System.out.println("getKey: Cookie is :" + cookie); // Debug
+		logger.log(Level.INFO, "getKey: Cookie is :" + cookie);
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "getKey", androidContext);
 		
@@ -86,7 +86,7 @@ public class ClientAPICalls {
 			String n = HttpResponseHandler.parseJson(responseString, "n");
 			String maxdigits = HttpResponseHandler.parseJson(responseString, "maxdigits");
 		
-			System.out.println("e: " + e + " n: " + n + " max:" + maxdigits);
+			logger.log(Level.INFO, "e: " + e + " n: " + n + " max:" + maxdigits);
 		
 			BigInteger eInt = new BigInteger(e, 16);
 			BigInteger nInt = new BigInteger(n, 16);
