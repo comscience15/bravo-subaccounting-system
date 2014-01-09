@@ -12,6 +12,8 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 
@@ -28,7 +30,7 @@ public class Encryption {
 	private static final String ALGORITHM = "RSA";
 	private static PublicKey publicKey;
 	private Context context;
-	
+	private Logger logger = Logger.getLogger(Encryption.class.getName());
 	public Encryption(Context context) {
 		this.context = context;
 	}
@@ -41,7 +43,7 @@ public class Encryption {
 		if (publicKey != null) {
 			return encrypt(data, publicKey);
 		} else {
-			System.out.println("public key is null");
+			logger.log(Level.WARNING, "public key is null");
 			return null;
 		}
 	}
@@ -87,7 +89,7 @@ public class Encryption {
 				// Get the instance of key factory
 				factory = KeyFactory.getInstance(ALGORITHM);
 			} catch (NoSuchAlgorithmException e) {
-				System.err.println("Failed to get key factory");
+				logger.log(Level.WARNING, "Failed to get key factory");
 				e.printStackTrace();
 			}
 			try {
@@ -95,12 +97,12 @@ public class Encryption {
 				pub = factory.generatePublic(spec);
 				publicKey = pub;
 			} catch (InvalidKeySpecException e) {
-				System.err.println("Invalid public key");
+			    logger.log(Level.WARNING, "Invalid public key");
 				e.printStackTrace();
 			}
 			return publicKey;
 		} else {
-			System.err.println("publicKeyTable from Encryption is null");
+		    logger.log(Level.WARNING, "publicKeyTable from Encryption is null");
 			publicKey = null;
 			return null;
 		}
