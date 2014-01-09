@@ -15,7 +15,7 @@ import java.util.Hashtable;
 
 import javax.crypto.Cipher;
 
-import com.bravo.https.apicalls.CommonAPICalls;
+import com.bravo.https.apicalls.ClientAPICalls;
 
 import android.content.Context;
 
@@ -56,7 +56,7 @@ public class Encryption {
 		// Call the api in order to get the exponent and modulus which are used by RSA for generating the public key
 		Hashtable<String, BigInteger> publicKeyTable = null;
 		try {
-			publicKeyTable = CommonAPICalls.getPublicKey(IP, context);
+			publicKeyTable = ClientAPICalls.getPublicKey(IP, context);
 		} catch (KeyManagementException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
