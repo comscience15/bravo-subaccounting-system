@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.bravo.webapp.security.MerchantAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,24 +24,39 @@ public class CustomJdbcDaoServiceList implements UserDetailsService {
 	private CustomerDAO customerDAO;
     private Logger logger = Logger.getLogger(CustomJdbcDaoServiceList.class.getName());
 
-	public CustomJdbcDaoServiceList(ProviderManager providerManager,
-			JdbcCustomerDAO customerDAO) {
+	public CustomJdbcDaoServiceList(ProviderManager providerManager, JdbcCustomerDAO customerDAO) {
 		userDetailServiceMap = new HashMap<String, UserDetailsService>();
 		customerMap = new HashMap<String, Boolean>();
-		Iterator<AuthenticationProvider> iterator = providerManager
-				.getProviders().iterator();
-		AuthenticationProvider provider;
-		CustomAuthenticationProvider customProvider;
-		while (iterator.hasNext()) {
-			provider = iterator.next();
-			if (provider instanceof CustomAuthenticationProvider) {
-				customProvider = (CustomAuthenticationProvider) provider;
-				userDetailServiceMap.put(customProvider.getRoleType(),
-						customProvider.getUserDetailsService());
-				customerMap.put(customProvider.getRoleType(),
-						customProvider.isCustomerFlag());
-                logger.log(Level.INFO, "userDetailServiceMap put role type is: " + customProvider.getRoleType());
+
+        // Get the providers
+        Iterator<AuthenticationProvider> iterator = providerManager.getProviders().iterator();
+
+        CustomAuthenticationProvider customAuthenticationProviderProvider;
+        MerchantAuthenticationProvider merchantAuthenticationProvider;
+
+        while (iterator.hasNext()) {
+            AuthenticationProvider provider = iterator.next();
+
+            logger.log(Level.INFO, "Current authentication provider is: " + provider.toString());
+
+            // If it is CustomerAuthenticationProvider, put role into userDetailServiceMap
+            if (provider instanceof CustomAuthenticationProvider) {
+                customAuthenticationProviderProvider = (CustomAuthenticationProvider) provider;
+                // Update userDetailServiceMap
+				userDetailServiceMap.put(customAuthenticationProviderProvider.getRoleType(), customAuthenticationProviderProvider.getUserDetailsService());
+                logger.log(Level.INFO, "Put " + customAuthenticationProviderProvider.getRoleType() + " into userDetailServiceMap.");
+
+                // If it is customer, update the customerMap
+                customerMap.put(customAuthenticationProviderProvider.getRoleType(), customAuthenticationProviderProvider.isCustomerFlag());
 			}
+
+            // If it is MerchantAuthenticationProvider, put role into userDetailServiceMap
+            if (provider instanceof MerchantAuthenticationProvider) {
+                merchantAuthenticationProvider = (MerchantAuthenticationProvider) provider;
+                userDetailServiceMap.put(merchantAuthenticationProvider.getRoleType(), merchantAuthenticationProvider.getUserDetailsService());
+                logger.log(Level.INFO, "Put " + merchantAuthenticationProvider.getRoleType() + " into userDetailServiceMap.");
+            }
+
 		}
 
 		this.customerDAO = customerDAO;
@@ -61,12 +77,15 @@ public class CustomJdbcDaoServiceList implements UserDetailsService {
 	}
 
 	public boolean isCustomer(String roleType) {
-		Boolean result = customerMap.get(roleType);
-		if (result == null) {
-			throw new UnknownResourceException("Wrong role type");
-		}
-
-		return result;
+		Boolean isCustomer;
+        try {
+            isCustomer = customerMap.get(roleType);
+        } catch (NullPointerException e) {
+            // If get null pointer exception, means it is not customer
+            logger.log(Level.INFO, "Is not customer");
+            return false;
+        }
+        return isCustomer == null ? false : isCustomer;
 	}
 
 	public CustomerDAO getCustomerDAO() {

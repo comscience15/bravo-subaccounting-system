@@ -38,6 +38,12 @@
 
 
 	<!-- Spring Framework XML setting file location -->
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
@@ -47,13 +53,6 @@
 			/WEB-INF/spring-security.xml
 		</param-value>
 	</context-param>
-
-	<listener>
-		<listener-class>
-        	org.springframework.web.context.ContextLoaderListener
-        </listener-class>
-	</listener>
-
 
 	<!--
 	The CORS filter with parameters

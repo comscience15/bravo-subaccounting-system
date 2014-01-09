@@ -83,14 +83,13 @@ public class CustomPersistentRememberMeServieces extends
 							.getAuthorities()));
 			auth.setCustomerID(customServiceList.getCustomerDAO());
 			result = auth;
-			System.out.println("Customer: ");
+            logger.log(Level.INFO, "Customer login");
 		} else {
 			RememberMeAuthenticationToken auth = new RememberMeAuthenticationToken(
 					getKey(), user, authoritiesMapper.mapAuthorities(user
 							.getAuthorities()));
 			result = auth;
-
-			System.out.println("Others: ");
+            logger.log(Level.INFO, "Other users login");
 		}
 
 		CustomWebAuthenticationDetails details = (CustomWebAuthenticationDetails) getAuthenticationDetailsSource()
