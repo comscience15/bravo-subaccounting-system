@@ -24,10 +24,7 @@ import com.bravo.https.util.HttpResponseHandler;
 import android.content.Context;
 
 public class ClientAPICalls {
-	private static Logger logger;
-	static {
-		logger = Logger.getLogger(ClientAPICalls.class.getName());
-	}
+	private static Logger logger = Logger.getLogger(ClientAPICalls.class.getName());
 	
 	/**
 	 * Get public key API
@@ -78,7 +75,7 @@ public class ClientAPICalls {
 		// Check if authentication is needed for getting keys
 		if (getKeyStatus != null && getKeyStatus.equals("404")) {
 			// Should go to login first
-			System.err.println("Should go to login first");
+			logger.log(Level.SEVERE, "Should go to login first");
 			publickey.put("status", BigInteger.valueOf(404));
 			return null;
 		} else {
