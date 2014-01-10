@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bravo.https.util.BravoHttpsClient;
+import com.bravo.https.util.CookieHandler;
 import com.bravo.https.util.HttpResponseHandler;
 
 import android.content.Context;
@@ -43,25 +44,7 @@ public class ClientAPICalls {
 		final String path = "service/customer/transaction/getKey";
 		final String URL = ip + path;
 		
-		FileInputStream getStoredCookie = null;
-		byte[] cookieByte = null;
-		int cookieSize = 0;
-		
-		try {
-			getStoredCookie = androidContext.openFileInput("Cookie");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			cookieSize = getStoredCookie.available();
-			cookieByte = new byte[cookieSize];
-			getStoredCookie.read(cookieByte);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		String cookie = new String(cookieByte);
+		String cookie = CookieHandler.getCookie(androidContext);
 		
 		logger.log(Level.INFO, "getKey: Cookie is :" + cookie);
 		
@@ -116,25 +99,7 @@ public class ClientAPICalls {
 		final String path = "service/customer/account/getCardListByCustID";
 		final String URL = ip + path;
 		
-		FileInputStream getStoredCookie = null;
-		byte[] cookieByte = null;
-		int cookieSize = 0;
-		
-		try {
-			getStoredCookie = androidContext.openFileInput("Cookie");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			cookieSize = getStoredCookie.available();
-			cookieByte = new byte[cookieSize];
-			getStoredCookie.read(cookieByte);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		String cookie = new String(cookieByte);
+		String cookie = CookieHandler.getCookie(androidContext);
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "getCardList", androidContext);
 		
