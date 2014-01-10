@@ -35,6 +35,7 @@ import android.content.Context;
 
 public class BravoHttpsClient {
 	private static DefaultHttpClient httpsClient = null;
+	private static Logger logger = Logger.getLogger(BravoHttpsClient.class.getName());
 	
 	/**
 	 * This method is going to create a customized http client
@@ -96,7 +97,7 @@ public class BravoHttpsClient {
 			try {
 				httpsPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
 			} catch (UnsupportedEncodingException e) {
-				System.err.println("Encoding Parameter Exception: " + e.toString());
+				logger.log(Level.SEVERE, "Encoding Parameter Exception: " + e.toString());
 				e.printStackTrace();
 				return null;
 			}
@@ -108,23 +109,16 @@ public class BravoHttpsClient {
 			// Going to get the cookie only when login and register
 			    // Get the cookies from server
 			List<Cookie> cookies = httpsClient.getCookieStore().getCookies();
-			String cookieValue = cookies.get(0).getName()+ "=" + cookies.get(0).getValue();
-			  
-			System.out.println("Cookie has been updated, Cookie Value is: " + cookieValue); // debug
-			  
-			// Created the private local file which contains the cookie from server side
-			FileOutputStream cookieFile = androidContext.openFileOutput("Cookie", Context.MODE_PRIVATE);
-			    
-			cookieFile.write(cookieValue.getBytes());
-			cookieFile.close();
-		    
+			
+			CookieHandler.setCookie(cookies, androidContext);
+			
 			return response;
 		} catch (ClientProtocolException e) {
-			System.err.println("Client Protocol Exception: " + e.toString());
+			logger.log(Level.SEVERE, "Client Protocol Exception: " + e.toString());
 			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			System.err.println("IO Exception: " + e.toString());
+			logger.log(Level.SEVERE, "IO Exception: " + e.toString());
 			e.printStackTrace();
 			return null;
 		}

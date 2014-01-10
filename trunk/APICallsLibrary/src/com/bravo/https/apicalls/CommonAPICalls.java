@@ -103,4 +103,14 @@ public class CommonAPICalls {
 		// loginStatus is null means login successfully, see API document for details
 	    return registerStatus == null ? "200" : registerStatus;
 	}
+	
+	public static void logout(String IP, Context androidContext) 
+			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
+		final String ip = IP;
+		final String path = "service/authentication/j_spring_security_logout";
+		final String URL = ip + path;
+		
+		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, null, "logout", androidContext);
+		
+	}
 }
