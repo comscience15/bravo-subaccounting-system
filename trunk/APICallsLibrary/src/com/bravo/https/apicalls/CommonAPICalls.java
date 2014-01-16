@@ -1,16 +1,12 @@
 package com.bravo.https.apicalls;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -18,6 +14,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.bravo.https.util.BravoHttpsClient;
+import com.bravo.https.util.CookieHandler;
 import com.bravo.https.util.HttpResponseHandler;
 
 import android.content.Context;
@@ -104,13 +101,28 @@ public class CommonAPICalls {
 	    return registerStatus == null ? "200" : registerStatus;
 	}
 	
-	public static void logout(String IP, Context androidContext) 
+	/**
+	 * Logout API Call
+	 * @param IP
+	 * @param androidContext
+	 * @return
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws CertificateException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
+	public static String logout(String IP, Context androidContext) 
 			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
 		final String ip = IP;
 		final String path = "service/authentication/j_spring_security_logout";
 		final String URL = ip + path;
 		
-		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, null, "logout", androidContext);
+		String cookie = CookieHandler.getCookie(androidContext);
 		
+		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "logout", androidContext);
+		String logoutStatus = HttpResponseHandler.parseJson(response, "status");
+		return logoutStatus == null ? "200" : logoutStatus;
 	}
 }
