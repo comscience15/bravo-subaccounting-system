@@ -17,7 +17,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock" >
+        android:theme="@style/Theme.Sherlock" 
+        >
         <activity
             android:name="com.bravo.bravoclient.activities.SplashActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
@@ -30,7 +31,10 @@
         <activity
             android:name="com.bravo.bravoclient.activities.MainActivity"
             android:label="@string/home"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme" 
+            android:uiOptions="splitActionBarWhenNarrow">
+            <meta-data android:name="android.support.UI_OPTIONS"
+                   android:value="splitActionBarWhenNarrow" />
         </activity>
 
         <!-- This will refer to the barcode lib -->

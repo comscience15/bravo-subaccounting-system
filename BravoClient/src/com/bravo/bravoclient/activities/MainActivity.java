@@ -1,5 +1,8 @@
 package com.bravo.bravoclient.activities;
  
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +16,9 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.adapters.PagerAdapter;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
@@ -31,6 +37,8 @@ public class MainActivity extends SherlockFragmentActivity {
     private boolean doublePressBackButton;
     private static boolean ifLogin = false; // this is for future use, in order to remember if user has been logged in already
  
+    private Logger logger = Logger.getLogger(MainActivity.class.getName());
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +100,7 @@ public class MainActivity extends SherlockFragmentActivity {
             	if (tab.getPosition() == 1) {
             		/** Check if user has been login already**/
             		if(ifLogin == false) showLoginActivity();
-            		//cardsTab.select();
+            		cardsTab.select();
             	}
                 mPager.setCurrentItem(tab.getPosition());
             }
@@ -166,6 +174,26 @@ public class MainActivity extends SherlockFragmentActivity {
     	}, 3000);
     }
     
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.setting_logout:
+            	logger.log(Level.INFO, "TEST Logout event");
+                return true;
+            case R.id.setting_refresh:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     
     /**
      * When Card tab has been selected, this will forward to LoginActivity
