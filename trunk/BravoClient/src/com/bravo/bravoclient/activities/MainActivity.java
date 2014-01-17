@@ -22,6 +22,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.adapters.PagerAdapter;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
+import com.bravo.bravoclient.async.AsyncLogin;
+import com.bravo.bravoclient.async.AsyncLogout;
  
 /**
  * This is the first activity after Splash screen
@@ -35,9 +37,11 @@ public class MainActivity extends SherlockFragmentActivity {
     private Tab homeTab, cardsTab, rewardsTab;
     private Intent getIntentSource;
     private boolean doublePressBackButton;
-    private static boolean ifLogin = false; // this is for future use, in order to remember if user has been logged in already
+    private static boolean isLogin = false; // this is for future use, in order to remember if user has been logged in already
  
-    private Logger logger = Logger.getLogger(MainActivity.class.getName());
+    private static String ip;
+    
+    private static Logger logger = Logger.getLogger(MainActivity.class.getName());
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,10 @@ public class MainActivity extends SherlockFragmentActivity {
         setContentView(R.layout.activity_main);
         
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // Stop keyboard automatically generated
-               
+        
+        /** Setting the ip parameter*/
+        ip = getString(R.string.IP_Address);
+        
         /** Getting a reference to action bar of this activity */
         mActionBar = getSupportActionBar();
        
@@ -99,7 +106,7 @@ public class MainActivity extends SherlockFragmentActivity {
             	/** If Cards tab is selected*/
             	if (tab.getPosition() == 1) {
             		/** Check if user has been login already**/
-            		if(ifLogin == false) showLoginActivity();
+            		if(isLogin == false) showLoginActivity();
             		cardsTab.select();
             	}
                 mPager.setCurrentItem(tab.getPosition());
@@ -137,7 +144,7 @@ public class MainActivity extends SherlockFragmentActivity {
         String fromActivity = getIntentSource.getStringExtra("Activity");
         // enable the page jumping from login and register directly to cards fragment
         if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register"))) {
-        	ifLogin = true;
+        	isLogin = true;
         	cardsTab.select();
         	// Get card list in background once login successfully
         	new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address));
@@ -186,9 +193,10 @@ public class MainActivity extends SherlockFragmentActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.setting_logout:
-            	logger.log(Level.INFO, "TEST Logout event");
+            	new AsyncLogout(MainActivity.this).execute(ip);
                 return true;
             case R.id.setting_refresh:
+            	new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -202,5 +210,14 @@ public class MainActivity extends SherlockFragmentActivity {
     	Intent toLoginActivity = new Intent(getApplicationContext(), LoginActivity.class);
     	MainActivity.this.startActivity(toLoginActivity);
     	MainActivity.this.overridePendingTransition(R.anim.login_enter, R.anim.login_out);
+    }
+    
+    public static boolean getLoginStatus() {
+    	return isLogin;
+    }
+    
+    public static void setLoginStatus(boolean isLogin) {
+    	logger.log(Level.INFO, "Login status has been set to: " + isLogin);
+    	MainActivity.isLogin = isLogin;
     }
 }
