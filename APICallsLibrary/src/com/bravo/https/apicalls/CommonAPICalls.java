@@ -8,6 +8,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -20,7 +22,7 @@ import com.bravo.https.util.HttpResponseHandler;
 import android.content.Context;
 
 public class CommonAPICalls {
-	
+	private static Logger logger = Logger.getLogger(CommonAPICalls.class.getName());
 	/**
 	 * Login API Call
 	 * @param username
