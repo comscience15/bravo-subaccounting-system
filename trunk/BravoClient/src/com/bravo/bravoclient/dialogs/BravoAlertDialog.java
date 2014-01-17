@@ -28,7 +28,6 @@ public class BravoAlertDialog implements BravoAlertDialogInterface{
 	 */
 	@Override
 	public Builder setAlertDialogBuilder() {
-		System.out.println("SetAlertDialogBuilder is called"); // should be removed
 		alertDialogBuilder = new AlertDialog.Builder(context);
 		alertDialogBuilder.setCancelable(true);
 		return alertDialogBuilder;
@@ -55,7 +54,6 @@ public class BravoAlertDialog implements BravoAlertDialogInterface{
 
 	@Override
 	public void showDialog() {
-		System.out.println("showDialog() is called"); // should be removed
 		alertDialogBuilder.create().show();
 	}
 	
@@ -72,7 +70,6 @@ public class BravoAlertDialog implements BravoAlertDialogInterface{
 
 	@Override
 	public void setDialog(String title, String msg, String buttonMsg) {
-		System.out.println("setDialog is called"); // should be removed
 		setTitle(title, alertDialogBuilder);
 		setMessage(msg, alertDialogBuilder);
 		setButton(buttonMsg, alertDialogBuilder);
