@@ -110,7 +110,8 @@ public class BravoHttpsClient {
 			    // Get the cookies from server
 			List<Cookie> cookies = httpsClient.getCookieStore().getCookies();
 			
-			CookieHandler.setCookie(cookies, androidContext);
+			// Do not set cookie if there is no cookie return from server
+			if (cookies.size() != 0) CookieHandler.setCookie(cookies, androidContext);
 			
 			return response;
 		} catch (ClientProtocolException e) {
