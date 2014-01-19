@@ -1,6 +1,7 @@
 package com.bravo.bravomerchant.activities;
 
 import com.bravo.bravomerchant.R;
+import com.bravo.bravomerchant.bean.Order;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog.ScanResultListener;
 
@@ -25,6 +26,8 @@ public class ScannerActivity extends FragmentActivity implements
 		ScanResultListener {
 	private String scanResult;
 	private String format;
+	private String cardId = "";
+	private String productsCode = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +50,20 @@ public class ScannerActivity extends FragmentActivity implements
 				scanResult = intent.getStringExtra("SCAN_RESULT");
 				format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 				/** Starting the dialog*/
-				showDialog();
+//				showDialog();
+				if("".equals(cardId)){
+					cardId = scanResult;
+				}else{
+					productsCode += scanResult + ",";
+				}
+				startScanner();
 			} else if (resultCode == RESULT_CANCELED) {
 				/** If scanning failed, will intent to main screen*/
 				try {
-					Intent toMainPageIntent = new Intent(this, MainActivity.class);
+					Intent toMainPageIntent = new Intent();
+					toMainPageIntent.setClass(this, OrderConfirmActivity.class);
+					toMainPageIntent.putExtra("cardId", cardId);
+					toMainPageIntent.putExtra("productsCode", productsCode);
 					startActivity(toMainPageIntent);
 					ScannerActivity.this.finish();
 				} catch (Exception e) {

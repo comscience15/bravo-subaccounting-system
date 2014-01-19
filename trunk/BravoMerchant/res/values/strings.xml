@@ -4,7 +4,7 @@
     <string name="app_name">BravoMerchant</string>
     <string name="app_short_name">Merchant</string>
     
-    <string name="IP_Address">http://50.156.103.190:8080/subAccountAPI/</string>
+    <string name="IP_Address">https://50.156.103.190:8181/subAccountAPI/</string>
     
     <string name="menu_settings">Settings</string>
     
@@ -34,6 +34,8 @@
     <string name="exit_app_toast">Press again to exit</string>
     
     <string name="state_promote">Choose State</string>
+    
+    <string name="title_order">OrderConfirmActivity</string>
     <!-- The array list of states or provinces -->
     <string-array name="state_array">
         <item>Alabama</item>

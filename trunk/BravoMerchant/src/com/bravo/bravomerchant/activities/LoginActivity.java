@@ -33,6 +33,8 @@ public class LoginActivity extends Activity {
 	private static String username;
 	private static String password;
 	private static String ip;
+	private static final String roleType = "merchant";//"merchant";customer
+	private static final String domain = "200";
 	
 	private boolean isValidP = false;
 	private boolean isValidU = false;
@@ -118,7 +120,8 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				/** When login button is pressed, it will go to asynchronized task for process **/
-				new AsyncLogin(LoginActivity.this).execute(username, password, ip);
+//				new AsyncLogin(LoginActivity.this).execute(username, password, roleType, domain ,ip);
+				new AsyncLogin(LoginActivity.this).execute("ashish", "bnym", roleType, domain ,ip);
 				//loginHttpRequest(username, password);
 			}
 		});

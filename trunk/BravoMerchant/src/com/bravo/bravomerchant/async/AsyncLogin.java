@@ -2,18 +2,17 @@ package com.bravo.bravomerchant.async;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
-import java.net.HttpCookie;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
@@ -22,16 +21,13 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.activities.MainActivity;
+import com.bravo.bravomerchant.activities.OrderConfirmActivity;
 import com.bravo.bravomerchant.dialogs.BravoAlertDialog;
-import com.bravo.bravomerchant.util.APICallsFactory;
-import com.bravo.bravomerchant.util.BravoAlertDialogInterface;
 import com.bravo.bravomerchant.util.HttpResponseHandler;
+import com.bravo.https.apicalls.CommonAPICalls;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 /**
@@ -47,8 +43,37 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	
 	@Override
 	protected String doInBackground(String... loginInfo) {
-		return APICallsFactory.login(loginInfo[0], loginInfo[1], loginInfo[2]);
-		//return loginHttpRequest(loginInfo[0], loginInfo[1], loginInfo[2]);
+
+		final String username = loginInfo[0];
+		final String password = loginInfo[1];
+		final String roletype = loginInfo[2];
+		final String domain = loginInfo[3];
+		final String ip = loginInfo[4];
+		
+		String loginStatus = null;
+		try {
+			loginStatus = CommonAPICalls.login(username, password, roletype, domain, ip, context);
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnrecoverableKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return loginStatus;
 	}
 	
 	/**
@@ -60,6 +85,7 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		/** if login successfully, forward to Main activity temporarily**/
 		if (result != null && !result.equals("404")) {
 			Intent toMainActivity = new Intent(context, MainActivity.class);
+//			Intent toMainActivity = new Intent(context, OrderConfirmActivity.class);
 			toMainActivity.putExtra("Activity", "Login");
 	    	context.startActivity(toMainActivity);
 	    	((Activity) context).overridePendingTransition(com.bravo.bravomerchant.R.anim.go_back_enter, R.anim.go_back_out);
