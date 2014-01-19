@@ -66,10 +66,6 @@ public class APICallsFactory {
 	 * @return
 	 */
 	public static String login(String username, String password, String IP) {
-		if("q".equals(username)){
-			//TODO jiawl test
-			return "200";
-		}
 		final String ip = IP; //context.getString(R.string.IP_Address);
 		final String path = "service/authentication/j_spring_security_check";
 		final String URL = ip + path;
