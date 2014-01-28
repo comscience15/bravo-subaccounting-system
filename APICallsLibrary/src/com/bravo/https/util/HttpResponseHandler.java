@@ -94,11 +94,16 @@ public class HttpResponseHandler {
 	 * @param httpResponse
 	 * @return
 	 * @throws JSONException
+	 * @throws AuthenticationException 
 	 */
-	public static ArrayList<JSONObject> toArrayList(HttpResponse httpResponse) throws JSONException {
+	public static ArrayList<JSONObject> toArrayList(HttpResponse httpResponse) throws JSONException, BravoAuthenticationException {
 		String jsonString = toString(httpResponse);
 		
 		logger.log(Level.INFO, jsonString);
+		
+		String status = parseJson(jsonString, "status");
+		
+		if (status != null) throw new BravoAuthenticationException("Login Failed");
 		
 		JSONArray jsonArray = new JSONArray(jsonString); 
 		
