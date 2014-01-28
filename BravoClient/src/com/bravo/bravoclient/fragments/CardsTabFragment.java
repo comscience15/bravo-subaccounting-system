@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.activities.LoginActivity;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
 import com.bravo.bravoclient.async.AsyncLogin;
@@ -82,6 +84,10 @@ public class CardsTabFragment extends SherlockFragment{
 				cardBalanceEditText.setHint("noButton Clicked!");
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
+					if (MainActivity.getLoginStatus() == false) {
+						showLoginActivity();
+						return;
+					}
 					
 					// TODO: This should be changed once the listView has been implemented
 					Card defaultCard = getDefaultCard();
@@ -190,6 +196,12 @@ public class CardsTabFragment extends SherlockFragment{
 		Card card = cardListDAO.getCard(0);
 		cardListDAO.closeDB();	
 		return card;
+	}
+	
+	private void showLoginActivity() {
+		Intent toLoginActivity = new Intent(getActivity(), LoginActivity.class);
+		getActivity().startActivity(toLoginActivity);
+		getActivity().overridePendingTransition(R.anim.login_enter, R.anim.login_out);
 	}
 	
 }
