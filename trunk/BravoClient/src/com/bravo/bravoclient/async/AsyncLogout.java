@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 /**
  * This Class is the implementations of async logout in background
@@ -64,14 +65,12 @@ public class AsyncLogout extends AsyncTask<String, Void, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		if (result != null && (result.equals("404") == false)) {
-			new BravoAlertDialog(context).showDialog("Logout Successfully", "You are logged out now, you might have to login again for future operations", "OK");
-			MainActivity.setLoginStatus(false);
+			CharSequence text = context.getString(R.string.logout_toast);
+	    	int duration = Toast.LENGTH_SHORT;
+	    	Toast toast = Toast.makeText(context, text, duration);
+	    	toast.show();
 			
-			Intent toMainActivity = new Intent(context, MainActivity.class);
-			toMainActivity.putExtra("Activity", "Logout");
-			toMainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    	context.startActivity(toMainActivity);
-	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
+	    	MainActivity.setLoginStatus(false);
 		} else {
 			new BravoAlertDialog(context).showDialog("Logout Failed", "Please check your authentication or network connection", "OK");
 			MainActivity.setLoginStatus(true);
