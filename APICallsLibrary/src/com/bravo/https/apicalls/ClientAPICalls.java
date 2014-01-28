@@ -1,7 +1,5 @@
 package com.bravo.https.apicalls;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyManagementException;
@@ -18,6 +16,7 @@ import org.apache.http.HttpResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bravo.https.util.BravoAuthenticationException;
 import com.bravo.https.util.BravoHttpsClient;
 import com.bravo.https.util.CookieHandler;
 import com.bravo.https.util.HttpResponseHandler;
@@ -92,9 +91,11 @@ public class ClientAPICalls {
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 * @throws JSONException 
+	 * @throws AuthenticationException 
+	 * @throws org.apache.http.auth.AuthenticationException 
 	 */
 	public static ArrayList<JSONObject> getCardListByCustID(String IP, Context androidContext) 
-			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, JSONException {
+			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, JSONException, BravoAuthenticationException {
 		final String ip = IP;
 		final String path = "service/customer/account/getCardListByCustID";
 		final String URL = ip + path;
