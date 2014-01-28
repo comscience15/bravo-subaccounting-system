@@ -13,8 +13,11 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.ClientAPICalls;
+import com.bravo.https.util.BravoAuthenticationException;
+import com.bravo.https.util.BravoStatus;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -29,39 +32,38 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 	@Override
 	protected String doInBackground(String... params) {
 		final String ip = params[0];
-		try {
-			ArrayList<JSONObject> cardList = ClientAPICalls.getCardListByCustID(ip, context);
-			CardListDAO cardListDAO = new CardListDAO(context);
-			cardListDAO.openDB();
-			cardListDAO.insertCards(cardList);
-			cardListDAO.closeDB();
-		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnrecoverableKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+			ArrayList<JSONObject> cardList;
+			try {
+				cardList = ClientAPICalls.getCardListByCustID(ip, context);
+				CardListDAO cardListDAO = new CardListDAO(context);
+				cardListDAO.openDB();
+				cardListDAO.insertCards(cardList);
+				cardListDAO.closeDB();
+			} catch (KeyManagementException e) {
+				e.printStackTrace();
+			} catch (UnrecoverableKeyException e) {
+				e.printStackTrace();
+			} catch (CertificateException e) {
+				e.printStackTrace();
+			} catch (KeyStoreException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (BravoAuthenticationException e) {
+				logger.log(Level.WARNING, e.getMessage());
+				return BravoStatus.AUTHENTICATION_FAILED;
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		return BravoStatus.OPERATION_SUCCESS;
 	}
 
 	@Override
 	protected void onPostExecute(String result) {
-		// TODO 
+		if (result.equals(BravoStatus.AUTHENTICATION_FAILED)) {
+			new BravoAlertDialog(context).showDialog("Login Failed", "You did not login yet, please login first.", "OK");
+		} 
 	}
 }
