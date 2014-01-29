@@ -10,6 +10,7 @@
     <string name="title_activity_cards">CardsActivity</string>
     <string name="title_activity_scanner">ScannerActivity</string>
     <string name="exit_app_toast">Press again to exit</string>
+    <string name="logout_toast">Logout Successfully</string>
     <string name="invalid_username">Please verify the email</string>
     <string name="invalid_password">Please verify the password</string>
     <string name="reg_password_not_match">Password is not match</string>
