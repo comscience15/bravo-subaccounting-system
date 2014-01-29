@@ -34,6 +34,7 @@
 
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_cards_list">CardsListActivity</string>
     
     <!-- The array list of states or provinces -->
     <string-array name="state_array">
@@ -90,4 +91,7 @@
     </string-array>
     <string name="state_promote">Choose State</string>
 
+    <color name="solid_main_background">#FF1E2F41</color>
+    <color name="solid_header_backgroudn">#84252C</color>
+    
 </resources>
