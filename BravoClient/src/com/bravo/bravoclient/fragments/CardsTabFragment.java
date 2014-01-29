@@ -22,6 +22,7 @@ import android.widget.ImageView;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.activities.CardsListActivity;
 import com.bravo.bravoclient.activities.LoginActivity;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
@@ -74,7 +75,7 @@ public class CardsTabFragment extends SherlockFragment{
         final ImageView cardSelfCheckoutButton = (ImageView) getView().findViewById(R.id.cardSelfCheckoutButton);
         final ImageView cardSendGiftButton = (ImageView) getView().findViewById(R.id.cardSendGiftButton);
         final ImageView cardTransactionHistoryButton = (ImageView) getView().findViewById(R.id.cardTransactionHistoryButton);
-        final ImageView cardReceiveMoneyButton = (ImageView) getView().findViewById(R.id.cardReceiveMoneyButton);
+        final ImageView cardCardsListButton = (ImageView) getView().findViewById(R.id.cardCardsListButton);
         final ImageView cardRefreshButton = (ImageView) getView().findViewById(R.id.cardRefreshButton);
         
         OnClickListener buttonListener = new OnClickListener() {
@@ -82,25 +83,10 @@ public class CardsTabFragment extends SherlockFragment{
 			public void onClick(View v) {
 				EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
 				cardBalanceEditText.setHint("noButton Clicked!");
+				if (isAuthenticated() == false) return;
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
-					if (MainActivity.getLoginStatus() == false) {
-						showLoginActivity();
-						return;
-					}
-					
-					// TODO: This should be changed once the listView has been implemented
-					Card defaultCard = getDefaultCard();
-					logger.log(Level.INFO, "Default cardID is: " + defaultCard.getCardId());
-					
-					// Generate the encrypted data, the public key has already gotten when login
-					Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
-					String encryptedData = encryptionObj.generateEncryptedData(defaultCard.getCardId());
-					
-					// Generate QRCode for encrypted data
-					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
-					paymentDialog.generateQRCode(encryptedData);
-					
+					payImpl();
 				} else if (v.equals(cardReloadButton)){
 					// TODO: when reload button be pressed
 				} else if (v.equals(cardSelfCheckoutButton)){
@@ -109,8 +95,9 @@ public class CardsTabFragment extends SherlockFragment{
 					// TODO: when send gift button be pressed
 				} else if (v.equals(cardTransactionHistoryButton)){
 					// TODO: when transaction history button be pressed
-				} else if (v.equals(cardReceiveMoneyButton)){
-					// TODO: when receive money button be pressed
+				} else if (v.equals(cardCardsListButton)){
+					// TODO: when cards list button be pressed
+					cardsListImpl();
 				} else if (v.equals(cardRefreshButton)){
 					// TODO: when refresh button be pressed
 		        	new AsyncGetCardsList(getActivity()).execute(getString(R.string.IP_Address));
@@ -123,10 +110,10 @@ public class CardsTabFragment extends SherlockFragment{
         cardSelfCheckoutButton.setOnClickListener(buttonListener);
         cardSendGiftButton.setOnClickListener(buttonListener);
         cardTransactionHistoryButton.setOnClickListener(buttonListener);
-        cardReceiveMoneyButton.setOnClickListener(buttonListener);
+        cardCardsListButton.setOnClickListener(buttonListener);
         cardRefreshButton.setOnClickListener(buttonListener);
         
-        initImageViewBgMap(cardPayButton, cardReloadButton, cardSelfCheckoutButton, cardSendGiftButton, cardTransactionHistoryButton, cardReceiveMoneyButton);
+        initImageViewBgMap(cardPayButton, cardReloadButton, cardSelfCheckoutButton, cardSendGiftButton, cardTransactionHistoryButton, cardCardsListButton);
         
         OnTouchListener buttonTouchListener = new OnTouchListener() {
 			@Override
@@ -152,7 +139,7 @@ public class CardsTabFragment extends SherlockFragment{
 		cardSelfCheckoutButton.setOnTouchListener(buttonTouchListener);
 		cardSendGiftButton.setOnTouchListener(buttonTouchListener);
 		cardTransactionHistoryButton.setOnTouchListener(buttonTouchListener);
-		cardReceiveMoneyButton.setOnTouchListener(buttonTouchListener);
+		cardCardsListButton.setOnTouchListener(buttonTouchListener);
         
     }
 
@@ -202,6 +189,35 @@ public class CardsTabFragment extends SherlockFragment{
 		Intent toLoginActivity = new Intent(getActivity(), LoginActivity.class);
 		getActivity().startActivity(toLoginActivity);
 		getActivity().overridePendingTransition(R.anim.login_enter, R.anim.login_out);
+	}
+	
+	private void payImpl() {
+		// TODO: This should be changed once the listView has been implemented
+		Card defaultCard = getDefaultCard();
+		logger.log(Level.INFO, "Default cardID is: " + defaultCard.getCardId());
+		
+		// Generate the encrypted data, the public key has already gotten when login
+		Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
+		String encryptedData = encryptionObj.generateEncryptedData(defaultCard.getCardId());
+		
+		// Generate QRCode for encrypted data
+		BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
+		paymentDialog.generateQRCode(encryptedData);
+	}
+	
+	private void cardsListImpl() {
+		Intent toCardsListActivity = new Intent(getActivity(), CardsListActivity.class);
+		getActivity().startActivity(toCardsListActivity);
+		getActivity().overridePendingTransition(R.anim.cards_list_enter, R.anim.cards_list_out);
+	}
+	
+	private boolean isAuthenticated() {
+		if (MainActivity.getLoginStatus() == false) {
+			showLoginActivity();
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 }

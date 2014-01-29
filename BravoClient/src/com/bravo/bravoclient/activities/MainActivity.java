@@ -150,6 +150,10 @@ public class MainActivity extends SherlockFragmentActivity {
         	new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address));
         }
         
+        if (fromActivity != null && fromActivity.equals("CardsList")) {
+        	cardsTab.select();
+        }
+        
     }
     
     /**

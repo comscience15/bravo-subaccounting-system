@@ -37,4 +37,12 @@ public class Card {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
+	
+	@Override
+	public String toString() {
+		String cardID = this.getCardId();
+		int index = cardID.length() - 4;
+		
+		return "Card ID: xxxxxxxxxxxx" + cardID.substring(index) + "\n" + "Balance: $" + this.getBalance();
+	}
 }
