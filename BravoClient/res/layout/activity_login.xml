@@ -7,7 +7,7 @@
 <RelativeLayout 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#3B3131"><!-- the background of login page is set here -->
+    android:background="#FF1E2F41"><!-- the background of login page is set here -->
 
     <!--  Header  Starts-->
         <LinearLayout android:id="@+id/header"
