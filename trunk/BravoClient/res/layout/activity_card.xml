@@ -140,15 +140,15 @@
             android:layout_weight="1" >
 
             <ImageView
-                android:id="@+id/cardReceiveMoneyButton"
+                android:id="@+id/cardCardsListButton"
                 style="@style/CardImageViewTheme.CenterHorizontal"
                 android:src="@drawable/receive_money" />
 
             <TextView
-                android:id="@+id/cardReceiveMoneyText"
+                android:id="@+id/cardCardsListText"
                 style="@style/CardTextViewTheme.CenterHorizontal"
-                android:layout_below="@id/cardReceiveMoneyButton"
-                android:text="@string/receive_money" />
+                android:layout_below="@id/cardCardsListButton"
+                android:text="@string/cards_list" />
         </RelativeLayout>
 
         <RelativeLayout

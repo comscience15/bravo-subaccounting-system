@@ -26,7 +26,7 @@
     <string name="reload">Reload</string>
     <string name="self_checkout">Self Checkout</string>
     <string name="send_gift">Send Gift</string>
-    <string name="receive_money">Receive Money</string>
+    <string name="cards_list">Cards List</string>
     <string name="transaction_history">Transaction History</string>
     
     <string name="IP_Address">https://50.156.103.190:8181/subAccountAPI/</string>
@@ -91,7 +91,8 @@
     </string-array>
     <string name="state_promote">Choose State</string>
 
-    <color name="solid_main_background">#FF1E2F41</color>
-    <color name="solid_header_backgroudn">#84252C</color>
+    <color name="solid_main">#FF1E2F41</color>
+    <color name="solid_header">#84252C</color>
+    <color name="solid_list_item">#FF1E2F41</color>
     
 </resources>

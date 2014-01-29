@@ -71,6 +71,10 @@
             android:name="com.bravo.bravoclient.activities.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
+        <activity
+            android:name="com.bravo.bravoclient.activities.CardsListActivity"
+            android:label="@string/title_activity_cards_list" >
+        </activity>
     </application>
 
 </manifest>
