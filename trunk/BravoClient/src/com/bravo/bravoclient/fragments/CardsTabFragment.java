@@ -76,7 +76,6 @@ public class CardsTabFragment extends SherlockFragment{
         final ImageView cardSendGiftButton = (ImageView) getView().findViewById(R.id.cardSendGiftButton);
         final ImageView cardTransactionHistoryButton = (ImageView) getView().findViewById(R.id.cardTransactionHistoryButton);
         final ImageView cardCardsListButton = (ImageView) getView().findViewById(R.id.cardCardsListButton);
-        final ImageView cardRefreshButton = (ImageView) getView().findViewById(R.id.cardRefreshButton);
         
         OnClickListener buttonListener = new OnClickListener() {
 			@Override
@@ -98,9 +97,6 @@ public class CardsTabFragment extends SherlockFragment{
 				} else if (v.equals(cardCardsListButton)){
 					// TODO: when cards list button be pressed
 					cardsListImpl();
-				} else if (v.equals(cardRefreshButton)){
-					// TODO: when refresh button be pressed
-		        	new AsyncGetCardsList(getActivity()).execute(getString(R.string.IP_Address));
 				}
 			}
         };
@@ -111,7 +107,6 @@ public class CardsTabFragment extends SherlockFragment{
         cardSendGiftButton.setOnClickListener(buttonListener);
         cardTransactionHistoryButton.setOnClickListener(buttonListener);
         cardCardsListButton.setOnClickListener(buttonListener);
-        cardRefreshButton.setOnClickListener(buttonListener);
         
         initImageViewBgMap(cardPayButton, cardReloadButton, cardSelfCheckoutButton, cardSendGiftButton, cardTransactionHistoryButton, cardCardsListButton);
         
