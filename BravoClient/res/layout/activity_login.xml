@@ -7,22 +7,23 @@
 <RelativeLayout 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FF1E2F41"><!-- the background of login page is set here -->
+    android:background="@color/solid_main"><!-- the background of login page is set here -->
 
     <!--  Header  Starts-->
-        <LinearLayout android:id="@+id/header"
+        <RelativeLayout 
+            	android:id="@+id/header"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@layout/header"
                 android:paddingTop="5dip"
                 android:paddingBottom="5dip">
                 <!-- Logo Start-->
-                    <ImageView android:src="@drawable/nv_search"
+                    <ImageView android:src="@drawable/logo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dip"/>
+                            android:layout_centerInParent="true"/>
                 <!-- Logo Ends -->
-        </LinearLayout>
+        </RelativeLayout>
         <!--  Header Ends -->
         <!-- Footer Start -->
         <LinearLayout android:id="@+id/footer"

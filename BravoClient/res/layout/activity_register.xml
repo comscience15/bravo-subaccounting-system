@@ -3,10 +3,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="@color/solid_main">
 
     <!-- Header  Starts -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -18,16 +19,17 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dip"
-            android:src="@drawable/nv_search" />
+            android:layout_centerInParent="true"
+            android:src="@drawable/logo" />
         <!-- Logo Ends -->
-    </LinearLayout>
+    </RelativeLayout>
     <!-- Header Ends -->
 
     <!-- Footer Start -->
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="fill_parent"
+        android:orientation="horizontal"
         android:layout_height="90dip"
         android:layout_alignParentBottom="true"
         android:background="@layout/footer" >
