@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="30"
+        android:layout_weight="35"
         android:gravity="center"
         android:orientation="vertical" >
 
@@ -17,24 +17,21 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bravo" />
+            android:background="@drawable/card_1" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
-        android:orientation="horizontal" >
+        android:layout_weight="10" >
 
-        <TextView
-            android:id="@+id/balanceText"
-            style="@style/CardTextViewTheme.CenterVertical"
-            android:text="@string/balance" />
+        
 
         <EditText
             android:id="@+id/cardBalanceEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:ems="10"
             android:enabled="false"
             android:inputType="none"
@@ -43,7 +40,7 @@
             <requestFocus />
         </EditText>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
