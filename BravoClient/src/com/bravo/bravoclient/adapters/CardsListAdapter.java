@@ -6,6 +6,8 @@ import java.util.List;
 import com.bravo.bravoclient.model.Card;
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 public class CardsListAdapter extends ArrayAdapter<Card>{
@@ -25,5 +27,4 @@ public class CardsListAdapter extends ArrayAdapter<Card>{
 		Card item = getItem(position);
 		return mIdMap.get(item);
 	}
-
 }

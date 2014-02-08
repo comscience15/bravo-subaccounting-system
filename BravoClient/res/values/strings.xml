@@ -32,9 +32,9 @@
     <string name="IP_Address">https://50.156.103.190:8181/subAccountAPI/</string>
     <!-- <string name="IP_Address">http://10.0.2.2:8080/subAccountAPI/</string> -->
 
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_register">RegisterActivity</string>
-    <string name="title_activity_cards_list">CardsListActivity</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_cards_list">Cards List</string>
     
     <!-- The array list of states or provinces -->
     <string-array name="state_array">
@@ -94,5 +94,6 @@
     <color name="solid_main">#FF1E2F41</color>
     <color name="solid_header">#84252C</color>
     <color name="solid_list_item">#FF1E2F41</color>
+    <color name="outline_icon">#729896</color>
     
 </resources>

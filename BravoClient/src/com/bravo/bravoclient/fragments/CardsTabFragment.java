@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -174,8 +175,11 @@ public class CardsTabFragment extends SherlockFragment{
 	
 	private Card getDefaultCard() {
 		CardListDAO cardListDAO = new CardListDAO(getActivity());
+		SharedPreferences settings = getActivity().getSharedPreferences(CardsListActivity.CHOOSE_CARD, getActivity().MODE_PRIVATE);
+		int selectedCardRowId = settings.getInt("SELECTED_CARD", 0);
+		
 		cardListDAO.openDB();
-		Card card = cardListDAO.getCard(0);
+		Card card = cardListDAO.getCard(selectedCardRowId);
 		cardListDAO.closeDB();	
 		return card;
 	}
