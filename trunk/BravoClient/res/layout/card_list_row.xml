@@ -18,15 +18,23 @@
 
     <TextView
         android:id="@+id/cardsList_content"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="30dp"
         android:layout_toRightOf="@id/icon"
-        android:layout_centerVertical="true"
-        android:text="Example application"
+        android:gravity="center_vertical"
         android:textSize="16sp" />
     
+    <ImageView 
+        android:id="@+id/check_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/cardsList_content"
+        android:layout_marginLeft="30dp"
+        android:clickable="true"
+        android:src="@drawable/check"
+        android:visibility="invisible"
+        android:contentDescription="check icon"/>
 
 </RelativeLayout>
