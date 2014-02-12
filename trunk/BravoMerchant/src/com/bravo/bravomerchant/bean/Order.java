@@ -33,19 +33,6 @@ public class Order{
 		return orderItems;
 	}
 
-	public Double getTotalPrice(){
-		
-		Double res = 0d;
-		List<OrderItem> orderItemList = getItemInfoList();
-		
-		for (int i = 0; i < orderItemList.size(); i++) {
-			
-			res += orderItemList.get(i).getTotalPrice();
-		}
-		
-		return res;
-	}
-	
 	public void addItem(String barCode) {
 
 		if (orderItems.containsKey(barCode)) {

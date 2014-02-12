@@ -19,12 +19,17 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.activities.MainActivity;
+import com.bravo.bravomerchant.activities.ScannerActivity;
+import com.bravo.bravomerchant.bean.OrderItem;
 import com.bravo.bravomerchant.dialogs.BravoAlertDialog;
 import com.bravo.bravomerchant.util.HttpResponseHandler;
+import com.bravo.bravomerchant.util.JsonUtil;
 import com.bravo.https.apicalls.CommonAPICalls;
 import com.bravo.https.apicalls.MerchantAPICalls;
 import com.bravo.https.util.BravoAuthenticationException;
@@ -35,7 +40,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 public class AsyncPurchase extends AsyncTask<String, Void, String>{
+	
 	private Context context;
+	private Double totalPrice = 0d;
+	
 	public AsyncPurchase(Context context) {
 		this.context = context;
 	}
@@ -44,10 +52,14 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 	protected String doInBackground(String... purchaseInfo) {
 
 		final String ip = purchaseInfo[0];
+		String orderItemListJsonStr = purchaseInfo[1];
+		String cardInfo = purchaseInfo[2];
+		
+		String res = "error";
 
 		try {
 //			MerchantAPICalls.purchaseItems(getString(R.string.IP_Address), getApplicationContext(), initParams());
-			MerchantAPICalls.purchaseItems(ip, context, initParams());
+			res = MerchantAPICalls.purchaseItems(ip, context, initParams(orderItemListJsonStr, cardInfo));
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,7 +86,7 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 			e.printStackTrace();
 		}
 		
-		return "";
+		return res;
 	}
 	
 	/**
@@ -83,25 +95,47 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		
-		System.err.println("Result code is: " + result);
+		JSONObject resJsonObj = null;
+		String status = null;
+		String msg = "";
+		
+		try {
+			resJsonObj = new JSONObject(result);
+			status = resJsonObj.getString("status");
+			msg = resJsonObj.getString("message");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Intent toMainActivity = new Intent(context, MainActivity.class);
+    	context.startActivity(toMainActivity);
+//		if(!"200".equals(status)){
+//			
+//		}else{//totalPrice
+//			
+//		}
 	}
 	
-    private static List<NameValuePair> initParams() {
+    private List<NameValuePair> initParams(String orderItemListJsonStr, String cardInfo) throws JSONException {
 		
 		List<NameValuePair> res = new ArrayList<NameValuePair>();
+		List<OrderItem> orderItemList = JsonUtil.parseOrderItemListJsonStr(orderItemListJsonStr);
+		OrderItem orderItem = null;
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < orderItemList.size(); i++) {
+			
+			orderItem = orderItemList.get(i);
 
-			res.add(new BasicNameValuePair("orderItemList["+i+"].tax", "0"));
-			res.add(new BasicNameValuePair("orderItemList["+i+"].productID", "1000000"+i));
-			res.add(new BasicNameValuePair("orderItemList["+i+"].productName", "productName-"+i));
-			res.add(new BasicNameValuePair("orderItemList["+i+"].totalPrice", "20"));
-			res.add(new BasicNameValuePair("orderItemList["+i+"].unit", "1"));
+			res.add(new BasicNameValuePair("orderItemList["+i+"].tax", String.valueOf(orderItem.getTax())));
+			res.add(new BasicNameValuePair("orderItemList["+i+"].productID", orderItem.getBarCode()));
+			res.add(new BasicNameValuePair("orderItemList["+i+"].productName", orderItem.getName()));
+			res.add(new BasicNameValuePair("orderItemList["+i+"].totalPrice", String.valueOf(orderItem.getTotalPrice())));
+			res.add(new BasicNameValuePair("orderItemList["+i+"].unit", String.valueOf(orderItem.getUnit())));
+			totalPrice += orderItem.getTotalPrice();
 		}
 		
-		res.add(new BasicNameValuePair("encryptedInfo", "�9��ڎ�(��OT[l4��x]��ㆣ�R1��AɄ��q揍UǢi�ww':�R��^���#�E�"));
+		res.add(new BasicNameValuePair("encryptedInfo", cardInfo));
 		res.add(new BasicNameValuePair("merchantTimestamp", String.valueOf((new Date()).getTime())));
-		res.add(new BasicNameValuePair("totalAmount", "100"));
+		res.add(new BasicNameValuePair("totalAmount", String.valueOf(totalPrice)));
 		res.add(new BasicNameValuePair("loyaltyPoints", "0"));
 		res.add(new BasicNameValuePair("location", "craig"));
 		

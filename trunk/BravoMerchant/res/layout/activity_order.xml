@@ -12,6 +12,7 @@
     </ListView>
 
   <LinearLayout
+	  	android:id="@+id/order_sumarry"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -31,5 +32,13 @@
 	  	android:gravity="left"
         android:layout_weight="1"/>
   </LinearLayout>
+  
 
+  <ImageView
+      android:id="@+id/pay_order"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/order_sumarry"
+      android:src="@drawable/pay" />
+  
 </RelativeLayout>

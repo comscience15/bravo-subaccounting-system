@@ -21,6 +21,7 @@
     
     <string name="home_scanner_positive_button">Go Search</string>
     <string name="home_scanner_negative_button">Cancel</string>
+    <string name="home_scanner_finish_button">OK</string>
     <string name="title_activity_scanner">ScannerActivity</string>
     
     <string name="title_activity_register">RegisterActivity</string>
