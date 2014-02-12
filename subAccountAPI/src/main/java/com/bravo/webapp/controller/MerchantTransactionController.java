@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +30,8 @@ import com.bravo.webapp.util.Encryption;
 @Controller
 @RequestMapping("/merchant/transaction")
 public class MerchantTransactionController {
+
+    private Logger logger = Logger.getLogger(MerchantTransactionController.class.getName());
 
 	@Autowired
 	private CheckoutService checkoutService;
@@ -143,15 +146,14 @@ public class MerchantTransactionController {
 			@RequestParam String encryptedInfo,
 			@RequestParam long merchantTimestamp,
 			@ModelAttribute Transaction transaction) {
-		System.out.println("purchaseItems");
-		System.out.println(transaction.toString());
-		System.out.println(merchantTimestamp);
-		System.out.println(encryptedInfo);
+
+        logger.info(transaction.toString());
+		logger.info(""+merchantTimestamp);
+        logger.info(encryptedInfo);
 
 		Timestamp mTimestamp = new Timestamp(merchantTimestamp);
 
 		// Decrypt customer card number and timestamp\
-		System.out.println(encryptedInfo);
 		String path = "/WEB-INF";
 		DecryptedInfo decryptedInfo = encryption.infoDecryption(request, path,
 				encryptedInfo);

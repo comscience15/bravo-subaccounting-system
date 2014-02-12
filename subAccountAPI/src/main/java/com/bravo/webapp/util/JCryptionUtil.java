@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 
@@ -22,6 +23,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  * 
  */
 public class JCryptionUtil {
+
+    private static Logger logger = Logger.getLogger(JCryptionUtil.class.getName());
 
 	/**
 	 * Constructor
@@ -87,30 +90,32 @@ public class JCryptionUtil {
 	public static String decrypt(String encrypted, KeyPair keys) {
 		Cipher dec;
 		try {
-			dec = Cipher.getInstance("RSA/NONE/NoPadding");
+			dec = Cipher.getInstance("RSA/ECB/NoPadding");
 			dec.init(Cipher.DECRYPT_MODE, keys.getPrivate());
 		} catch (GeneralSecurityException e) {
+            logger.warning("RSA algorithm not supported, cannot decrypt message" + e.toString());
 			throw new RuntimeException("RSA algorithm not supported", e);
 		}
 		String[] blocks = encrypted.split("\\s");
 		StringBuffer result = new StringBuffer();
 		try {
-			System.out.println(dec);
-			System.out.println(dec);
 			for (int i = blocks.length - 1; i >= 0; i--) {
-				System.out.println(i);
 				byte[] data = hexStringToByteArray(blocks[i]);
-				System.out.println(data.length);
 				byte[] decryptedBlock = dec.doFinal(data);
 				result.append(new String(decryptedBlock));
 			}
 		} catch (GeneralSecurityException e) {
+            logger.warning("Decrypt error" + e.toString());
 			throw new RuntimeException("Decrypt error", e);
 		}
+
+        int startIndex = result.indexOf("{");
+        String decryptedInfo = result.substring(startIndex);
+        logger.info("Decrypted info is:" + decryptedInfo);
 		/**
 		 * Some code is getting added in first 2 digits with Jcryption need to investigate
 		 */
-		return result.reverse().toString().substring(2);
+		return decryptedInfo;//result.reverse().toString().substring(2);
 	}
 
 	/**

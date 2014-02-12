@@ -92,8 +92,8 @@ public class Encryption {
 
 			DecryptedInfo result = new DecryptedInfo(cardNumber,
 					customerTimestamp);
-			System.out.println(result.getCardID());
-			System.out.println(result.getCustomerTimestamp());
+			logger.info("Card ID is: " + result.getCardID());
+			logger.info("Customer timsstamp is: " + result.getCustomerTimestamp());
 
 			return result;
 
