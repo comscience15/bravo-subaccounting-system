@@ -2,9 +2,11 @@ package com.bravo.bravomerchant.activities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.bean.Order;
+import com.bravo.bravomerchant.bean.OrderItem;
 
 import android.os.Bundle;
 import android.app.ListActivity;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 /**
  * Merchant main activity
@@ -23,7 +26,7 @@ import android.widget.TextView;
  */
 public class OrderConfirmActivity extends ListActivity {
     //展示的文字
-    private List<String> itemInfoList;
+	List<OrderItem> orderItems;
     private Intent getIntentSource;
     private Order order;
     
@@ -35,11 +38,11 @@ public class OrderConfirmActivity extends ListActivity {
         
         getIntentSource = getIntent();
         
-        String cardId = getIntentSource.getStringExtra("cardId");
+//        String cardId = getIntentSource.getStringExtra("cardId");
         String productsCode = getIntentSource.getStringExtra("productsCode");
         
         order = new Order();
-        order.setCardId(cardId);
+//        order.setCardId(cardId);
         
         if(productsCode != null
         		&& !"".equals(productsCode)){
@@ -53,14 +56,18 @@ public class OrderConfirmActivity extends ListActivity {
 			}
         }
 
-        itemInfoList = order.getItemInfoList();
-          
+        orderItems = order.getItemInfoList();
+		TextView totalPriceTextView = (TextView)findViewById(R.id.order_total_price);
+        totalPriceTextView.setText(String.valueOf(order.getTotalPrice()));
+        
         //设置一个Adapter,使用自定义的Adapter
-        setListAdapter(new OrderListAdapter(this));
+        OrderListAdapter orderListAdapter = new OrderListAdapter(this);
+        setListAdapter(orderListAdapter);
     }
     
     private class OrderListAdapter extends BaseAdapter{
         private Context mContext;
+        
     	public OrderListAdapter(Context context) {
 			this.mContext=context;
 		}
@@ -68,7 +75,7 @@ public class OrderConfirmActivity extends ListActivity {
          * 元素的个数
          */
 		public int getCount() {
-			return itemInfoList.size();
+			return orderItems.size();
 		}
 
 		public Object getItem(int position) {
@@ -80,24 +87,55 @@ public class OrderConfirmActivity extends ListActivity {
 		}
 		//用以生成在ListView中展示的一个个元素View
 		public View getView(int position, View convertView, ViewGroup parent) {
+//			@+id/order_item_name @+id/order_item_unit @+id/order_item_tax @+id/order_item_price @+id/order_item_remove_button
 			//优化ListView
 			if(convertView==null){
 				convertView=LayoutInflater.from(mContext).inflate(R.layout.order_item, null);
 				ItemViewCache viewCache=new ItemViewCache();
-				viewCache.mTextView=(TextView)convertView.findViewById(R.id.order_item_name);
-				viewCache.mImageView=(ImageView)convertView.findViewById(R.id.order_item_remove_button);
+				viewCache.orderItemNameTextView=(TextView)convertView.findViewById(R.id.order_item_name);
+				viewCache.orderItemUnitTextView=(TextView)convertView.findViewById(R.id.order_item_unit);
+				viewCache.orderItemTaxTextView=(TextView)convertView.findViewById(R.id.order_item_tax);
+				viewCache.orderItemPriceTextView=(TextView)convertView.findViewById(R.id.order_item_price);
+				viewCache.removeButtonImageView=(ImageView)convertView.findViewById(R.id.order_item_remove_button);
 				convertView.setTag(viewCache);
 			}
 			ItemViewCache cache=(ItemViewCache)convertView.getTag();
 			//设置文本和图片，然后返回这个View，用于ListView的Item的展示
-			cache.mTextView.setText(itemInfoList.get(position));
-			cache.mImageView.setImageResource(R.drawable.pay);
+			OrderItem orderItem = orderItems.get(position);
+			cache.orderItemNameTextView.setText("NAME:"+orderItem.getName()+"("+orderItem.getBarCode()+")");
+			cache.orderItemUnitTextView.setText("UNIT:"+String.valueOf(orderItem.getUnit()));
+			cache.orderItemTaxTextView.setText("TAX:"+String.valueOf(orderItem.getTax()));
+			cache.orderItemPriceTextView.setText("PRICE:"+String.valueOf(orderItem.getTotalPrice()));
+			cache.removeButtonImageView.setContentDescription(String.valueOf(position));
+			cache.removeButtonImageView.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					CharSequence position = v.getContentDescription();
+					orderItems.remove(Integer.parseInt(position.toString()));
+					if(orderItems.size() > 0){
+						
+						TextView totalPriceTextView = (TextView)findViewById(R.id.order_total_price);
+				        totalPriceTextView.setText("9i9i");
+						notifyDataSetChanged();
+					}else{
+
+						Intent backToMainIntent = new Intent();
+						backToMainIntent.setClass(OrderConfirmActivity.this, MainActivity.class);
+						startActivity(backToMainIntent);
+						OrderConfirmActivity.this.finish();
+					}
+				}
+			});
 			return convertView;
 		}
     }
     //元素的缓冲类,用于优化ListView
     private static class ItemViewCache{
-		public TextView mTextView;
-		public ImageView mImageView;
+		public TextView orderItemNameTextView;
+		public TextView orderItemUnitTextView;
+		public TextView orderItemTaxTextView;
+		public TextView orderItemPriceTextView;
+		public ImageView removeButtonImageView;
 	}
 }

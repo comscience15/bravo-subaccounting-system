@@ -1,6 +1,14 @@
 package com.bravo.bravomerchant.activities;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import com.bravo.bravomerchant.activities.ScannerActivity;
+import com.bravo.bravomerchant.async.AsyncPurchase;
 import com.bravo.bravomerchant.R;
 
 import android.os.Bundle;
@@ -35,6 +43,7 @@ public class MainActivity extends Activity {
 
         /** Getting Scanner icon object on Home page*/
         final ImageView pay_scanner = (ImageView) findViewById(R.id.pay);
+        final ImageView testApi = (ImageView) findViewById(R.id.refund);
         
         /** Setting the onClick listener*/
         OnClickListener icon_listener = new OnClickListener() {
@@ -44,10 +53,13 @@ public class MainActivity extends Activity {
 					// Here we should triggle the barcode scanner library
 					Intent intentForScannerActivity = new Intent(MainActivity.this, ScannerActivity.class);
 					startActivity(intentForScannerActivity);
+				}else if(v.equals(testApi)){
+					new AsyncPurchase(MainActivity.this).execute(getString(R.string.IP_Address));
 				}
 			}
         };
         pay_scanner.setOnClickListener(icon_listener);
+        testApi.setOnClickListener(icon_listener);
         
         /** get the logout button */
         final Button logout_button = (Button) findViewById(R.id.logout_button);
@@ -109,4 +121,5 @@ public class MainActivity extends Activity {
     	MainActivity.this.overridePendingTransition(R.anim.login_enter, R.anim.login_out);
     	MainActivity.this.finish();
     }
+    
 }
