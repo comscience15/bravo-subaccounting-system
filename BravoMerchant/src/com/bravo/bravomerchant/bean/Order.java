@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import android.widget.ArrayAdapter;
 
@@ -32,6 +33,19 @@ public class Order{
 		return orderItems;
 	}
 
+	public Double getTotalPrice(){
+		
+		Double res = 0d;
+		List<OrderItem> orderItemList = getItemInfoList();
+		
+		for (int i = 0; i < orderItemList.size(); i++) {
+			
+			res += orderItemList.get(i).getTotalPrice();
+		}
+		
+		return res;
+	}
+	
 	public void addItem(String barCode) {
 
 		if (orderItems.containsKey(barCode)) {
@@ -57,20 +71,15 @@ public class Order{
 		orderItems.get(barCode).negate();
 	}
 
-	public List<String> getItemInfoList() {
+	public List<OrderItem> getItemInfoList() {
 		
-		List<String> res = new ArrayList<String>();
-		
+		List<OrderItem> res = new ArrayList<OrderItem>();
 		Iterator orderItemsIterator = orderItems.entrySet().iterator();
 		Entry entry = null;
-		OrderItem orderItem = null;
-		
 		while(orderItemsIterator.hasNext()){
 			
 			entry = (Entry) orderItemsIterator.next();
-			orderItem = (OrderItem) entry.getValue();
-			
-			res.add("BarCode:"+orderItem.getBarCode()+"  unit:"+orderItem.getUnit());
+			res.add((OrderItem) entry.getValue());
 		}
 		return res;
 	}

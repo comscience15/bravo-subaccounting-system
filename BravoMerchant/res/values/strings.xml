@@ -36,6 +36,8 @@
     <string name="state_promote">Choose State</string>
     
     <string name="title_order">OrderConfirmActivity</string>
+    <string name="total_price">Total Price:</string>
+    
     <!-- The array list of states or provinces -->
     <string-array name="state_array">
         <item>Alabama</item>

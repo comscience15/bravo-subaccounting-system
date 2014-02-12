@@ -51,20 +51,20 @@ public class ScannerActivity extends FragmentActivity implements
 				format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 				/** Starting the dialog*/
 //				showDialog();
-				if("".equals(cardId)){
-					cardId = scanResult;
-				}else{
+//				if("".equals(cardId)){
+//					cardId = scanResult;
+//				}else{
 					productsCode += scanResult + ",";
-				}
+//				}
 				startScanner();
 			} else if (resultCode == RESULT_CANCELED) {
 				/** If scanning failed, will intent to main screen*/
 				try {
-					Intent toMainPageIntent = new Intent();
-					toMainPageIntent.setClass(this, OrderConfirmActivity.class);
-					toMainPageIntent.putExtra("cardId", cardId);
-					toMainPageIntent.putExtra("productsCode", productsCode);
-					startActivity(toMainPageIntent);
+					Intent toOrderConfirmIntent = new Intent();
+					toOrderConfirmIntent.setClass(this, OrderConfirmActivity.class);
+//					toOrderConfirmIntent.putExtra("cardId", cardId);
+					toOrderConfirmIntent.putExtra("productsCode", productsCode);
+					startActivity(toOrderConfirmIntent);
 					ScannerActivity.this.finish();
 				} catch (Exception e) {
 					// go to main page exception, we should some how catch it
