@@ -33,7 +33,6 @@ public class LoginController {
     @RequestMapping(value = "/loginStatus")
 	public @ResponseBody
 	String loginStatus() {
-		System.out.println("Login Status");
 		return "{\"success\":true}";
 
 	}
@@ -41,8 +40,7 @@ public class LoginController {
 	@RequestMapping(value = "/loginFailed", produces = "application/json")
 	public @ResponseBody
 	String loginError() {
-
-		System.out.println("Login Failed");
+        logger.log(Level.WARNING, "Login failed");
 		throw new UnknownResourceException("Login failed.");
 
 	}

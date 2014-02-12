@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bravo.webapp.security.LoginInformation;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -73,7 +74,7 @@ public class CustomPersistentRememberMeServieces extends
 	@Override
 	protected Authentication createSuccessfulAuthentication(
 			HttpServletRequest request, UserDetails user) {
-		System.out.println("Rememberme username: " + username);
+        logger.log(Level.INFO, "Rememberme username: " + username);
 		String[] userParams = username.split(":");
 		RememberMeAuthenticationToken result;
 		CustomJdbcDaoServiceList customServiceList = (CustomJdbcDaoServiceList) getUserDetailsService();
@@ -97,9 +98,10 @@ public class CustomPersistentRememberMeServieces extends
 		details.setParams(userParams);
 		result.setDetails(details);
 
-		System.out.println(result.toString());
-		System.out.println((RememberMeAuthenticationToken.class
-				.isAssignableFrom(result.getClass())));
+        LoginInformation.setAuthentication(result);
+        logger.log(Level.INFO, "Set LoginInformation for logging out: " + LoginInformation.getUsername());
+
+        System.out.println(result.toString());
 
 		return result;
 	}
