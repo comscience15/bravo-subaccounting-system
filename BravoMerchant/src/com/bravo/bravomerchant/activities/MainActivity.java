@@ -43,7 +43,6 @@ public class MainActivity extends Activity {
 
         /** Getting Scanner icon object on Home page*/
         final ImageView pay_scanner = (ImageView) findViewById(R.id.pay);
-        final ImageView testApi = (ImageView) findViewById(R.id.refund);
         
         /** Setting the onClick listener*/
         OnClickListener icon_listener = new OnClickListener() {
@@ -53,13 +52,10 @@ public class MainActivity extends Activity {
 					// Here we should triggle the barcode scanner library
 					Intent intentForScannerActivity = new Intent(MainActivity.this, ScannerActivity.class);
 					startActivity(intentForScannerActivity);
-				}else if(v.equals(testApi)){
-					new AsyncPurchase(MainActivity.this).execute(getString(R.string.IP_Address));
 				}
 			}
         };
         pay_scanner.setOnClickListener(icon_listener);
-        testApi.setOnClickListener(icon_listener);
         
         /** get the logout button */
         final Button logout_button = (Button) findViewById(R.id.logout_button);

@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.bean.Order;
 import com.bravo.bravomerchant.bean.OrderItem;
+import com.bravo.bravomerchant.util.JsonUtil;
 
 import android.os.Bundle;
 import android.app.ListActivity;
@@ -26,7 +31,7 @@ import android.widget.TextView;
  */
 public class OrderConfirmActivity extends ListActivity {
     //展示的文字
-	List<OrderItem> orderItems;
+	List<OrderItem> orderItemList;
     private Intent getIntentSource;
     private Order order;
     
@@ -37,12 +42,8 @@ public class OrderConfirmActivity extends ListActivity {
         setContentView(R.layout.activity_order);
         
         getIntentSource = getIntent();
-        
-//        String cardId = getIntentSource.getStringExtra("cardId");
         String productsCode = getIntentSource.getStringExtra("productsCode");
-        
         order = new Order();
-//        order.setCardId(cardId);
         
         if(productsCode != null
         		&& !"".equals(productsCode)){
@@ -56,16 +57,45 @@ public class OrderConfirmActivity extends ListActivity {
 			}
         }
 
-        orderItems = order.getItemInfoList();
+        orderItemList = order.getItemInfoList();
+        
 		TextView totalPriceTextView = (TextView)findViewById(R.id.order_total_price);
-        totalPriceTextView.setText(String.valueOf(order.getTotalPrice()));
+        totalPriceTextView.setText(String.valueOf(getTotalPrice()));
+        
+        ImageView payOrderImageView = (ImageView)findViewById(R.id.pay_order);
+        payOrderImageView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+
+				Intent toCardScanIntent = new Intent();
+				toCardScanIntent.setClass(OrderConfirmActivity.this, ScannerActivity.class);
+				try {
+					toCardScanIntent.putExtra("orderItemListJsonStr", JsonUtil.getJsonStr(orderItemList));
+					startActivity(toCardScanIntent);
+				} catch (JSONException e) {
+					//TODO show error msg
+					e.printStackTrace();
+				}
+			}
+		});
         
         //设置一个Adapter,使用自定义的Adapter
         OrderListAdapter orderListAdapter = new OrderListAdapter(this);
         setListAdapter(orderListAdapter);
     }
     
-    private class OrderListAdapter extends BaseAdapter{
+    private Double getTotalPrice() {
+    	
+    	Double res = 0d;
+    	for (int i = 0; i < orderItemList.size(); i++) {
+			
+    		res += orderItemList.get(i).getTotalPrice();
+		}
+		return res;
+	}
+
+	private class OrderListAdapter extends BaseAdapter{
         private Context mContext;
         
     	public OrderListAdapter(Context context) {
@@ -75,7 +105,7 @@ public class OrderConfirmActivity extends ListActivity {
          * 元素的个数
          */
 		public int getCount() {
-			return orderItems.size();
+			return orderItemList.size();
 		}
 
 		public Object getItem(int position) {
@@ -101,7 +131,7 @@ public class OrderConfirmActivity extends ListActivity {
 			}
 			ItemViewCache cache=(ItemViewCache)convertView.getTag();
 			//设置文本和图片，然后返回这个View，用于ListView的Item的展示
-			OrderItem orderItem = orderItems.get(position);
+			OrderItem orderItem = orderItemList.get(position);
 			cache.orderItemNameTextView.setText("NAME:"+orderItem.getName()+"("+orderItem.getBarCode()+")");
 			cache.orderItemUnitTextView.setText("UNIT:"+String.valueOf(orderItem.getUnit()));
 			cache.orderItemTaxTextView.setText("TAX:"+String.valueOf(orderItem.getTax()));
@@ -112,11 +142,11 @@ public class OrderConfirmActivity extends ListActivity {
 				@Override
 				public void onClick(View v) {
 					CharSequence position = v.getContentDescription();
-					orderItems.remove(Integer.parseInt(position.toString()));
-					if(orderItems.size() > 0){
-						
+					orderItemList.remove(Integer.parseInt(position.toString()));
+					if(orderItemList.size() > 0){
+
 						TextView totalPriceTextView = (TextView)findViewById(R.id.order_total_price);
-				        totalPriceTextView.setText("9i9i");
+				        totalPriceTextView.setText(String.valueOf(getTotalPrice()));
 						notifyDataSetChanged();
 					}else{
 

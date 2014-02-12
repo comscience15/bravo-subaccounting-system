@@ -1,6 +1,7 @@
 package com.bravo.bravomerchant.activities;
 
 import com.bravo.bravomerchant.R;
+import com.bravo.bravomerchant.async.AsyncPurchase;
 import com.bravo.bravomerchant.bean.Order;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog.ScanResultListener;
@@ -25,9 +26,8 @@ import android.view.Window;
 public class ScannerActivity extends FragmentActivity implements
 		ScanResultListener {
 	private String scanResult;
-	private String format;
-	private String cardId = "";
 	private String productsCode = "";
+	private String orderItemListJsonStr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,10 @@ public class ScannerActivity extends FragmentActivity implements
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.activity_scanner);
-		
+
+		Intent sourceIntent = getIntent();
+        orderItemListJsonStr = sourceIntent.getStringExtra("orderItemListJsonStr");
+        
 		startScanner();
 	}
 	
@@ -46,23 +49,23 @@ public class ScannerActivity extends FragmentActivity implements
 	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == 0) {
-			if (resultCode == RESULT_OK) {
+			
+			if(orderItemListJsonStr != null
+					&& !"".equals(orderItemListJsonStr)){
+				
+				new AsyncPurchase(ScannerActivity.this).execute(getString(R.string.IP_Address), orderItemListJsonStr, intent.getStringExtra("SCAN_RESULT"));
+			} else if (resultCode == RESULT_OK) {
+				
 				scanResult = intent.getStringExtra("SCAN_RESULT");
-				format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 				/** Starting the dialog*/
-//				showDialog();
-//				if("".equals(cardId)){
-//					cardId = scanResult;
-//				}else{
-					productsCode += scanResult + ",";
-//				}
+				productsCode += scanResult + ",";
 				startScanner();
 			} else if (resultCode == RESULT_CANCELED) {
+				
 				/** If scanning failed, will intent to main screen*/
 				try {
 					Intent toOrderConfirmIntent = new Intent();
 					toOrderConfirmIntent.setClass(this, OrderConfirmActivity.class);
-//					toOrderConfirmIntent.putExtra("cardId", cardId);
 					toOrderConfirmIntent.putExtra("productsCode", productsCode);
 					startActivity(toOrderConfirmIntent);
 					ScannerActivity.this.finish();
@@ -87,7 +90,10 @@ public class ScannerActivity extends FragmentActivity implements
 		/** Referring to zxing barcode scanner library */
 		try {
 			Intent zxingIntent = new Intent("com.google.zxing.client.android.SCAN");
-			// intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+			if(orderItemListJsonStr != null
+					&& !"".equals(orderItemListJsonStr)){
+				zxingIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+			}
 			zxingIntent.putExtra("SCAN_WIDTH", width);
 			zxingIntent.putExtra("SCAN_HEIGHT", height);
 			startActivityForResult(zxingIntent, 0);
@@ -100,14 +106,13 @@ public class ScannerActivity extends FragmentActivity implements
 	/**
 	 *  This method is going to open the popup dialog
 	 */
-	public void showDialog() {
+	public void showDialog(String msg) {
 		try {
 			ScanResultDialog dialog = new ScanResultDialog();
 			dialog.setCancelable(false); // After the setting, the dialog will not be closed by touching other places
-			dialog.setPositiveButtonMsg(getString(R.string.home_scanner_positive_button));
-			dialog.setNegativeButtonMsg(getString(R.string.home_scanner_negative_button));
-			dialog.setScanResult(scanResult);
-			// dialog.show(getSupportFragmentManager(), "homeScanResultDialog");
+//			dialog.setPositiveButtonMsg(getString(R.string.home_scanner_positive_button));
+			dialog.setNegativeButtonMsg(getString(R.string.home_scanner_finish_button));
+			dialog.setScanResult(msg);
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			ft.add(dialog, null);
 			ft.commitAllowingStateLoss();
@@ -148,7 +153,6 @@ public class ScannerActivity extends FragmentActivity implements
 			Intent toMainPageIntent = new Intent(this, MainActivity.class);
 			startActivity(toMainPageIntent);
 		} catch (Exception e) {
-			// go back exception, we should some how catch it
 			System.err.println("Can not cancle the dialog: " + e.toString());
 		}
 	}
