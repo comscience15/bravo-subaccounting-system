@@ -118,14 +118,23 @@ public class Encryption {
 		String encryptedData = null;
 		try {
 			// get an RSA cipher object and print the provider
-		    final Cipher cipher = Cipher.getInstance(ALGORITHM);
+		    final Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
 		    // encrypt the plain text using the public key
 		    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-		    encryptedData = new String(cipher.doFinal(data.getBytes()));
+		    encryptedData = byteArrayToHexString(cipher.doFinal(data.getBytes()));
 		    } catch (Exception e) {
 		    	e.printStackTrace();
 		    }
 		return encryptedData;
+	}
+	
+	private static String byteArrayToHexString(byte[] bytes) {
+		StringBuffer result = new StringBuffer();
+		for (int i = 0; i < bytes.length; i++) {
+			result.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16)
+					.substring(1));
+		}
+		return result.toString();
 	}
 	
 
