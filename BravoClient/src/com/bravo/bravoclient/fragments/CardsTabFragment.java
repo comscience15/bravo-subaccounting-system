@@ -1,5 +1,6 @@
 package com.bravo.bravoclient.fragments;
  
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +30,7 @@ import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
+import com.bravo.bravoclient.async.AsyncTest;
 import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
 import com.bravo.bravoclient.model.Card;
 import com.bravo.bravoclient.persistence.CardListDAO;
@@ -197,7 +199,8 @@ public class CardsTabFragment extends SherlockFragment{
 		
 		// Generate the encrypted data, the public key has already gotten when login
 		Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
-		String encryptedData = encryptionObj.generateEncryptedData(defaultCard.getCardId());
+		String inputData = "{\"cardID\":\""+ defaultCard.getCardId() +"\", \"customerTimestamp\":\""+ System.currentTimeMillis() +"\"}";
+		String encryptedData = encryptionObj.generateEncryptedData(inputData);
 		
 		// Generate QRCode for encrypted data
 		BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
