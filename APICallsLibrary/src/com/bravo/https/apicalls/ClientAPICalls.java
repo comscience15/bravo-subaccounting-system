@@ -9,10 +9,13 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -105,5 +108,40 @@ public class ClientAPICalls {
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "getCardList", androidContext);
 		
 		return HttpResponseHandler.toArrayList(response);	
+	}
+	
+	/**
+	 * Load money by using credit card
+	 * @param IP
+	 * @param androidContext
+	 * @param firstName
+	 * @param middleInitial
+	 * @param lastName
+	 * @param accountNumber
+	 * @param cvn
+	 * @param street
+	 * @param city
+	 * @param state
+	 * @param zip
+	 * @param totalAmount
+	 * @param cardID
+	 * @param expirationDate
+	 * @param saveProfile
+	 * @throws IOException
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws CertificateException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static void loadMoneyByCreditCard(String IP, Context androidContext, ArrayList<NameValuePair> paraList) 
+					throws IOException, KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
+		final String ip = IP;
+		final String path = "/service/customer/transaction/loadMoney";
+		final String URL = ip + path;
+		
+		String cookie = CookieHandler.getCookie(androidContext);
+		
+		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, paraList, cookie, "loadMoneyByCreditCard", androidContext);
 	}
 }
