@@ -18,6 +18,7 @@
     <string name="title_activity_login">Login</string>
     <string name="invalid_username">Please verify the email</string>
     <string name="invalid_password">Please verify the password</string>
+    <string name="logout_toast">Logout Successfully</string>
     
     <string name="home_scanner_positive_button">Go Search</string>
     <string name="home_scanner_negative_button">Cancel</string>

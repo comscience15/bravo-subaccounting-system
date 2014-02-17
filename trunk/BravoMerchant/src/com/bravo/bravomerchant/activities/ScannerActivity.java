@@ -2,7 +2,6 @@ package com.bravo.bravomerchant.activities;
 
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.async.AsyncPurchase;
-import com.bravo.bravomerchant.bean.Order;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog.ScanResultListener;
 
