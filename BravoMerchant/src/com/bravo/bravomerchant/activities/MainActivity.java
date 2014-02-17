@@ -1,14 +1,8 @@
 package com.bravo.bravomerchant.activities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.bravo.bravomerchant.activities.ScannerActivity;
-import com.bravo.bravomerchant.async.AsyncPurchase;
+import com.bravo.bravomerchant.async.AsyncLogout;
 import com.bravo.bravomerchant.R;
 
 import android.os.Bundle;
@@ -30,11 +24,24 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	private boolean doublePressBackButton = false;
+    private static boolean isLogin = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		Intent getIntentSource = getIntent();
+        String fromActivity = getIntentSource.getStringExtra("Activity");
+        // enable the page jumping from login and register directly to cards fragment
+        if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register"))) {
+        	
+        	isLogin = true;
+        }else{
+
+	    	Intent toLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
+	    	MainActivity.this.startActivity(toLoginActivity);
+        }
 	}
 
 	@Override
@@ -49,9 +56,15 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(v.equals(pay_scanner)) {
-					// Here we should triggle the barcode scanner library
-					Intent intentForScannerActivity = new Intent(MainActivity.this, ScannerActivity.class);
-					startActivity(intentForScannerActivity);
+					
+					if(isLogin){
+						// Here we should triggle the barcode scanner library
+						Intent intentForScannerActivity = new Intent(MainActivity.this, ScannerActivity.class);
+						startActivity(intentForScannerActivity);
+					}else{
+				    	Intent toLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
+				    	MainActivity.this.startActivity(toLoginActivity);
+					}
 				}
 			}
         };
@@ -64,7 +77,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				showLoginActivity();
+				logout();
 			}
 		});
     }
@@ -111,11 +124,21 @@ public class MainActivity extends Activity {
 	/**
 	 * when logout, turn to loginActivity
 	 */
-    public void showLoginActivity() {
-    	Intent toLoginActivity = new Intent(MainActivity.this.getApplicationContext(), LoginActivity.class);
-    	MainActivity.this.startActivity(toLoginActivity);
-    	MainActivity.this.overridePendingTransition(R.anim.login_enter, R.anim.login_out);
-    	MainActivity.this.finish();
+    public void logout() {
+
+    	new AsyncLogout(MainActivity.this).execute(getString(R.string.IP_Address));
+//    	Intent toLoginActivity = new Intent(MainActivity.this.getApplicationContext(), LoginActivity.class);
+//    	MainActivity.this.startActivity(toLoginActivity);
+//    	MainActivity.this.overridePendingTransition(R.anim.login_enter, R.anim.login_out);
+//    	MainActivity.this.finish();
     }
+
+	public static boolean isLogin() {
+		return isLogin;
+	}
+
+	public static void setLogin(boolean isLogin) {
+		MainActivity.isLogin = isLogin;
+	}
     
 }

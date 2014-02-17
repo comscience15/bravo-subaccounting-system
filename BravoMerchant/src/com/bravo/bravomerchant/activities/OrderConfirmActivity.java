@@ -1,12 +1,8 @@
 package com.bravo.bravomerchant.activities;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.bean.Order;
@@ -22,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 /**
  * Merchant main activity

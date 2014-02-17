@@ -13,7 +13,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
