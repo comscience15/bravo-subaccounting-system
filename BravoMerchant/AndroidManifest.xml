@@ -36,7 +36,7 @@
         </activity>
         <activity
             android:name="com.bravo.bravomerchant.activities.OrderConfirmActivity"
-            android:label="@string/title_order" android:permission="android.permission.CAMERA">
+            android:label="@string/title_order">
         </activity>
         <activity
             android:name="com.bravo.bravomerchant.activities.RegisterActivity"
