@@ -28,6 +28,7 @@
     <string name="money_transfer">Money Transfer</string>
     <string name="cards_list">Cards List</string>
     <string name="transaction_history">Transaction History</string>
+    <string name="currency">$ </string>
     
     <string name="IP_Address">https://50.156.103.190:8181/subAccountAPI/</string>
     <!-- <string name="IP_Address">http://10.0.2.2:8080/subAccountAPI/</string> -->
