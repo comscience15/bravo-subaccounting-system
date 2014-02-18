@@ -1,6 +1,5 @@
 package com.bravo.bravoclient.fragments;
  
-import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,10 +26,8 @@ import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.CardsListActivity;
 import com.bravo.bravoclient.activities.LoginActivity;
 import com.bravo.bravoclient.activities.MainActivity;
-import com.bravo.bravoclient.async.AsyncGetCardsList;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
-import com.bravo.bravoclient.async.AsyncTest;
 import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
 import com.bravo.bravoclient.model.Card;
 import com.bravo.bravoclient.persistence.CardListDAO;
@@ -83,8 +80,7 @@ public class CardsTabFragment extends SherlockFragment{
         OnClickListener buttonListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
-				cardBalanceEditText.setHint("noButton Clicked!");
+				
 				if (isAuthenticated() == false) return;
 				if(v.equals(cardPayButton)) {
 					// TODO: when pay button be pressed
@@ -139,6 +135,8 @@ public class CardsTabFragment extends SherlockFragment{
 		cardTransactionHistoryButton.setOnTouchListener(buttonTouchListener);
 		cardCardsListButton.setOnTouchListener(buttonTouchListener);
         
+		// Display card balance
+		displayCardBalance();
     }
 
     /**
@@ -175,7 +173,11 @@ public class CardsTabFragment extends SherlockFragment{
         }
 	}
 	
-	private Card getDefaultCard() {
+	/**
+	 * Get selected card
+	 * @return
+	 */
+	private Card getSelectedCard() {
 		CardListDAO cardListDAO = new CardListDAO(getActivity());
 		SharedPreferences settings = getActivity().getSharedPreferences(CardsListActivity.CHOOSE_CARD, getActivity().MODE_PRIVATE);
 		int selectedCardRowId = settings.getInt("SELECTED_CARD", 0);
@@ -186,6 +188,19 @@ public class CardsTabFragment extends SherlockFragment{
 		return card;
 	}
 	
+	/**
+	 * Display the current card balance on edit text field
+	 */
+	public void displayCardBalance() {
+		Card selectedCard = getSelectedCard();
+		String balance = "0.00";
+		if (selectedCard != null) {
+			balance = String.valueOf(selectedCard.getBalance());
+		}
+		EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
+		cardBalanceEditText.setText(getString(R.string.currency) + balance);
+	}
+	
 	private void showLoginActivity() {
 		Intent toLoginActivity = new Intent(getActivity(), LoginActivity.class);
 		getActivity().startActivity(toLoginActivity);
@@ -194,7 +209,7 @@ public class CardsTabFragment extends SherlockFragment{
 	
 	private void payImpl() {
 		// TODO: This should be changed once the listView has been implemented
-		Card defaultCard = getDefaultCard();
+		Card defaultCard = getSelectedCard();
 		logger.log(Level.INFO, "Default cardID is: " + defaultCard.getCardId());
 		
 		// Generate the encrypted data, the public key has already gotten when login
@@ -213,6 +228,10 @@ public class CardsTabFragment extends SherlockFragment{
 		getActivity().overridePendingTransition(R.anim.cards_list_enter, R.anim.cards_list_out);
 	}
 	
+	/**
+	 * Check if current user is authenticated
+	 * @return
+	 */
 	private boolean isAuthenticated() {
 		if (MainActivity.getLoginStatus() == false) {
 			showLoginActivity();
