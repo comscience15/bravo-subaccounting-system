@@ -2,6 +2,8 @@ package com.bravo.bravoclient.activities;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.async.AsyncRegister;
+import com.bravo.bravoclient.common.CommonValidationHandler;
+import com.bravo.bravoclient.common.CommonViewHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -93,7 +95,7 @@ public class RegisterActivity extends Activity {
 		TextWatcher usernameWatcher = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String usernameTemp = getEditTextValue(usernameField);
+				final String usernameTemp = CommonViewHandler.getEditTextValue(usernameField);
 				if (usernameValidation(usernameTemp)) {
 					isValidUsername = true;
 					usernameField.setError(null);
@@ -119,7 +121,7 @@ public class RegisterActivity extends Activity {
 		TextWatcher passwordWather = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String passwordTemp = getEditTextValue(passwordField);
+				final String passwordTemp = CommonViewHandler.getEditTextValue(passwordField);
 				if (passwordValidation(passwordTemp)) {
 					isValidPassword = true;
 					passwordField.setError(null);
@@ -145,7 +147,7 @@ public class RegisterActivity extends Activity {
 		TextWatcher confirmPasswordWatcher = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String confirmPasswordTemp = getEditTextValue(confirmPasswordField);
+				final String confirmPasswordTemp = CommonViewHandler.getEditTextValue(confirmPasswordField);
 				if (passwordConfirm(password, confirmPasswordTemp)) {
 					isValidConfirmP = true;
 					confirmPasswordField.setError(null);
@@ -171,7 +173,7 @@ public class RegisterActivity extends Activity {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String streetTemp = getEditTextValue(streetField);
+				final String streetTemp = CommonViewHandler.getEditTextValue(streetField);
 				if (streetValidation(streetTemp)) {
 					isValidStreet = true;
 					streetField.setError(null);
@@ -198,7 +200,7 @@ public class RegisterActivity extends Activity {
 		TextWatcher cityWather = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String cityTemp = getEditTextValue(cityField);
+				final String cityTemp = CommonViewHandler.getEditTextValue(cityField);
 				if (cityValidation(cityTemp)) {
 					isValidCity = true;
 					cityField.setError(null);
@@ -226,7 +228,7 @@ public class RegisterActivity extends Activity {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String zipCodeTemp = getEditTextValue(zipCodeField);
+				final String zipCodeTemp = CommonViewHandler.getEditTextValue(zipCodeField);
 				if (zipCodeValidation(zipCodeTemp)) {
 					isValidZipCode = true;
 					zipCodeField.setError(null);
@@ -249,7 +251,7 @@ public class RegisterActivity extends Activity {
 		};
 		
 		/** **/
-		state = getSpinnerValue(stateField);
+		state = CommonViewHandler.getSpinnerValue(stateField);
 		
 		/** add listener to fields **/
 		usernameField.addTextChangedListener(usernameWatcher);
@@ -261,25 +263,6 @@ public class RegisterActivity extends Activity {
 	}
 	
 	/**
-	 * The method is going to get the value of edit text field
-	 * @param field
-	 * @return
-	 */
-	private String getEditTextValue(EditText field) {
-		return field == null ? "" : field.getText().toString(); 
-	}
-	
-	/**
-	 * The method is going to get the value of spinner field
-	 * @param field
-	 * @return
-	 */
-	private String getSpinnerValue(Spinner field) {
-		return field == null ? "" : field.getSelectedItem().toString();
-		
-	}
-	
-	/**
 	 * The username validation
 	 * @param username
 	 * @param password
@@ -287,11 +270,7 @@ public class RegisterActivity extends Activity {
 	 */
 	private boolean usernameValidation(String username) {
 		/** The username right now is not email address **/
-		if (username.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}") ) {
-			return true;
-		} else {
-			return false;
-		}
+		return CommonValidationHandler.usernameValidation(username);
 	}
 	
 	/**
@@ -300,11 +279,7 @@ public class RegisterActivity extends Activity {
 	 * @return
 	 */
 	private boolean passwordValidation(String password) {
-		if (password.matches("[a-z0-9A-Z]+") && (password.length() >=6)){
-			return true;
-		} else {
-			return false;
-		}
+		return CommonValidationHandler.passwordValidation(password);
 	}
 	
 	/**
@@ -323,11 +298,7 @@ public class RegisterActivity extends Activity {
 	 * @return
 	 */
 	private boolean streetValidation(String street) {
-		if (street != null && !street.isEmpty()) {
-			return true;
-		} else {
-			return false;
-		}
+		return CommonValidationHandler.notNullValidation(street);
 	}
 	
 	/**
@@ -336,11 +307,7 @@ public class RegisterActivity extends Activity {
 	 * @return
 	 */
 	private boolean cityValidation(String city) {
-		if (city != null && !city.isEmpty()) {
-			return true;
-		} else {
-			return false;
-		}
+		return CommonValidationHandler.notNullValidation(city);
 	}
 	
 	/**
@@ -349,11 +316,7 @@ public class RegisterActivity extends Activity {
 	 * @return
 	 */
 	private boolean zipCodeValidation(String zipCode) {
-		if (zipCode != null && zipCode.matches("[0-9]{5,6}")) {
-			return true;
-		} else {
-			return false;
-		}
+		return CommonValidationHandler.zipCodeValidation(zipCode);
 	}
 	
 	private boolean allFieldsValidated() {

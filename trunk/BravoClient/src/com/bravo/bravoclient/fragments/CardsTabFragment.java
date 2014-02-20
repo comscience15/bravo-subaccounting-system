@@ -26,6 +26,7 @@ import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.CardsListActivity;
 import com.bravo.bravoclient.activities.LoginActivity;
 import com.bravo.bravoclient.activities.MainActivity;
+import com.bravo.bravoclient.activities.ReloadMoneyActivity;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
 import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
@@ -44,6 +45,7 @@ public class CardsTabFragment extends SherlockFragment{
 	/** Declare the pressed button icons used in Card Tab */
 	private final static SparseIntArray imageViewPressedBg = new SparseIntArray();
 	private Logger logger = Logger.getLogger(CardsTabFragment.class.getName());
+	private static String cardId;
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -87,6 +89,7 @@ public class CardsTabFragment extends SherlockFragment{
 					payImpl();
 				} else if (v.equals(cardReloadButton)){
 					// TODO: when reload button be pressed
+					reloadImpl();
 				} else if (v.equals(cardSelfCheckoutButton)){
 					// TODO: when selfCheckout button be pressed
 				} else if (v.equals(cardSendGiftButton)){
@@ -184,14 +187,16 @@ public class CardsTabFragment extends SherlockFragment{
 		
 		cardListDAO.openDB();
 		Card card = cardListDAO.getCard(selectedCardRowId);
-		cardListDAO.closeDB();	
+		cardListDAO.closeDB();
+		
+		cardId = card.getCardId();
 		return card;
 	}
 	
 	/**
 	 * Display the current card balance on edit text field
 	 */
-	public void displayCardBalance() {
+	private void displayCardBalance() {
 		Card selectedCard = getSelectedCard();
 		String balance = "0.00";
 		if (selectedCard != null) {
@@ -225,6 +230,13 @@ public class CardsTabFragment extends SherlockFragment{
 	private void cardsListImpl() {
 		Intent toCardsListActivity = new Intent(getActivity(), CardsListActivity.class);
 		getActivity().startActivity(toCardsListActivity);
+		getActivity().overridePendingTransition(R.anim.cards_list_enter, R.anim.cards_list_out);
+	}
+	
+	private void reloadImpl() {
+		Intent toReloadMoneyActivity = new Intent(getActivity(), ReloadMoneyActivity.class);
+		toReloadMoneyActivity.putExtra("cardID", cardId);
+		getActivity().startActivity(toReloadMoneyActivity);
 		getActivity().overridePendingTransition(R.anim.cards_list_enter, R.anim.cards_list_out);
 	}
 	
