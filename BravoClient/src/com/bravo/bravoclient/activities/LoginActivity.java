@@ -2,6 +2,7 @@ package com.bravo.bravoclient.activities;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.async.AsyncLogin;
+import com.bravo.bravoclient.common.CommonViewHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -60,7 +61,7 @@ public class LoginActivity extends Activity {
 		TextWatcher usernameWatcher = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String usernameTemp = getEditTextValue(usernameField);
+				final String usernameTemp = CommonViewHandler.getEditTextValue(usernameField);
 				if (!usernameValidation(usernameTemp)) {
 					loginBtn.setEnabled(false);
 					isValidU = false;
@@ -86,7 +87,7 @@ public class LoginActivity extends Activity {
 		TextWatcher passwordWatcher = new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				final String passwordTemp = getEditTextValue(passwordField);
+				final String passwordTemp = CommonViewHandler.getEditTextValue(passwordField);
 				if (!passwordValidation(passwordTemp)) {
 					loginBtn.setEnabled(false);
 					isValidP = false;
@@ -160,16 +161,6 @@ public class LoginActivity extends Activity {
 	private String getPassword(EditText passwordView) {
 		return passwordView == null ? "" : passwordView.getText().toString();
 	}
-	
-	/**
-	 * Get the value of a edit text field
-	 * @param field
-	 * @return
-	 */
-	private String getEditTextValue(EditText field) {
-		return field == null ? "" : field.getText().toString(); 
-	}
-	
 	
 	/**
 	 * The username validation

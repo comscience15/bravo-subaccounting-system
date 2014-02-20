@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    android:orientation="vertical" 
+    android:background="@color/solid_main">
+
+    <!-- Header  Starts -->
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@layout/header"
+        android:paddingTop="5dip" >
+
+        <!-- Logo Start -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/logo" />
+        <!-- Logo Ends -->
+    </RelativeLayout>
+    <!-- Header Ends -->
+
+    <!-- Footer Start -->
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:layout_height="90dip"
+        android:layout_alignParentBottom="true"
+        android:background="@layout/footer" >
+    </LinearLayout>
+    <!-- Footer Ends -->
+
+    <!-- If use profile -->
+	<LinearLayout 
+            android:id="@+id/reload_money_profile_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dip"
+            android:layout_below="@id/header">
+            
+            <!-- If use profile -->
+            <CheckBox 
+                android:id="@+id/use_profile_ckb"
+                android:layout_width="match_parent"
+                android:layout_height="20dip"
+                android:layout_marginBottom="5dip"
+                android:layout_marginTop="5dip"
+                android:text="If use exist profile"/>
+            
+            <Spinner 
+                android:id="@+id/reload_money_exist_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:minHeight="45dp" 
+                android:visibility="gone"/>
+            
+            <!-- Reload button -->
+            <Button
+                android:id="@+id/reload_money_Btn_profile"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:layout_marginBottom="20dip"
+                android:visibility="gone"
+                android:text="Reload" />
+    </LinearLayout>
+    <!-- If use profile end -->
+
+    <!-- Reload Money Form -->
+    <ScrollView
+        android:id="@+id/reload_money_form_scrollview"
+        android:layout_width="fill_parent"
+  		android:layout_height="fill_parent"
+        android:layout_below="@id/reload_money_profile_layout">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dip" >
+            
+            <!-- Firstname -->
+            <EditText
+                android:id="@+id/reload_money_firstname"
+                android:hint="Firstname"
+                style="@style/FormTextFieldTheme" />
+            
+            <!-- Middle Initial -->
+            <EditText
+                android:id="@+id/reload_money_middle_initial"
+                android:hint="Middile Initial (Optional)"
+                style="@style/FormTextFieldTheme" />
+            
+            <!-- Lastname -->
+            <EditText 
+                android:id="@+id/reload_money_lastname"
+                android:hint="Lastname"
+                style="@style/FormTextFieldTheme"/>
+            
+            <!-- Card Number (Account number)-->
+            <EditText
+                android:id="@+id/reload_money_card_number"
+                android:hint="Card Number"
+                style="@style/FormTextFieldTheme" />
+            
+            <!-- Expiration date -->
+            <LinearLayout 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+                
+                <TextView 
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/lable_text_color"
+                    android:textSize="16dip"
+                    android:text="Month: "/>
+
+                <NumberPicker 
+                android:id="@+id/reload_money_expiration_month"
+   				android:layout_width="0dip"
+   				android:layout_height="wrap_content"
+   				android:layout_weight="2"
+   				/>
+                
+                <TextView 
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/lable_text_color"
+                    android:textSize="16dip"
+                    android:text="Year: "/>
+                
+                <NumberPicker 
+                android:id="@+id/reload_money_expiration_year"
+   				android:layout_width="0dip"
+   				android:layout_height="wrap_content"
+   				android:layout_weight="2"
+   				/>
+            </LinearLayout>
+            
+            <!-- CVN -->
+            <EditText
+                android:id="@+id/reload_money_cvn"
+                android:hint="CVN"
+                style="@style/FormTextFieldTheme" />
+            
+            <!-- Street -->
+            <EditText 
+                android:id="@+id/reload_money_street"
+                android:hint="Street" 
+                style="@style/FormTextFieldTheme" />
+            
+            <!-- City -->
+            <EditText 
+                android:id="@+id/reload_money_city"
+                android:hint="City"
+                style="@style/FormTextFieldTheme" />
+            
+            <!-- State -->
+            <Spinner
+                android:id="@+id/reload_money_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:minHeight="45dp"
+                android:entries="@array/state_array"
+                android:prompt="@string/state_promote" />
+            
+            <!-- Zipcode -->
+            <EditText 
+                android:id="@+id/reload_money_zipcode"
+                android:hint="Zipcode"
+                style="@style/FormTextFieldTheme"/>
+            
+            <!-- Amount -->
+            <EditText 
+                android:id="@+id/reload_money_amount"
+                android:hint="Amount"
+                style="@style/FormTextFieldTheme"/>
+            
+            <CheckBox
+                android:id="@+id/save_profile_ckb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="If save as profile ?"
+                />
+            
+            <!-- Reload button -->
+            <Button
+                android:id="@+id/reload_money_Btn_credit_card"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:layout_marginBottom="20dip"
+                android:text="Reload" />
+        </LinearLayout>
+    </ScrollView>
+    <!-- Reload Form Ends -->
+</RelativeLayout>

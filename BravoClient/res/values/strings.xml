@@ -19,6 +19,14 @@
     <string name="reg_invalid_street">Please verify the street</string>
     <string name="reg_invalid_city">Please verify the city</string>
     <string name="reg_invalid_zipCode">Please verify the zipCode</string>
+    <string name="reload_invalid_firstname">Please verify your firstname</string>
+    <string name="reload_invalid_lastname">Please verify your lastname</string>
+    <string name="reload_invalid_cardNumber">Please verify your card number</string>
+    <string name="reload_invalid_cvn">Please verify your cvn</string>
+    <string name="reload_invalid_street">Please verify street name</string>
+    <string name="reload_invalid_city">Please verify city name</string>
+    <string name="reload_invalid_zip_code">Please verify Zip Code</string>
+    <string name="reload_invalid_amount">Please verify amount</string>
     <string name="home_scanner_positive_button">Go Search</string>
     <string name="home_scanner_negative_button">Cancel</string>
     <string name="balance">Balance</string>
@@ -29,72 +37,101 @@
     <string name="cards_list">Cards List</string>
     <string name="transaction_history">Transaction History</string>
     <string name="currency">$ </string>
-    
     <string name="IP_Address">https://50.156.103.190:8181/subAccountAPI/</string>
     <!-- <string name="IP_Address">http://10.0.2.2:8080/subAccountAPI/</string> -->
 
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_cards_list">Cards List</string>
-    
+    <string name="title_activity_reload_money">Reload Money</string>
+
     <!-- The array list of states or provinces -->
     <string-array name="state_array">
         <item>Alabama</item>
-          <item>Alaska</item>
-          <item>Arizona</item>
-          <item>Arkansas</item>
-          <item>California</item>
-          <item>Colorado</item>
-          <item>Connecticut</item>
-          <item>Delaware</item>
-          <item>Florida</item>
-          <item>Georgia</item>
-          <item>Hawaii</item>
-          <item>Idaho</item>
-          <item>Illinois</item>
-          <item>Indiana</item>
-          <item>Iowa</item>
-          <item>Kansas</item>
-          <item>Kentucky</item>
-          <item>Louisiana</item>
-          <item>Maine</item>
-          <item>Maryland</item>
-          <item>Massachusetts</item>
-          <item>Michigan</item>
-          <item>Minnesota</item>
-          <item>Mississippi</item>
-          <item>Missouri</item>
-          <item>Montana</item>
-          <item>Nebraska</item>
-          <item>Nevada</item>
-          <item>New Hampshire</item>
-          <item>New Jersey</item>
-          <item>New Mexico</item>
-          <item>New York</item>
-          <item>North Carolina</item>
-          <item>North Dakota</item>
-          <item>Ohio</item>
-          <item>Oklahoma</item>
-          <item>Oregon</item>
-          <item>Pennsylvania</item>
-          <item>Rhode Island</item>
-          <item>South Carolina</item>
-          <item>South Dakota</item>
-          <item>Tennessee</item>
-          <item>Texas</item>
-          <item>Utah</item>
-          <item>Vermont</item>
-          <item>Virginia</item>
-          <item>Washington</item>
-          <item>West Virginia</item>
-          <item>Wisconsin</item>
-          <item>Wyoming</item>
+        <item>Alaska</item>
+        <item>Arizona</item>
+        <item>Arkansas</item>
+        <item>California</item>
+        <item>Colorado</item>
+        <item>Connecticut</item>
+        <item>Delaware</item>
+        <item>Florida</item>
+        <item>Georgia</item>
+        <item>Hawaii</item>
+        <item>Idaho</item>
+        <item>Illinois</item>
+        <item>Indiana</item>
+        <item>Iowa</item>
+        <item>Kansas</item>
+        <item>Kentucky</item>
+        <item>Louisiana</item>
+        <item>Maine</item>
+        <item>Maryland</item>
+        <item>Massachusetts</item>
+        <item>Michigan</item>
+        <item>Minnesota</item>
+        <item>Mississippi</item>
+        <item>Missouri</item>
+        <item>Montana</item>
+        <item>Nebraska</item>
+        <item>Nevada</item>
+        <item>New Hampshire</item>
+        <item>New Jersey</item>
+        <item>New Mexico</item>
+        <item>New York</item>
+        <item>North Carolina</item>
+        <item>North Dakota</item>
+        <item>Ohio</item>
+        <item>Oklahoma</item>
+        <item>Oregon</item>
+        <item>Pennsylvania</item>
+        <item>Rhode Island</item>
+        <item>South Carolina</item>
+        <item>South Dakota</item>
+        <item>Tennessee</item>
+        <item>Texas</item>
+        <item>Utah</item>
+        <item>Vermont</item>
+        <item>Virginia</item>
+        <item>Washington</item>
+        <item>West Virginia</item>
+        <item>Wisconsin</item>
+        <item>Wyoming</item>
     </string-array>
+    
+    <string-array name="reload_money_expiration_month">
+    	<item>01</item>
+    	<item>02</item>
+    	<item>03</item>
+    	<item>04</item>
+    	<item>05</item>
+    	<item>06</item>
+    	<item>07</item>
+    	<item>08</item>
+    	<item>09</item>
+    	<item>10</item>
+    	<item>11</item>
+    	<item>12</item>
+    </string-array>
+    
+    <string-array name="reload_money_expiration_year">
+    	<item>14</item>
+    	<item>15</item>
+    	<item>16</item>
+    	<item>17</item>
+    	<item>18</item>
+    	<item>19</item>
+    	<item>20</item>
+    </string-array>
+
     <string name="state_promote">Choose State</string>
+    <string name="reload_money_expiration_date">Choose Expiration Date</string>
 
     <color name="solid_main">#FF1E2F41</color>
     <color name="solid_header">#84252C</color>
     <color name="solid_list_item">#FF1E2F41</color>
     <color name="outline_icon">#729896</color>
-    
+    <color name="lable_text_color">#FFFFFF</color>
+    <color name="divider">#FFFFFF</color>
+
 </resources>
