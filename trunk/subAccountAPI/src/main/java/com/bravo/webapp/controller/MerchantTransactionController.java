@@ -148,8 +148,8 @@ public class MerchantTransactionController {
 			@ModelAttribute Transaction transaction) {
 
         logger.info(transaction.toString());
-		logger.info(""+merchantTimestamp);
-        logger.info(encryptedInfo);
+		logger.info("Merchant time stamp: "+merchantTimestamp);
+        logger.info("Encrypted info from request is: "+encryptedInfo);
 
 		Timestamp mTimestamp = new Timestamp(merchantTimestamp);
 
