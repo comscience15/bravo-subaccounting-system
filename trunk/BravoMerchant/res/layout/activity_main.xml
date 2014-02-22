@@ -16,7 +16,7 @@
         android:id="@+id/logout_button"
         android:layout_width="60dp"
         android:layout_height="30dp"
-        android:layout_alignStart="@id/main_title"
+        android:layout_alignLeft="@id/main_title"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:textColor="@color/white" 

@@ -35,10 +35,17 @@
   
 
   <ImageView
-      android:id="@+id/pay_order"
+      android:id="@+id/scan_product"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:layout_below="@+id/order_sumarry"
+      android:src="@drawable/refund" />
+  
+  <ImageView
+      android:id="@+id/pay_order"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/scan_product"
       android:src="@drawable/pay" />
   
 </RelativeLayout>

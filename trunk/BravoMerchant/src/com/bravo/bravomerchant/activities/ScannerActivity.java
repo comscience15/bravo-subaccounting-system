@@ -1,5 +1,8 @@
 package com.bravo.bravomerchant.activities;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.async.AsyncPurchase;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog;
@@ -38,7 +41,14 @@ public class ScannerActivity extends FragmentActivity implements
 		setContentView(R.layout.activity_scanner);
 
 		Intent sourceIntent = getIntent();
-        orderItemListJsonStr = sourceIntent.getStringExtra("orderItemListJsonStr");
+		if(sourceIntent.hasExtra("orderItemListJsonStr")){
+			
+			orderItemListJsonStr = sourceIntent.getStringExtra("orderItemListJsonStr");
+		}
+		if(sourceIntent.hasExtra("productsCode")){
+			
+			productsCode = sourceIntent.getStringExtra("productsCode");
+		}
         
 		startScanner();
 	}
@@ -49,33 +59,58 @@ public class ScannerActivity extends FragmentActivity implements
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == 0) {
 			
-			if(orderItemListJsonStr != null
-					&& !"".equals(orderItemListJsonStr)){
+			if (resultCode == RESULT_OK) {
+
+				scanResult = getScanRes(intent);
 				
-				new AsyncPurchase(ScannerActivity.this).execute(getString(R.string.IP_Address), orderItemListJsonStr, intent.getStringExtra("SCAN_RESULT"));
-			} else if (resultCode == RESULT_OK) {
-				
-				scanResult = intent.getStringExtra("SCAN_RESULT");
-				/** Starting the dialog*/
-				productsCode += scanResult + ",";
+				if(orderItemListJsonStr != null
+						&& !"".equals(orderItemListJsonStr)){
+					
+					new AsyncPurchase(ScannerActivity.this).execute(getString(R.string.IP_Address), orderItemListJsonStr, scanResult);
+				}else{
+
+					productsCode += scanResult + ",";
+				}
 				startScanner();
 			} else if (resultCode == RESULT_CANCELED) {
 				
-				/** If scanning failed, will intent to main screen*/
-				try {
+				if("".equals(productsCode)){//when no products, back to mainActivity
+				
+					Intent backToMain = new Intent();
+					backToMain.setClass(this, MainActivity.class);
+					startActivity(backToMain);
+					ScannerActivity.this.finish();
+				}else{//ready to get the cardInfo
+
 					Intent toOrderConfirmIntent = new Intent();
 					toOrderConfirmIntent.setClass(this, OrderConfirmActivity.class);
 					toOrderConfirmIntent.putExtra("productsCode", productsCode);
 					startActivity(toOrderConfirmIntent);
 					ScannerActivity.this.finish();
-				} catch (Exception e) {
-					// go to main page exception, we should some how catch it
-					System.err.println("Can not catch the scanning result: " + e.toString());
 				}
 			}
 		}
 	}
 	
+	private String getScanRes(Intent intent){
+		
+		String res = null;
+
+		Iterator<String> keys = intent.getExtras().keySet().iterator();
+		String key = "";
+		while(keys.hasNext()){
+			
+			key = keys.next();
+			if(key.indexOf("result") >= 0
+					|| key.indexOf("RESULT") >= 0){
+				
+				res = intent.getStringExtra(key) ;
+				break;
+			}
+		}
+		
+		return res;
+	}
 	/**
 	 *  This method is going to start scanner from zxing library
 	 */
