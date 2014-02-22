@@ -2,6 +2,8 @@ package com.bravo.bravomerchant.bean;
 
 import java.util.Random;
 
+import com.bravo.bravomerchant.util.ArithUtil;
+
 public class OrderItem {
 
 	private String barCode;
@@ -60,7 +62,7 @@ public class OrderItem {
 	public OrderItem addOne() {
 		
 		unit++;
-		totalPrice += price;
+		totalPrice = ArithUtil.add(totalPrice, price);
 		return this;
 	}
 
@@ -69,7 +71,8 @@ public class OrderItem {
 		if(--unit <= 0){
 			return null;
 		}
-		totalPrice -= price;
+
+		totalPrice = ArithUtil.sub(totalPrice, price);
 		return this;
 	}
 	

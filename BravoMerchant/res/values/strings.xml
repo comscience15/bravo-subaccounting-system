@@ -34,11 +34,14 @@
     <string name="reg_invalid_zipCode">Please verify the zipCode</string>
     
     <string name="exit_app_toast">Press again to exit</string>
+    <string name="back_to_main_toast">Press again to Home Page</string>
     
     <string name="state_promote">Choose State</string>
     
     <string name="title_order">OrderConfirmActivity</string>
     <string name="total_price">Total Price:</string>
+    
+    <string name="ok">OK</string>
     
     <!-- The array list of states or provinces -->
     <string-array name="state_array">

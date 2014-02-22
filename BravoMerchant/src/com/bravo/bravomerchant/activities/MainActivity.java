@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
         if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register"))) {
         	
         	isLogin = true;
-        }else{
+        }else if(!isLogin){
 
 	    	Intent toLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
 	    	MainActivity.this.startActivity(toLoginActivity);

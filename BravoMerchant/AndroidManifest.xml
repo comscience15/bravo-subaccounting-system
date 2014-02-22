@@ -36,7 +36,7 @@
         </activity>
         <activity
             android:name="com.bravo.bravomerchant.activities.OrderConfirmActivity"
-            android:label="@string/title_order">
+            android:label="@android:style/Theme.NoTitleBar">
         </activity>
         <activity
             android:name="com.bravo.bravomerchant.activities.RegisterActivity"
@@ -44,6 +44,10 @@
         </activity>
         <activity
             android:name="com.bravo.bravomerchant.activities.MainActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.bravo.bravomerchant.activities.MessageActivity"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
 

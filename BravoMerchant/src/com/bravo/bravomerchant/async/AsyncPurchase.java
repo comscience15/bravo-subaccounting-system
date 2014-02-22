@@ -15,7 +15,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bravo.bravomerchant.activities.MainActivity;
+import com.bravo.bravomerchant.activities.MessageActivity;
+import com.bravo.bravomerchant.activities.OrderConfirmActivity;
+import com.bravo.bravomerchant.activities.ScannerActivity;
 import com.bravo.bravomerchant.bean.OrderItem;
+import com.bravo.bravomerchant.util.ArithUtil;
 import com.bravo.bravomerchant.util.JsonUtil;
 import com.bravo.https.apicalls.MerchantAPICalls;
 import com.bravo.https.util.BravoAuthenticationException;
@@ -93,6 +97,12 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 		}
 		Intent toMainActivity = new Intent(context, MainActivity.class);
     	context.startActivity(toMainActivity);
+    	
+
+		Intent toShowMsgIntent = new Intent();
+		toShowMsgIntent.setClass(context, MessageActivity.class);
+		toShowMsgIntent.putExtra("msg", result);
+		context.startActivity(toShowMsgIntent);
 //		if(!"200".equals(status)){
 //			
 //		}else{//totalPrice
@@ -115,7 +125,7 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 			res.add(new BasicNameValuePair("orderItemList["+i+"].productName", orderItem.getName()));
 			res.add(new BasicNameValuePair("orderItemList["+i+"].totalPrice", String.valueOf(orderItem.getTotalPrice())));
 			res.add(new BasicNameValuePair("orderItemList["+i+"].unit", String.valueOf(orderItem.getUnit())));
-			totalPrice += orderItem.getTotalPrice();
+			totalPrice = ArithUtil.add(totalPrice, orderItem.getTotalPrice());
 		}
 		
 		res.add(new BasicNameValuePair("encryptedInfo", cardInfo));

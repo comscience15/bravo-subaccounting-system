@@ -7,9 +7,11 @@ import org.json.JSONException;
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.bean.Order;
 import com.bravo.bravomerchant.bean.OrderItem;
+import com.bravo.bravomerchant.util.ArithUtil;
 import com.bravo.bravomerchant.util.JsonUtil;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 /**
  * Merchant main activity
  * @author wenlong_jia
@@ -26,9 +29,11 @@ import android.widget.TextView;
  */
 public class OrderConfirmActivity extends ListActivity {
     //展示的文字
-	List<OrderItem> orderItemList;
+	private List<OrderItem> orderItemList;
     private Intent getIntentSource;
     private Order order;
+    private String productsCode;
+	private boolean doublePressBackButton = false;
     
     /** Called when the activity is first created. */
     @Override
@@ -37,7 +42,7 @@ public class OrderConfirmActivity extends ListActivity {
         setContentView(R.layout.activity_order);
         
         getIntentSource = getIntent();
-        String productsCode = getIntentSource.getStringExtra("productsCode");
+        productsCode = getIntentSource.getStringExtra("productsCode");
         order = new Order();
         
         if(productsCode != null
@@ -67,6 +72,7 @@ public class OrderConfirmActivity extends ListActivity {
 				toCardScanIntent.setClass(OrderConfirmActivity.this, ScannerActivity.class);
 				try {
 					toCardScanIntent.putExtra("orderItemListJsonStr", JsonUtil.getJsonStr(orderItemList));
+					toCardScanIntent.putExtra("productsCode", productsCode);
 					startActivity(toCardScanIntent);
 				} catch (JSONException e) {
 					//TODO show error msg
@@ -74,18 +80,60 @@ public class OrderConfirmActivity extends ListActivity {
 				}
 			}
 		});
+
+        ImageView scanProductImageView = (ImageView)findViewById(R.id.scan_product);
+        scanProductImageView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+
+				Intent toScanProductIntent = new Intent();
+				toScanProductIntent.setClass(OrderConfirmActivity.this, ScannerActivity.class);
+				toScanProductIntent.putExtra("productsCode", productsCode);
+				startActivity(toScanProductIntent);
+			}
+		});
+        
         
         //设置一个Adapter,使用自定义的Adapter
         OrderListAdapter orderListAdapter = new OrderListAdapter(this);
         setListAdapter(orderListAdapter);
     }
     
+    @Override
+    public void onBackPressed() {
+    	
+    	if (doublePressBackButton) {
+    		
+			Intent toMainPageIntent = new Intent(this, MainActivity.class);
+			startActivity(toMainPageIntent);
+    	}
+    	this.doublePressBackButton = true;
+    	
+    	/** Setting the toast*/
+    	Context context = getApplicationContext();
+    	CharSequence text = getString(R.string.back_to_main_toast);
+    	int duration = Toast.LENGTH_SHORT;
+    	Toast toast = Toast.makeText(context, text, duration);
+    	toast.show();
+    	
+    	/** Setting boolean variable to false after 3sec*/
+    	new Handler().postDelayed(new Runnable() {
+    		@Override
+    		public void run() {
+    			doublePressBackButton = false;
+    		}
+    	}, 3000);
+    }
+    
+    
     private Double getTotalPrice() {
     	
     	Double res = 0d;
     	for (int i = 0; i < orderItemList.size(); i++) {
 			
-    		res += orderItemList.get(i).getTotalPrice();
+
+    		res = ArithUtil.add(res, orderItemList.get(i).getTotalPrice());
 		}
 		return res;
 	}
