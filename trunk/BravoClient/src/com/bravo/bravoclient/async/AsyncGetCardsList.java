@@ -53,7 +53,7 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 				e.printStackTrace();
 			} catch (BravoAuthenticationException e) {
 				logger.log(Level.WARNING, e.getMessage());
-				return BravoStatus.AUTHENTICATION_FAILED;
+				return BravoStatus.OPERATION_FAILED;
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -62,7 +62,7 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 
 	@Override
 	protected void onPostExecute(String result) {
-		if (result.equals(BravoStatus.AUTHENTICATION_FAILED)) {
+		if (result.equals(BravoStatus.OPERATION_FAILED)) {
 			new BravoAlertDialog(context).showDialog("Login Failed", "You did not login yet, please login first.", "OK");
 		} 
 	}
