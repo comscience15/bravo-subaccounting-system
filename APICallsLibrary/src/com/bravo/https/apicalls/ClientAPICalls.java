@@ -126,7 +126,8 @@ public class ClientAPICalls {
 	 * @param totalAmount
 	 * @param cardID
 	 * @param expirationDate
-	 * @param saveProfile
+	 * @param boolean saveProfile
+	 * @param boolean existProfile
 	 * @throws IOException
 	 * @throws KeyManagementException
 	 * @throws UnrecoverableKeyException
@@ -134,14 +135,33 @@ public class ClientAPICalls {
 	 * @throws KeyStoreException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static void loadMoneyByCreditCard(String IP, Context androidContext, ArrayList<NameValuePair> paraList) 
+	public static Hashtable<String, String> reloadMoneyByCreditCard(String IP, Context androidContext, ArrayList<NameValuePair> paraList) 
 					throws IOException, KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
 		final String ip = IP;
 		final String path = "/service/customer/transaction/loadMoney";
 		final String URL = ip + path;
+		Hashtable<String, String> APIResponse = new Hashtable<String, String>();
 		
 		String cookie = CookieHandler.getCookie(androidContext);
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, paraList, cookie, "loadMoneyByCreditCard", androidContext);
+		
+		String JSONString = HttpResponseHandler.toString(response);
+		String reloadStatus = HttpResponseHandler.parseJson(JSONString, "status");
+		String reloadMessage;
+		
+		logger.info(JSONString);
+		
+		if (reloadStatus != null && reloadStatus.equals("404")) {
+			reloadMessage = HttpResponseHandler.parseJson(JSONString, "message");
+			APIResponse.put("status", "404");
+			APIResponse.put("message", reloadMessage);
+		} else {
+			reloadMessage = HttpResponseHandler.parseJson(JSONString, "cardBalance");
+			APIResponse.put("status", "200");
+			APIResponse.put("message", reloadMessage);
+		}
+		
+		return APIResponse;
 	}
 }
