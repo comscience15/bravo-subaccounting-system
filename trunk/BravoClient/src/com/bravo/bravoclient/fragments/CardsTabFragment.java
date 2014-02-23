@@ -201,6 +201,7 @@ public class CardsTabFragment extends SherlockFragment{
 		String balance = "0.00";
 		if (selectedCard != null) {
 			balance = String.valueOf(selectedCard.getBalance());
+			logger.info("Card balance is: " + selectedCard.getBalance());
 		}
 		EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
 		cardBalanceEditText.setText(getString(R.string.currency) + balance);

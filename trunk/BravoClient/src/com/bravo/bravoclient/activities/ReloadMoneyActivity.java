@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.R.layout;
+import com.bravo.bravoclient.async.AsyncReloadMoney;
 import com.bravo.bravoclient.common.CommonValidationHandler;
 import com.bravo.bravoclient.common.CommonViewHandler;
 
@@ -74,7 +75,7 @@ public class ReloadMoneyActivity extends Activity {
 	private boolean isValidZipCode = false;
 	private boolean isValidAmount = false;
 	
-	private static ArrayList<NameValuePair> paraList = new ArrayList<NameValuePair>();
+	private static ArrayList<NameValuePair> paraList;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,11 +96,15 @@ public class ReloadMoneyActivity extends Activity {
 		setReloadBtnByCreditCardListener();
 	}
 	
+	// Set the listener for credit card reload button
+	// Note: This button is different from the button for profile reloading
 	private void setReloadBtnByCreditCardListener() {
 		reloadBtnCredit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				setAPICallParameters();
+				new AsyncReloadMoney(ReloadMoneyActivity.this).execute(getString(R.string.IP_Address), paraList);
+				paraList = null; // Garbage collection
 			}
 		});
 	}
@@ -134,6 +139,8 @@ public class ReloadMoneyActivity extends Activity {
 		String saveProfile = ifSaveProfileCKB.isChecked() == true ? "true" : "false";
 		String cardID = getIntent().getStringExtra("cardID");
 
+		paraList = new ArrayList<NameValuePair>();
+		
 		paraList.add(new BasicNameValuePair("firstName", firstName));
 		paraList.add(new BasicNameValuePair("middleInitial", middleInitial));
 		paraList.add(new BasicNameValuePair("lastName", lastName));
