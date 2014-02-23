@@ -14,13 +14,16 @@ import java.util.logging.Logger;
 import org.apache.http.NameValuePair;
 
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.activities.CardsListActivity;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
+import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.ClientAPICalls;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -85,7 +88,19 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, Hashtable<String, 
 	@Override
 	protected void onPostExecute(Hashtable<String, String> result) {
 		if (result != null && (result.get("status").equals("404")) == false) {
-			String msg = MessageFormat.format("Reloading card successful. New balance is $ {0}", result.get("message"));
+			double newBalance = Double.valueOf(result.get("message"));
+			SharedPreferences settings = context.getSharedPreferences(CardsListActivity.CHOOSE_CARD, context.MODE_PRIVATE);
+			int RowID = settings.getInt("SELECTED_CARD", 0);
+			
+			logger.info("RowID is: " + RowID);
+			logger.info("New Balance is: " + newBalance);
+			
+			CardListDAO cardListDAO = new CardListDAO(context);
+			cardListDAO.openDB();
+			cardListDAO.updateCardBalance(RowID, newBalance);
+			cardListDAO.closeDB();
+			
+			String msg = MessageFormat.format("Reloading card successful. New balance is $ {0}", newBalance);
 			Toast.makeText(context,msg, Toast.LENGTH_SHORT).show();
 			
 			Intent toCardsFragment = new Intent(context, MainActivity.class);

@@ -141,7 +141,7 @@ public class CardsTabFragment extends SherlockFragment{
 		// Display card balance
 		displayCardBalance();
     }
-
+    
     /**
      * initialize imageViewBg and imageViewPressedBg
      * @param cardPayButton
