@@ -206,6 +206,23 @@ public class CardListDAO {
 		return cardList;
 	}
 	
+	public void updateCardBalance(int RowID, double balance) {
+		localDB.beginTransaction();
+		try {
+			ContentValues cv = new ContentValues();
+			cv.put(SQLiteHelper.COLUMN_BALANCE, balance); //These Fields should be your String values of actual column names
+			localDB.update(SQLiteHelper.TABLE_NAME, cv, SQLiteHelper.COLUMN_ID + "=" + RowID, null);
+			localDB.setTransactionSuccessful();
+			
+			logger.log(Level.INFO, MessageFormat.format("Update the {0} card with balance {1}", new Object[] {RowID, balance}));
+
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Failed to get particular card in db");
+		} finally {
+			localDB.endTransaction();
+		}
+	}
+	
 	private Card cursorToCard(Cursor cursor) {
 		Card card = new Card();
 		card.setCardId(cursor.getString(0));
