@@ -65,6 +65,12 @@ public class HttpResponseHandler {
 	 * @return
 	 */
 	public static String toString(HttpResponse httpResponse) {
+		
+		if (httpResponse == null) {
+			logger.warning("Http response is null");
+			return null;
+		}
+		
 		InputStream inputStream = null;
 		try {
 			inputStream = httpResponse.getEntity().getContent();
