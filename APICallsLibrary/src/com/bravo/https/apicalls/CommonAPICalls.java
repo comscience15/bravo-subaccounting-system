@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,9 +54,7 @@ public class CommonAPICalls {
 		nameValuePair.add(new BasicNameValuePair("j_roletype", roleType));
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, nameValuePair, null, "login", androidContext);
-		String loginStatus = HttpResponseHandler.parseJson(response, "status");
-		// loginStatus is null means login successfully, see API document for details
-	    return loginStatus == null ? "200" : loginStatus;
+		return HttpResponseHandler.toString(response);
 	}
 	
 	
@@ -98,9 +97,7 @@ public class CommonAPICalls {
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, nameValuePair, null, "register", androidContext);
 		
-		String registerStatus = HttpResponseHandler.parseJson(response, "status");
-		// loginStatus is null means login successfully, see API document for details
-	    return registerStatus == null ? "200" : registerStatus;
+	    return HttpResponseHandler.toString(response);
 	}
 	
 	/**
@@ -124,7 +121,6 @@ public class CommonAPICalls {
 		String cookie = CookieHandler.getCookie(androidContext);
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "logout", androidContext);
-		String logoutStatus = HttpResponseHandler.parseJson(response, "status");
-		return logoutStatus == null ? "200" : logoutStatus;
+		return HttpResponseHandler.toString(response);
 	}
 }
