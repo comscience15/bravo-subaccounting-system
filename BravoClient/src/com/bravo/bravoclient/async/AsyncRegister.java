@@ -12,6 +12,7 @@ import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.util.Encryption;
 import com.bravo.https.apicalls.CommonAPICalls;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
 import android.content.Context;
@@ -42,10 +43,10 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 		final String domain = registerInfo[7];
 		final String ip = registerInfo[8];
 		
-		String registerStatus = null;
+		String registerResponse = null;
 		
 		try {
-			registerStatus = CommonAPICalls.register(username, password, street, city, state, zipCode, roleType, domain, ip, context);
+			registerResponse = CommonAPICalls.register(username, password, street, city, state, zipCode, roleType, domain, ip, context);
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,7 +70,7 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 		// After login, we should get the public key at the same time 
 		EncryptionObj = new Encryption(context);
 		EncryptionObj.getPublicKey(ip);
-		return registerStatus;
+		return registerResponse;
 	}
 	
 	/**
@@ -77,9 +78,10 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 	 */
 	@Override
 	protected void onPostExecute(String result) {
-		System.err.println(result);
+		String status = HttpResponseHandler.parseJson(result, "status");
+		String msg = HttpResponseHandler.parseJson(result, "message");
 		/** if register successfully, forward to Main activity temporarily**/
-		if (result != null && !result.equals("404")) {
+		if (status != null && !status.equals("404")) {
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "Register");
 			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -87,7 +89,7 @@ public class AsyncRegister extends AsyncTask<String, Void, String>{
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
 			/** if register unsuccessfully, showing the alert dialog**/
-			new BravoAlertDialog(context).showDialog("Register Failed", "Please check your authentication or network connection", "OK");
+			new BravoAlertDialog(context).showDialog("Register Failed", msg, "OK");
 		}
 	}
 }

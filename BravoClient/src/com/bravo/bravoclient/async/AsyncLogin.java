@@ -12,6 +12,7 @@ import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.util.Encryption;
 import com.bravo.https.apicalls.CommonAPICalls;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
 import android.content.Context;
@@ -38,9 +39,9 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		final String domain = loginInfo[3];
 		final String ip = loginInfo[4];
 		
-		String loginStatus = null;
+		String loginResponse = null;
 		try {
-			loginStatus = CommonAPICalls.login(username, password, roletype, domain, ip, context);
+			loginResponse = CommonAPICalls.login(username, password, roletype, domain, ip, context);
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,7 +66,7 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		EncryptionObj = new Encryption(context);
 		EncryptionObj.getPublicKey(ip);
 		
-		return loginStatus;
+		return loginResponse;
 	}
 	
 	/**
@@ -74,14 +75,16 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		/** if login successfully, forward to Main activity temporarily**/
-		if (result != null && !result.equals("404")) {
+		String status = HttpResponseHandler.parseJson(result, "status");
+		String msg = HttpResponseHandler.parseJson(result, "message");
+		if (status != null && !status.equals("404")) {
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "Login");
 			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
-			new BravoAlertDialog(context).showDialog("Login Failed", "Please check your authentication or network connection", "OK");
+			new BravoAlertDialog(context).showDialog("Login Failed", msg, "OK");
 		}
 	}
 }
