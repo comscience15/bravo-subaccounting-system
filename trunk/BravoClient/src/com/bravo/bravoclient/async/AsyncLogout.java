@@ -11,6 +11,7 @@ import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.https.apicalls.CommonAPICalls;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,9 +35,9 @@ public class AsyncLogout extends AsyncTask<String, Void, String>{
 	@Override
 	protected String doInBackground(String... logoutInfo) {
 		final String ip = logoutInfo[0];
-		String logoutStatus = null;
+		String logoutResponse = null;
 		try {
-			logoutStatus = CommonAPICalls.logout(ip, context);
+			logoutResponse = CommonAPICalls.logout(ip, context);
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,7 +57,7 @@ public class AsyncLogout extends AsyncTask<String, Void, String>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return logoutStatus;
+		return logoutResponse;
 	}
 	
 	/**
@@ -64,7 +65,9 @@ public class AsyncLogout extends AsyncTask<String, Void, String>{
 	 */
 	@Override
 	protected void onPostExecute(String result) {
-		if (result != null && (result.equals("404") == false)) {
+		String status = HttpResponseHandler.parseJson(result, "status");
+		String msg = HttpResponseHandler.parseJson(result, "message");
+		if (status != null && (status.equals("404") == false)) {
 			CharSequence text = context.getString(R.string.logout_toast);
 	    	int duration = Toast.LENGTH_SHORT;
 	    	Toast toast = Toast.makeText(context, text, duration);
@@ -72,7 +75,7 @@ public class AsyncLogout extends AsyncTask<String, Void, String>{
 			
 	    	MainActivity.setLoginStatus(false);
 		} else {
-			new BravoAlertDialog(context).showDialog("Logout Failed", "Please check your authentication or network connection", "OK");
+			new BravoAlertDialog(context).showDialog("Logout Failed", msg, "OK");
 			MainActivity.setLoginStatus(true);
 		}
 	}
