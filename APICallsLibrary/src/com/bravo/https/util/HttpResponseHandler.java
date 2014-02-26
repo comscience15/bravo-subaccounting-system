@@ -108,10 +108,29 @@ public class HttpResponseHandler {
 		logger.log(Level.INFO, jsonString);
 		
 		String status = parseJson(jsonString, "status");
+		String msg = parseJson(jsonString, "message");
 		
-		if (status != null) throw new BravoAuthenticationException("Login Failed");
+		if (status == null || status.equals("404")) throw new BravoAuthenticationException(msg);
 		
-		JSONArray jsonArray = new JSONArray(jsonString); 
+		JSONArray jsonArray = new JSONArray(msg); 
+		
+		ArrayList<JSONObject> jsonArrayList = new ArrayList<JSONObject>();
+		
+		for (int jsonArraySize=0; jsonArraySize < jsonArray.length(); jsonArraySize ++) {
+			jsonArrayList.add(jsonArray.getJSONObject(jsonArraySize));
+		}
+		
+		return jsonArrayList;
+	}
+	
+	/**
+	 * Parse JSON String to JSON Array
+	 * @param JSONString
+	 * @return
+	 * @throws JSONException
+	 */
+	public static ArrayList<JSONObject> toArrayList(String JSONString) throws JSONException {
+		JSONArray jsonArray = new JSONArray(JSONString); 
 		
 		ArrayList<JSONObject> jsonArrayList = new ArrayList<JSONObject>();
 		

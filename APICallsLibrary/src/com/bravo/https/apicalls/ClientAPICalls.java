@@ -40,7 +40,7 @@ public class ClientAPICalls {
 	 * @throws UnrecoverableKeyException 
 	 * @throws KeyManagementException 
 	 */
-	public static Hashtable<String, BigInteger> getPublicKey(String IP, Context androidContext) 
+	public static String getPublicKey(String IP, Context androidContext) 
 			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
 		final String ip = IP;
 		final String path = "service/customer/transaction/getKey";
@@ -52,33 +52,7 @@ public class ClientAPICalls {
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "getKey", androidContext);
 		
-		String responseString = HttpResponseHandler.toString(response);
-		String getKeyStatus = HttpResponseHandler.parseJson(responseString, "status");
-		
-		Hashtable<String, BigInteger> publickey = new Hashtable<String, BigInteger>();
-		
-		// Check if authentication is needed for getting keys
-		if (getKeyStatus != null && getKeyStatus.equals("404")) {
-			// Should go to login first
-			logger.log(Level.SEVERE, "Should go to login first");
-			publickey.put("status", BigInteger.valueOf(404));
-			return null;
-		} else {
-			String e = HttpResponseHandler.parseJson(responseString, "e");
-			String n = HttpResponseHandler.parseJson(responseString, "n");
-			String maxdigits = HttpResponseHandler.parseJson(responseString, "maxdigits");
-		
-			logger.log(Level.INFO, "e: " + e + " n: " + n + " max:" + maxdigits);
-		
-			BigInteger eInt = new BigInteger(e, 16);
-			BigInteger nInt = new BigInteger(n, 16);
-			BigInteger maxInt = new BigInteger(maxdigits, 16);
-			
-			publickey.put("e", eInt);
-			publickey.put("n", nInt);
-			publickey.put("maxidigits", maxInt);
-			return publickey;
-		}
+		return HttpResponseHandler.toString(response);
 	}
 	
 	/**
@@ -97,7 +71,7 @@ public class ClientAPICalls {
 	 * @throws AuthenticationException 
 	 * @throws org.apache.http.auth.AuthenticationException 
 	 */
-	public static ArrayList<JSONObject> getCardListByCustID(String IP, Context androidContext) 
+	public static String getCardListByCustID(String IP, Context androidContext) 
 			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, JSONException, BravoAuthenticationException {
 		final String ip = IP;
 		final String path = "service/customer/account/getCardListByCustID";
@@ -107,7 +81,8 @@ public class ClientAPICalls {
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "getCardList", androidContext);
 		
-		return HttpResponseHandler.toArrayList(response);	
+		
+		return HttpResponseHandler.toString(response);//HttpResponseHandler.toArrayList(response);	
 	}
 	
 	/**
@@ -135,33 +110,19 @@ public class ClientAPICalls {
 	 * @throws KeyStoreException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static Hashtable<String, String> reloadMoneyByCreditCard(String IP, Context androidContext, ArrayList<NameValuePair> paraList) 
+	public static String reloadMoneyByCreditCard(String IP, Context androidContext, ArrayList<NameValuePair> paraList) 
 					throws IOException, KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
 		final String ip = IP;
 		final String path = "/service/customer/transaction/loadMoney";
 		final String URL = ip + path;
-		Hashtable<String, String> APIResponse = new Hashtable<String, String>();
-		
 		String cookie = CookieHandler.getCookie(androidContext);
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, paraList, cookie, "loadMoneyByCreditCard", androidContext);
 		
 		String JSONString = HttpResponseHandler.toString(response);
-		String reloadStatus = HttpResponseHandler.parseJson(JSONString, "status");
-		String reloadMessage;
 		
 		logger.info(JSONString);
 		
-		if (reloadStatus != null && reloadStatus.equals("404")) {
-			reloadMessage = HttpResponseHandler.parseJson(JSONString, "message");
-			APIResponse.put("status", "404");
-			APIResponse.put("message", reloadMessage);
-		} else {
-			reloadMessage = HttpResponseHandler.parseJson(JSONString, "cardBalance");
-			APIResponse.put("status", "200");
-			APIResponse.put("message", reloadMessage);
-		}
-		
-		return APIResponse;
+		return JSONString;
 	}
 }

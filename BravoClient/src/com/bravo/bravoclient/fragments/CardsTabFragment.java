@@ -29,6 +29,7 @@ import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.activities.ReloadMoneyActivity;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
+import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.dialogs.BravoPaymentDialog;
 import com.bravo.bravoclient.model.Card;
 import com.bravo.bravoclient.persistence.CardListDAO;
@@ -189,7 +190,8 @@ public class CardsTabFragment extends SherlockFragment{
 		Card card = cardListDAO.getCard(selectedCardRowId);
 		cardListDAO.closeDB();
 		
-		cardId = card.getCardId();
+		//check if card is null. It is possible that getCardList API does not work, so there is no cards in local db
+		cardId = card == null ? "" : card.getCardId();
 		return card;
 	}
 	
@@ -202,6 +204,10 @@ public class CardsTabFragment extends SherlockFragment{
 		if (selectedCard != null) {
 			balance = String.valueOf(selectedCard.getBalance());
 			logger.info("Card balance is: " + selectedCard.getBalance());
+		} else {
+			// something wrong when update local db when getting card list, this can caused by a bad api request or network issue
+			logger.severe("Get selected card return null value");
+			new BravoAlertDialog(getActivity()).showDialog("Get selected card Failed", "Please try logout and login again", "OK");
 		}
 		EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
 		cardBalanceEditText.setText(getString(R.string.currency) + balance);

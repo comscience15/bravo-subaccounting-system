@@ -19,6 +19,7 @@ import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.ClientAPICalls;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,7 +33,7 @@ import android.widget.Toast;
  * @author daniel
  *
  */
-public class AsyncReloadMoney extends AsyncTask<Object, Void, Hashtable<String, String>>{
+public class AsyncReloadMoney extends AsyncTask<Object, Void, String>{
 	private Context context;
 	private static final Logger logger = Logger.getLogger(AsyncReloadMoney.class.getName());
 	
@@ -45,10 +46,10 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, Hashtable<String, 
 	 * params[1] is parameters for api call
 	 */
 	@Override
-	protected Hashtable<String, String> doInBackground(Object... params) {
+	protected String doInBackground(Object... params) {
 		String ip;
 		ArrayList<NameValuePair> apiParaList;
-		Hashtable<String, String> APIResponse = new Hashtable<String, String>();
+		String jsonResponse = null;
 		if (params[1] instanceof ArrayList && params[0] instanceof String) {
 			apiParaList = (ArrayList<NameValuePair>) params[1];
 			ip = (String) params[0];
@@ -58,7 +59,7 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, Hashtable<String, 
 		}
 		
 		try {
-			APIResponse = ClientAPICalls.reloadMoneyByCreditCard(ip, context, apiParaList);
+			jsonResponse = ClientAPICalls.reloadMoneyByCreditCard(ip, context, apiParaList);
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -79,29 +80,28 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, Hashtable<String, 
 			e.printStackTrace();
 		}
 		
-		return APIResponse;
+		return jsonResponse;
 	}
 	
 	/**
 	 * @param The parameter is from doInBackground()
 	 */
 	@Override
-	protected void onPostExecute(Hashtable<String, String> result) {
-		if (result != null && (result.get("status").equals("404")) == false) {
-			double newBalance = Double.valueOf(result.get("message"));
+	protected void onPostExecute(String result) {
+		String status = HttpResponseHandler.parseJson(result, "status");
+		String msg = HttpResponseHandler.parseJson(result, "message");
+		if (status != null && (status.equals("404")) == false) {
+			double newBalance = Double.valueOf(msg);
 			SharedPreferences settings = context.getSharedPreferences(CardsListActivity.CHOOSE_CARD, context.MODE_PRIVATE);
 			int RowID = settings.getInt("SELECTED_CARD", 0);
-			
-			logger.info("RowID is: " + RowID);
-			logger.info("New Balance is: " + newBalance);
 			
 			CardListDAO cardListDAO = new CardListDAO(context);
 			cardListDAO.openDB();
 			cardListDAO.updateCardBalance(RowID, newBalance);
 			cardListDAO.closeDB();
 			
-			String msg = MessageFormat.format("Reloading card successful. New balance is $ {0}", newBalance);
-			Toast.makeText(context,msg, Toast.LENGTH_SHORT).show();
+			String msgToast = MessageFormat.format("Reloading card successful. New balance is $ {0}", newBalance);
+			Toast.makeText(context,msgToast, Toast.LENGTH_SHORT).show();
 			
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "ReloadMoney");
@@ -109,7 +109,7 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, Hashtable<String, 
 	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
-			new BravoAlertDialog(context).showDialog("Reload Money Failed", result.get("message"), "OK");
+			new BravoAlertDialog(context).showDialog("Reload Money Failed", msg, "OK");
 		}
 	}
 

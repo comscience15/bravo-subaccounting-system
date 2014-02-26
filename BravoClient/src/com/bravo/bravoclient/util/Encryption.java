@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.crypto.Cipher;
 
 import com.bravo.https.apicalls.ClientAPICalls;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.content.Context;
 
@@ -56,9 +57,13 @@ public class Encryption {
 		PublicKey pub = null;
 		
 		// Call the api in order to get the exponent and modulus which are used by RSA for generating the public key
-		Hashtable<String, BigInteger> publicKeyTable = null;
+		String jsonResposne = null;
+		String status = null;
+		String msg = null;
 		try {
-			publicKeyTable = ClientAPICalls.getPublicKey(IP, context);
+			jsonResposne = ClientAPICalls.getPublicKey(IP, context);
+			status = HttpResponseHandler.parseJson(jsonResposne, "status");
+			msg = HttpResponseHandler.parseJson(jsonResposne, "message");
 		} catch (KeyManagementException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -78,31 +83,37 @@ public class Encryption {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}	
-		if (publicKeyTable != null) {
 		
-			BigInteger exponent = publicKeyTable.get("e");
-			BigInteger modulus = publicKeyTable.get("n");
+		if (jsonResposne != null && status.equals("404") == false) {
+			String e = HttpResponseHandler.parseJson(msg, "e");
+			String n = HttpResponseHandler.parseJson(msg, "n");
+			
+			logger.info("e: " +e);
+			logger.info("m: " + n);
+			
+			BigInteger exponent = new BigInteger(e, 16);
+			BigInteger modulus = new BigInteger(n, 16);
 		
 			RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, exponent);
 		
 			try {
 				// Get the instance of key factory
 				factory = KeyFactory.getInstance(ALGORITHM);
-			} catch (NoSuchAlgorithmException e) {
+			} catch (NoSuchAlgorithmException exception) {
 				logger.log(Level.WARNING, "Failed to get key factory");
-				e.printStackTrace();
+				exception.printStackTrace();
 			}
 			try {
 				// Generate the public key
 				pub = factory.generatePublic(spec);
 				publicKey = pub;
-			} catch (InvalidKeySpecException e) {
+			} catch (InvalidKeySpecException exception) {
 			    logger.log(Level.WARNING, "Invalid public key");
-				e.printStackTrace();
+			    exception.printStackTrace();
 			}
 			return publicKey;
 		} else {
-		    logger.log(Level.WARNING, "publicKeyTable from Encryption is null");
+		    logger.log(Level.WARNING, "JSON response from API call is null");
 			publicKey = null;
 			return null;
 		}

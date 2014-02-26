@@ -13,11 +13,13 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.ClientAPICalls;
 import com.bravo.https.util.BravoAuthenticationException;
 import com.bravo.https.util.BravoStatus;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -33,12 +35,20 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 	protected String doInBackground(String... params) {
 		final String ip = params[0];
 			ArrayList<JSONObject> cardList;
+			String jsonResponse;
 			try {
-				cardList = ClientAPICalls.getCardListByCustID(ip, context);
-				CardListDAO cardListDAO = new CardListDAO(context);
-				cardListDAO.openDB();
-				cardListDAO.insertCards(cardList);
-				cardListDAO.closeDB();
+				jsonResponse = ClientAPICalls.getCardListByCustID(ip, context);
+				String status = HttpResponseHandler.parseJson(jsonResponse, "status");
+				String msg = HttpResponseHandler.parseJson(jsonResponse, "message");
+				if (jsonResponse != null && status.equals("404") == false) {
+					cardList = HttpResponseHandler.toArrayList(msg);
+					CardListDAO cardListDAO = new CardListDAO(context);
+					cardListDAO.openDB();
+					cardListDAO.insertCards(cardList);
+					cardListDAO.closeDB();
+				} else {
+					return BravoStatus.OPERATION_FAILED;
+				}
 			} catch (KeyManagementException e) {
 				e.printStackTrace();
 			} catch (UnrecoverableKeyException e) {
@@ -63,7 +73,8 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 	@Override
 	protected void onPostExecute(String result) {
 		if (result.equals(BravoStatus.OPERATION_FAILED)) {
-			new BravoAlertDialog(context).showDialog("Login Failed", "You did not login yet, please login first.", "OK");
+			String msg = context.getResources().getString(R.string.failure_get_card_list);
+			new BravoAlertDialog(context).showDialog("Get Card List Failed", msg, "OK");
 		} 
 	}
 }
