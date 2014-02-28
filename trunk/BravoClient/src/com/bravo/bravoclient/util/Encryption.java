@@ -44,8 +44,9 @@ public class Encryption {
 		if (publicKey != null) {
 			return encrypt(data, publicKey);
 		} else {
-			logger.log(Level.WARNING, "public key is null");
-			return null;
+			logger.warning("public key is null");
+			logger.warning("Cannot generate encrypted data");
+			return "";
 		}
 	}
 	

@@ -1,5 +1,7 @@
 package com.bravo.bravoclient.dialogs;
 
+import java.util.logging.Logger;
+
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.util.BravoAlertDialogInterface;
 import com.google.zxing.WriterException;
@@ -34,6 +36,8 @@ public class BravoPaymentDialog implements BravoAlertDialogInterface{
 	private View qrCodeView;
 	private Bitmap bitmap;
 	private AlertDialog dialog;
+	
+	private static final Logger logger = Logger.getLogger(BravoPaymentDialog.class.getName());
 	
 	public BravoPaymentDialog(Context context) {
 		this.context = context;
@@ -173,14 +177,14 @@ public class BravoPaymentDialog implements BravoAlertDialogInterface{
 		try {
 			qrCodeEncoder = new QRCodeEncoder((Activity) context, intent, dimension, false);
 		} catch (Exception e) {
-			System.err.println("Failed to construct qrcode encoder");
+			logger.severe("Failed to construct qrcode encoder");
 			e.printStackTrace();
 		}
 				
 		try {
 			bitmap = qrCodeEncoder.encodeAsBitmap();
 		} catch (WriterException e) {
-			System.err.println("Failed to encode as bitmap");
+			logger.severe("Failed to encode as bitmap");
 			e.printStackTrace();
 		}
 				
