@@ -46,6 +46,10 @@ public class ClientAPICalls {
 		final String path = "service/customer/transaction/getKey";
 		final String URL = ip + path;
 		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
+		
 		String cookie = CookieHandler.getCookie(androidContext);
 		
 		logger.log(Level.INFO, "getKey: Cookie is :" + cookie);
@@ -76,6 +80,10 @@ public class ClientAPICalls {
 		final String ip = IP;
 		final String path = "service/customer/account/getCardListByCustID";
 		final String URL = ip + path;
+		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
 		
 		String cookie = CookieHandler.getCookie(androidContext);
 		
@@ -115,6 +123,11 @@ public class ClientAPICalls {
 		final String ip = IP;
 		final String path = "/service/customer/transaction/loadMoney";
 		final String URL = ip + path;
+		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
+		
 		String cookie = CookieHandler.getCookie(androidContext);
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, paraList, cookie, "loadMoneyByCreditCard", androidContext);

@@ -32,6 +32,8 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class BravoHttpsClient {
 	private static DefaultHttpClient httpsClient = null;
@@ -125,5 +127,11 @@ public class BravoHttpsClient {
 		}
 		
 	} 
+	
+	public static boolean checkNetworkConnectivity(Context androidContext) {
+		ConnectivityManager cm = (ConnectivityManager) androidContext.getSystemService(androidContext.CONNECTIVITY_SERVICE);
+		NetworkInfo currentNetwork = cm.getActiveNetworkInfo();
+		return currentNetwork != null && currentNetwork.isConnected();
+	}
 
 }

@@ -28,6 +28,10 @@ public class MerchantAPICalls {
 		final String path = "/service/merchant/transaction/purchaseItems";
 		final String URL = ip + path;
 		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
+		
 		String cookie = CookieHandler.getCookie(androidContext);
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, params, cookie, "purchaseItems", androidContext);
 		String msg = HttpResponseHandler.toString(response);

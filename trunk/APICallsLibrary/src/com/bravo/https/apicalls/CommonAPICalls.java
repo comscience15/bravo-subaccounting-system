@@ -24,6 +24,7 @@ import android.content.Context;
 
 public class CommonAPICalls {
 	private static Logger logger = Logger.getLogger(CommonAPICalls.class.getName());
+	protected static final String NO_CONNECTION = "{\"status\": \"404\", \"message\": \"No Network Connection. Please connect your phone to network first.\"}";
 	/**
 	 * Login API Call
 	 * @param username
@@ -45,6 +46,10 @@ public class CommonAPICalls {
 		final String ip = IP;
 		final String path = "service/authentication/j_spring_security_check";
 		final String URL = ip + path;
+		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
 		
 		/**Creating parameters*/
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
@@ -84,6 +89,10 @@ public class CommonAPICalls {
 		final String path = "service/authentication/signup";
 		final String URL = ip + path;
 		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
+		
 		/**Creating parameters*/
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
 		nameValuePair.add(new BasicNameValuePair("j_username", username));
@@ -118,9 +127,14 @@ public class CommonAPICalls {
 		final String path = "service/authentication/j_spring_security_logout";
 		final String URL = ip + path;
 		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
+		
 		String cookie = CookieHandler.getCookie(androidContext);
 		
 		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, null, cookie, "logout", androidContext);
 		return HttpResponseHandler.toString(response);
 	}
+	
 }
