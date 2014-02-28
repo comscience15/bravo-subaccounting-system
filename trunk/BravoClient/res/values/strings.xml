@@ -39,6 +39,7 @@
     <string name="currency">$ </string>
     <string name="IP_Address">https://50.156.103.190:8181/subAccountAPI/</string>
     <!-- <string name="IP_Address">http://10.0.2.2:8080/subAccountAPI/</string> -->
+    <string name="failure_get_card_list">Failed to get card list right now</string>
 
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
