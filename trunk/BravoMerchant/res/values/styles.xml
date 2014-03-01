@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="IconTitleViewTheme">
+		<item name="android:layout_width">80dp</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textColor">#FFFFFF</item>    
+    </style>
+    <style name="IconTitleViewTheme.CenterHorizontal">
+		<item name="android:layout_centerHorizontal">true</item>
+    </style>
+    <style name="IconViewTheme">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.

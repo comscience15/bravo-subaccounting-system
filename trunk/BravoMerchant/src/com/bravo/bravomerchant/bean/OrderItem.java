@@ -4,6 +4,11 @@ import java.util.Random;
 
 import com.bravo.bravomerchant.util.ArithUtil;
 
+/**
+ * product object
+ * @author jiawl
+ *
+ */
 public class OrderItem {
 
 	private String barCode;
@@ -14,7 +19,10 @@ public class OrderItem {
 	private Double totalPrice;
 
 	public OrderItem(String barCode, Integer unit) {
+		
 		super();
+		
+		//TODO the info should be from the server, not the random data
 		Random r = new Random();
 		this.barCode = barCode;
 		this.name = "productName"+r.nextInt(200);
@@ -36,7 +44,9 @@ public class OrderItem {
 	
 	public OrderItem(String barCode, String name, Integer unit, Double tax, Double price,
 			Double totalPrice) {
+		
 		super();
+		
 		this.barCode = barCode;
 		this.name = name;
 		this.unit = unit;
@@ -46,18 +56,24 @@ public class OrderItem {
 	}
 	
 	public String getBarCode() {
+		
 		return barCode;
 	}
+	
 	public void setBarCode(String barCode) {
+		
 		this.barCode = barCode;
 	}
+	
 	public Integer getUnit() {
+		
 		return unit;
 	}
+	
 	public void setUnit(Integer unit) {
+		
 		this.unit = unit;
 	}
-	
 
 	public OrderItem addOne() {
 		
@@ -77,6 +93,7 @@ public class OrderItem {
 	}
 	
 	public OrderItem negate(){
+		
 		return null;
 	}
 
@@ -84,6 +101,7 @@ public class OrderItem {
 		
 		if(obj != null
 				&& barCode.equals(obj.getBarCode())){
+			
 			return true;
 		}
 		
@@ -91,34 +109,42 @@ public class OrderItem {
 	}
 
 	public String getName() {
+		
 		return name;
 	}
 
 	public void setName(String name) {
+		
 		this.name = name;
 	}
 
 	public Double getTax() {
+		
 		return tax;
 	}
 
 	public void setTax(Double tax) {
+		
 		this.tax = tax;
 	}
 
 	public Double getPrice() {
+		
 		return price;
 	}
 
 	public void setPrice(Double price) {
+		
 		this.price = price;
 	}
 
 	public Double getTotalPrice() {
+		
 		return totalPrice;
 	}
 
 	public void setTotalPrice(Double totalPrice) {
+		
 		this.totalPrice = totalPrice;
 	}
 }

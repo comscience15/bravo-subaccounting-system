@@ -7,15 +7,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * 
+ * @author jiawl
+ *
+ */
 public class Order{
 
-	private String cardId;
+	private String cardId;// no use currently
 	private Map<String, OrderItem> orderItems;
 
 	public Order() {
 
 		cardId = "";
 		orderItems = new HashMap<String, OrderItem>();
+	}
+
+	/**
+	 * use bar codes list to init the itemList
+	 * @param productBarCodesList
+	 */
+	public Order(List<String> productBarCodesList) {
+		
+		this();
+		
+		if(productBarCodesList != null
+				&& !productBarCodesList.isEmpty()){
+			
+			for(String productBarCode : productBarCodesList){
+				
+				this.addItem(productBarCode);
+			}
+		}
 	}
 
 	public String getCardId() {
@@ -58,12 +81,12 @@ public class Order{
 	public List<OrderItem> getItemInfoList() {
 		
 		List<OrderItem> res = new ArrayList<OrderItem>();
-		Iterator orderItemsIterator = orderItems.entrySet().iterator();
-		Entry entry = null;
+		Iterator<Entry<String, OrderItem>> orderItemsIterator = orderItems.entrySet().iterator();
+		Entry<String, OrderItem> entry = null;
 		while(orderItemsIterator.hasNext()){
 			
-			entry = (Entry) orderItemsIterator.next();
-			res.add((OrderItem) entry.getValue());
+			entry = orderItemsIterator.next();
+			res.add(entry.getValue());
 		}
 		return res;
 	}

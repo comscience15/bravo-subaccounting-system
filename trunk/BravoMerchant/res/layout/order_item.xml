@@ -3,32 +3,40 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content">
+  
   <TextView	
   	android:id="@+id/order_item_name"
   	android:layout_alignParentLeft="true"
   	android:layout_width="wrap_content"
-  	android:layout_height="wrap_content"/>
+  	android:layout_height="wrap_content"
+    android:textColor="@color/white" />
   
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp" >
+        
 	  <TextView	
 	  	android:id="@+id/order_item_unit"
         android:layout_weight="1"
 	  	android:layout_width="wrap_content"
-	  	android:layout_height="wrap_content"/>
+	  	android:layout_height="wrap_content"
+	  	android:textColor="@color/white"/>
+	  
 	  <TextView	
 	  	android:id="@+id/order_item_tax"
         android:layout_weight="1"
 	  	android:layout_width="wrap_content"
-	  	android:layout_height="wrap_content"/>
+	  	android:layout_height="wrap_content"
+	  	android:textColor="@color/white"/>
+	  
 	  <TextView	
 	  	android:id="@+id/order_item_price"
         android:layout_weight="1"
 	  	android:layout_width="wrap_content"
-	  	android:layout_height="wrap_content"/>
+	  	android:layout_height="wrap_content"
+	  	android:textColor="@color/white"/>
   </LinearLayout>
 
   <ImageView
@@ -37,6 +45,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
       android:layout_below="@+id/order_item_name"
-      android:src="@drawable/delete_button" />
+      android:src="@drawable/delete_button" 
+      android:contentDescription="@string/remove"/>
 
 </RelativeLayout>

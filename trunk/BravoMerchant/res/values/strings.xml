@@ -41,8 +41,25 @@
     <string name="title_order">OrderConfirmActivity</string>
     <string name="total_price">Total Price:</string>
     
-    <string name="ok">OK</string>
+    <string name="purchase_successful">Success!</string>
+    <string name="purchase_failed">Failed!</string>
     
+    <string name="ok">OK</string>
+    <string name="remove">remove</string>
+    
+    <string name="sell">sell</string>
+    <string name="reload">reload</string>
+    <string name="refund">reload</string>
+    <string name="add_more">Add More</string>
+
+    <color name="solid_main_title">#FF3E5F63</color>
+    <color name="solid_main">#FF1E2F41</color>
+    <color name="solid_header">#84252C</color>
+    <color name="solid_list_item">#FF1E2F41</color>
+    <color name="outline_icon">#729896</color>
+    <color name="lable_text_color">#FFFFFF</color>
+    <color name="divider">#FFFFFF</color>
+
     <!-- The array list of states or provinces -->
     <string-array name="state_array">
         <item>Alabama</item>
@@ -96,6 +113,5 @@
         <item>Wisconsin</item>
         <item>Wyoming</item>
     </string-array>
-
-
+    
 </resources>

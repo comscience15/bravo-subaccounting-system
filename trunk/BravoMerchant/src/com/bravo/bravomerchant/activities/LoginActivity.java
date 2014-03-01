@@ -32,7 +32,7 @@ public class LoginActivity extends Activity {
 	private static String username;
 	private static String password;
 	private static String ip;
-	private static final String roleType = "merchant";//"merchant";customer
+	private static final String roleType = "merchant";
 	private static final String domain = "200";
 	
 	private boolean isValidP = false;
@@ -119,9 +119,9 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				/** When login button is pressed, it will go to asynchronized task for process **/
-//				new AsyncLogin(LoginActivity.this).execute(username, password, roleType, domain ,ip);
-				new AsyncLogin(LoginActivity.this).execute("ashish", "bnym", roleType, domain ,ip);
-				//loginHttpRequest(username, password);
+				username = "ashish";
+				password = "bnym";
+				new AsyncLogin(LoginActivity.this).execute(username, password, roleType, domain ,ip);
 			}
 		});
 		
@@ -142,26 +142,6 @@ public class LoginActivity extends Activity {
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-	}
-	
-	/**
-	 * Get the username, this is aim to avoid null point exception
-	 * when user types nothing
-	 * @param usernameView
-	 * @return 
-	 */
-	private String getUsername(EditText usernameView) {
-		return usernameView == null ? "" : usernameView.getText().toString(); 
-	}
-	
-	/**
-	 * Get the password, this is aim to avoid null point exception
-	 * when user types nothing
-	 * @param passwordView
-	 * @return
-	 */
-	private String getPassword(EditText passwordView) {
-		return passwordView == null ? "" : passwordView.getText().toString();
 	}
 	
 	/**

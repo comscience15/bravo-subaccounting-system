@@ -1,51 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@drawable/solid_background" >
+
+    <LinearLayout
+        android:id="@+id/order_sumarry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
+
+        <TextView
+            android:id="@+id/order_total_price_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/total_price"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/order_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="left"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/action_line"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/order_sumarry"
+        android:layout_marginTop="15dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/scan_product"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:text="@string/add_more" />
+
+        <Button
+            android:id="@+id/pay_order"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:text="@string/sell" />
+    </LinearLayout>
 
     <ListView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#E1E2E3" >
+        android:layout_below="@id/action_line" >
     </ListView>
 
-  <LinearLayout
-	  	android:id="@+id/order_sumarry"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@android:id/list" >
-        
-	  <TextView	
-	  	android:id="@+id/order_total_price_text"
-	  	android:layout_width="wrap_content"
-	  	android:layout_height="wrap_content"
-	  	android:gravity="right"
-        android:layout_weight="3"
-	  	android:text="@string/total_price"/>
-	  <TextView	
-	  	android:id="@+id/order_total_price"
-	  	android:layout_width="wrap_content"
-	  	android:layout_height="wrap_content"
-	  	android:gravity="left"
-        android:layout_weight="1"/>
-  </LinearLayout>
-  
-
-  <ImageView
-      android:id="@+id/scan_product"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/order_sumarry"
-      android:src="@drawable/refund" />
-  
-  <ImageView
-      android:id="@+id/pay_order"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/scan_product"
-      android:src="@drawable/pay" />
-  
 </RelativeLayout>
