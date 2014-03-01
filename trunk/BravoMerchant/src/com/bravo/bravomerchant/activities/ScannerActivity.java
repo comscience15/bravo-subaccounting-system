@@ -2,12 +2,15 @@ package com.bravo.bravomerchant.activities;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.async.AsyncPurchase;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog;
 import com.bravo.bravomerchant.dialogs.ScanResultDialog.ScanResultListener;
+import com.bravo.bravomerchant.util.NFCHandler;
 
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -27,9 +30,11 @@ import android.view.Window;
  */
 public class ScannerActivity extends FragmentActivity implements
 		ScanResultListener {
-	private String scanResult;
-	private String productsCode = "";
-	private String orderItemListJsonStr;
+	private static String scanResult;
+	private static String productsCode = "";
+	private static String orderItemListJsonStr;
+	
+	private static final Logger logger = Logger.getLogger(ScannerActivity.class.getName());
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,22 @@ public class ScannerActivity extends FragmentActivity implements
 		startScanner();
 	}
 	
+	@Override
+	public void onResume() {
+        super.onResume();
+        // Check to see that the Activity started due to an Android Beam
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+        	String nfcCardInfo = NFCHandler.readFromDevice(getIntent());
+        	
+        	logger.info("Get the NFC data from the other device: " + NFCHandler.readFromDevice(getIntent()));
+        	logger.info("Order item list is: " + orderItemListJsonStr);
+
+        	if (orderItemListJsonStr != null && !orderItemListJsonStr.equals("")) {
+        		new AsyncPurchase(ScannerActivity.this).execute(getString(R.string.IP_Address), orderItemListJsonStr, nfcCardInfo);
+        	}
+        }
+    }
+	
 	/**
 	 * This method is to handle the result from scanner
 	 */
@@ -63,18 +84,15 @@ public class ScannerActivity extends FragmentActivity implements
 
 				scanResult = getScanRes(intent);
 				
-				if(orderItemListJsonStr != null
-						&& !"".equals(orderItemListJsonStr)){
-					
+				if (orderItemListJsonStr != null && !orderItemListJsonStr.equals("")){
 					new AsyncPurchase(ScannerActivity.this).execute(getString(R.string.IP_Address), orderItemListJsonStr, scanResult);
-				}else{
-
+				} else {
 					productsCode += scanResult + ",";
 				}
 				startScanner();
 			} else if (resultCode == RESULT_CANCELED) {
 				
-				if("".equals(productsCode)){//when no products, back to mainActivity
+				if(productsCode.equals("")){//when no products, back to mainActivity
 				
 					Intent backToMain = new Intent();
 					backToMain.setClass(this, MainActivity.class);
@@ -126,7 +144,7 @@ public class ScannerActivity extends FragmentActivity implements
 			Intent zxingIntent = new Intent("com.google.zxing.client.android.SCAN");
 			if(orderItemListJsonStr != null
 					&& !"".equals(orderItemListJsonStr)){
-				zxingIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+				//zxingIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
 			}
 			zxingIntent.putExtra("SCAN_WIDTH", width);
 			zxingIntent.putExtra("SCAN_HEIGHT", height);
