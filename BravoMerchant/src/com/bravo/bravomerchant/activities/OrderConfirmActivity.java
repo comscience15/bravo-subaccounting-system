@@ -1,5 +1,6 @@
 package com.bravo.bravomerchant.activities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,80 +31,82 @@ import android.widget.Toast;
  *
  */
 public class OrderConfirmActivity extends ListActivity {
-    //����������
+
+	//product data list
 	private List<OrderItem> orderItemList;
     private Intent getIntentSource;
+    //order data
     private Order order;
-    private String productsCode;
+    //product barcode list
+    private ArrayList<String> productBarCodesList;
 	private boolean doublePressBackButton = false;
     
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		/** Removing title bar */
+//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_order);
         
         getIntentSource = getIntent();
-        productsCode = getIntentSource.getStringExtra("productsCode");
-        order = new Order();
-        
-        if(productsCode != null
-        		&& !"".equals(productsCode)){
-        	
-        	String[] productsCodeArray = productsCode.split(",");
-        	for (int i = 0; i < productsCodeArray.length; i++) {
-				
-        		if("".equals(productsCodeArray[i])) continue;
-        		
-        		order.addItem(productsCodeArray[i]);
-			}
-        }
-
+        //get the scanned bar code and use it to init the order object
+        productBarCodesList = getIntentSource.getStringArrayListExtra("productBarCodesList");
+        order = new Order(productBarCodesList);
+        //init the product-data-list
         orderItemList = order.getItemInfoList();
         
+        //show the order total price
 		TextView totalPriceTextView = (TextView)findViewById(R.id.order_total_price);
         totalPriceTextView.setText(String.valueOf(getTotalPrice()));
         
-        ImageView payOrderImageView = (ImageView)findViewById(R.id.pay_order);
-        payOrderImageView.setOnClickListener(new View.OnClickListener() {
+        //set the btn-listener for the pay button
+        Button payOrderButton = (Button)findViewById(R.id.pay_order);
+        payOrderButton.setOnClickListener(new View.OnClickListener() {
 			
+        	//turn to the ScannerActivity, ready to scan the qr code of the customer card
 			@Override
 			public void onClick(View v) {
 				// Check availability of NFC
 				NFCHandler.checkNFCAvailability(OrderConfirmActivity.this);
-				
+
 				Intent toCardScanIntent = new Intent();
 				toCardScanIntent.setClass(OrderConfirmActivity.this, ScannerActivity.class);
+				
 				try {
+					
+					//with the products info
 					toCardScanIntent.putExtra("orderItemListJsonStr", JsonUtil.getJsonStr(orderItemList));
-					toCardScanIntent.putExtra("productsCode", productsCode);
+					toCardScanIntent.putStringArrayListExtra("productBarCodesList", productBarCodesList);
 					startActivity(toCardScanIntent);
 				} catch (JSONException e) {
-					//TODO show error msg
+
 					e.printStackTrace();
 				}
 			}
 		});
 
-        ImageView scanProductImageView = (ImageView)findViewById(R.id.scan_product);
-        scanProductImageView.setOnClickListener(new View.OnClickListener() {
+        //set the btn-listener for the go-on-scanning-products button
+        Button scanProductButton = (Button)findViewById(R.id.scan_product);
+        scanProductButton.setOnClickListener(new View.OnClickListener() {
 			
+        	//turn to the ScannerActivity, ready to scan another product
 			@Override
 			public void onClick(View v) {
 
 				Intent toScanProductIntent = new Intent();
 				toScanProductIntent.setClass(OrderConfirmActivity.this, ScannerActivity.class);
-				toScanProductIntent.putExtra("productsCode", productsCode);
+				toScanProductIntent.putStringArrayListExtra("productBarCodesList", productBarCodesList);
 				startActivity(toScanProductIntent);
 			}
 		});
         
-        
-        //��������Adapter,������������Adapter
+        //create a listAdapter to show the scanned product info
         OrderListAdapter orderListAdapter = new OrderListAdapter(this);
         setListAdapter(orderListAdapter);
     }
     
+    //when double press back button, turn to the MainActivity, and all the products data and order data will be lost
     @Override
     public void onBackPressed() {
     	
@@ -130,6 +134,10 @@ public class OrderConfirmActivity extends ListActivity {
     }
     
     
+    /**
+     * calculate the total price of this order
+     * @return
+     */
     private Double getTotalPrice() {
     	
     	Double res = 0d;
@@ -141,15 +149,20 @@ public class OrderConfirmActivity extends ListActivity {
 		return res;
 	}
 
+    /**
+     * the listAdapter for showing the scanned product info
+     * @author jiawl
+     *
+     */
 	private class OrderListAdapter extends BaseAdapter{
+		
         private Context mContext;
         
     	public OrderListAdapter(Context context) {
 			this.mContext=context;
 		}
-        /**
-         * ����������
-         */
+
+
 		public int getCount() {
 			return orderItemList.size();
 		}
@@ -161,40 +174,53 @@ public class OrderConfirmActivity extends ListActivity {
 		public long getItemId(int position) {
 			return 0;
 		}
-		//����������ListView������������������View
+		
+		/**
+		 * return a new product view.Every product info in the page is made by this.
+		 */
 		public View getView(int position, View convertView, ViewGroup parent) {
 //			@+id/order_item_name @+id/order_item_unit @+id/order_item_tax @+id/order_item_price @+id/order_item_remove_button
-			//����ListView
+
 			if(convertView==null){
+				
 				convertView=LayoutInflater.from(mContext).inflate(R.layout.order_item, null);
 				ItemViewCache viewCache=new ItemViewCache();
+				
 				viewCache.orderItemNameTextView=(TextView)convertView.findViewById(R.id.order_item_name);
 				viewCache.orderItemUnitTextView=(TextView)convertView.findViewById(R.id.order_item_unit);
 				viewCache.orderItemTaxTextView=(TextView)convertView.findViewById(R.id.order_item_tax);
 				viewCache.orderItemPriceTextView=(TextView)convertView.findViewById(R.id.order_item_price);
 				viewCache.removeButtonImageView=(ImageView)convertView.findViewById(R.id.order_item_remove_button);
+				
 				convertView.setTag(viewCache);
 			}
+			
 			ItemViewCache cache=(ItemViewCache)convertView.getTag();
-			//����������������������������View������ListView��Item������
 			OrderItem orderItem = orderItemList.get(position);
+			
 			cache.orderItemNameTextView.setText("NAME:"+orderItem.getName()+"("+orderItem.getBarCode()+")");
 			cache.orderItemUnitTextView.setText("UNIT:"+String.valueOf(orderItem.getUnit()));
 			cache.orderItemTaxTextView.setText("TAX:"+String.valueOf(orderItem.getTax()));
 			cache.orderItemPriceTextView.setText("PRICE:"+String.valueOf(orderItem.getTotalPrice()));
 			cache.removeButtonImageView.setContentDescription(String.valueOf(position));
+
+			//when click the remove btn, remove the product
 			cache.removeButtonImageView.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
+					
 					CharSequence position = v.getContentDescription();
-					orderItemList.remove(Integer.parseInt(position.toString()));
-					if(orderItemList.size() > 0){
+					//remove the product 
+					productBarCodesList.remove(orderItemList.remove(Integer.parseInt(position.toString())).getBarCode());
+					order = new Order(productBarCodesList);
+					
+					if(orderItemList.size() > 0){//when have other products, reCalculate the total price, and refresh the list view.
 
 						TextView totalPriceTextView = (TextView)findViewById(R.id.order_total_price);
 				        totalPriceTextView.setText(String.valueOf(getTotalPrice()));
 						notifyDataSetChanged();
-					}else{
+					}else{//when no products left, turn to the main page
 
 						Intent backToMainIntent = new Intent();
 						backToMainIntent.setClass(OrderConfirmActivity.this, MainActivity.class);
@@ -206,8 +232,8 @@ public class OrderConfirmActivity extends ListActivity {
 			return convertView;
 		}
     }
-    //������������,��������ListView
-    private static class ItemViewCache{
+
+	private static class ItemViewCache{
 		public TextView orderItemNameTextView;
 		public TextView orderItemUnitTextView;
 		public TextView orderItemTaxTextView;

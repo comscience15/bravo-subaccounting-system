@@ -1,67 +1,104 @@
-<?xml version="1.0" encoding="utf-8"?> 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:layout_width="fill_parent" 
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"> 
-    
-    <TextView
-        android:id="@+id/main_title"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:textColor="@color/white"
-        android:background="@color/black" 
-        android:gravity="center"
-        android:text="@string/title_activity_main" />
-	<Button
-        android:id="@+id/logout_button"
-        android:layout_width="60dp"
-        android:layout_height="30dp"
-        android:layout_alignLeft="@id/main_title"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        android:textColor="@color/white" 
-        android:background="@drawable/button"
-        android:text="@string/logout" />
+    android:background="@drawable/solid_background" >
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="fill_parent"
-        android:layout_height="170dp"
-        android:layout_below="@id/main_title"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="5dp"
-        android:contentDescription="@string/desc_scanner_icon"
-        android:src="@drawable/logo" />
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/main_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/logo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" >
-        
-	    <ImageView
-	        android:id="@+id/pay"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:contentDescription="@string/desc_scanner_icon"
-	        android:src="@drawable/pay" />
-	    <ImageView
-	        android:id="@+id/refund"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:contentDescription="@string/desc_scanner_icon"
-	        android:src="@drawable/refund" />
-	    <ImageView
-	        android:id="@+id/reload"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:contentDescription="@string/desc_scanner_icon"
-	        android:src="@drawable/reload" />
-    </LinearLayout>
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+    	android:background="@color/solid_main_title" >
 
-</RelativeLayout> 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="@string/title_activity_main"
+            android:textColor="@color/white" />
 
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignLeft="@id/main_title"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/button"
+            android:text="@string/logout"
+            android:textColor="@color/white" />
 
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="fill_parent"
+            android:layout_height="170dp"
+            android:layout_below="@id/main_title"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:contentDescription="@string/desc_scanner_icon"
+            android:src="@drawable/logo" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/logo"
+            android:layout_marginTop="15dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:id="@+id/sell_scanner"
+                    style="@style/IconViewTheme"
+                    android:contentDescription="@string/desc_scanner_icon"
+                    android:src="@drawable/home_scanner_o" />
+
+                <TextView
+                    style="@style/IconTitleViewTheme.CenterHorizontal"
+                    android:layout_below="@+id/sell_scanner"
+                    android:text="@string/sell" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:id="@+id/refund"
+                    style="@style/IconViewTheme"
+                    android:contentDescription="@string/desc_scanner_icon"
+                    android:src="@drawable/reload" />
+
+                <TextView
+                    style="@style/IconTitleViewTheme.CenterHorizontal"
+                    android:layout_below="@id/refund"
+                    android:text="@string/refund" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:id="@+id/reload"
+                    style="@style/IconViewTheme"
+                    android:contentDescription="@string/desc_scanner_icon"
+                    android:src="@drawable/reload" />
+
+                <TextView
+                    style="@style/IconTitleViewTheme.CenterHorizontal"
+                    android:layout_below="@id/reload"
+                    android:text="@string/reload" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>

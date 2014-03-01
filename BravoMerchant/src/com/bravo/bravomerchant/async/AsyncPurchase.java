@@ -13,22 +13,25 @@ import java.util.logging.Logger;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import com.bravo.bravomerchant.activities.MainActivity;
+import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.activities.MessageActivity;
-import com.bravo.bravomerchant.activities.OrderConfirmActivity;
-import com.bravo.bravomerchant.activities.ScannerActivity;
 import com.bravo.bravomerchant.bean.OrderItem;
 import com.bravo.bravomerchant.util.ArithUtil;
 import com.bravo.bravomerchant.util.JsonUtil;
 import com.bravo.https.apicalls.MerchantAPICalls;
 import com.bravo.https.util.BravoAuthenticationException;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
+/**
+ * 
+ * @author jiawl
+ *
+ */
 public class AsyncPurchase extends AsyncTask<String, Void, String>{
 	
 	private Context context;
@@ -44,36 +47,36 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 
 		final String ip = purchaseInfo[0];
 		String orderItemListJsonStr = purchaseInfo[1];
-		String cardInfo = purchaseInfo[2];
+		String cardInfo = purchaseInfo[2];//from qr code
 		
 		String res = "error";
 
 		try {
-//			MerchantAPICalls.purchaseItems(getString(R.string.IP_Address), getApplicationContext(), initParams());
+
 			res = MerchantAPICalls.purchaseItems(ip, context, initParams(orderItemListJsonStr, cardInfo));
 		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (UnrecoverableKeyException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (BravoAuthenticationException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		
@@ -81,37 +84,35 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 	}
 	
 	/**
-	 * @param The parameter is from doInBackground()
+	 * handle the result from interface
 	 */
 	@Override
 	protected void onPostExecute(String result) {
-		
-		JSONObject resJsonObj = null;
-		String status = null;
-		String msg = "";
-		
-		try {
-			resJsonObj = new JSONObject(result);
-			status = resJsonObj.getString("status");
-			msg = resJsonObj.getString("message");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		Intent toMainActivity = new Intent(context, MainActivity.class);
-    	context.startActivity(toMainActivity);
-    	
 
+		String status = HttpResponseHandler.parseJson(result, "status");
+		String msg = HttpResponseHandler.parseJson(result, "message");
+		
 		Intent toShowMsgIntent = new Intent();
 		toShowMsgIntent.setClass(context, MessageActivity.class);
-		toShowMsgIntent.putExtra("msg", result);
+		
+		if (status != null && !status.equals("404")) {//purchase successfully
+
+			toShowMsgIntent.putExtra("msg", context.getString(R.string.purchase_successful));
+		} else {//purchase failed
+
+			toShowMsgIntent.putExtra("msg", context.getString(R.string.purchase_failed) + msg);
+		}
+		
 		context.startActivity(toShowMsgIntent);
-//		if(!"200".equals(status)){
-//			
-//		}else{//totalPrice
-//			
-//		}
 	}
 	
+	/**
+	 * get the data for the purchase-interface
+	 * @param orderItemListJsonStr 
+	 * @param cardInfo from qr code
+	 * @return
+	 * @throws JSONException
+	 */
     private List<NameValuePair> initParams(String orderItemListJsonStr, String cardInfo) throws JSONException {
 		
 		List<NameValuePair> res = new ArrayList<NameValuePair>();
@@ -131,7 +132,6 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 		}
 		
 		logger.warning("Card info is" + cardInfo);
-		
 		res.add(new BasicNameValuePair("encryptedInfo", cardInfo));
 		res.add(new BasicNameValuePair("merchantTimestamp", String.valueOf(System.currentTimeMillis())));
 		res.add(new BasicNameValuePair("totalAmount", String.valueOf(totalPrice)));

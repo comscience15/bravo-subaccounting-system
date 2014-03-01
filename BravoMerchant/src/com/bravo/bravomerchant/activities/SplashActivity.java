@@ -9,6 +9,10 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * @author jiawl
+ * 
+ */
 public class SplashActivity extends Activity {
 
 	private static String TAG = SplashActivity.class.getName();
@@ -26,16 +30,19 @@ public class SplashActivity extends Activity {
 		launcher.start();
 	}
 
+	/**
+	 * Sleep for some time and than start new activity.
+	 */
 	private class IntentLauncher extends Thread {
+		
 		@Override
-		/**
-		 * Sleep for some time and than start new activity.
-		 */
 		public void run() {
+		
 			try {
 				// Sleeping
 				Thread.sleep(SLEEP_TIME * 1000);
 			} catch (Exception e) {
+				
 				Log.e(TAG, e.getMessage());
 			}
 

@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,14 +34,16 @@ public class MainActivity extends Activity {
 		
 		Intent getIntentSource = getIntent();
         String fromActivity = getIntentSource.getStringExtra("Activity");
-        // enable the page jumping from login and register directly to cards fragment
+        //ensure the user has logined
         if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register"))) {
         	
         	isLogin = true;
         }else if(!isLogin){
 
-	    	Intent toLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
-	    	MainActivity.this.startActivity(toLoginActivity);
+        	//TODO find a method to control login status
+//        	Log.e(MainActivity.class.getName(), "not login yet");
+//	    	Intent toLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
+//	    	MainActivity.this.startActivity(toLoginActivity);
         }
 	}
 
@@ -49,26 +52,27 @@ public class MainActivity extends Activity {
         super.onStart();
 
         /** Getting Scanner icon object on Home page*/
-        final ImageView pay_scanner = (ImageView) findViewById(R.id.pay);
+        final ImageView sell_scanner = (ImageView) findViewById(R.id.sell_scanner);
         
         /** Setting the onClick listener*/
         OnClickListener icon_listener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(v.equals(pay_scanner)) {
+				if(v.equals(sell_scanner)) {
 					
 					if(isLogin){
-						// Here we should triggle the barcode scanner library
+						// turn to the scannerActivity, ready to collect the product info
 						Intent intentForScannerActivity = new Intent(MainActivity.this, ScannerActivity.class);
 						startActivity(intentForScannerActivity);
 					}else{
+						//turn to the loginActivity
 				    	Intent toLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
 				    	MainActivity.this.startActivity(toLoginActivity);
 					}
 				}
 			}
         };
-        pay_scanner.setOnClickListener(icon_listener);
+        sell_scanner.setOnClickListener(icon_listener);
         
         /** get the logout button */
         final Button logout_button = (Button) findViewById(R.id.logout_button);
@@ -122,7 +126,7 @@ public class MainActivity extends Activity {
     }
     
 	/**
-	 * when logout, turn to loginActivity
+	 * logout
 	 */
     public void logout() {
 

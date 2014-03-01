@@ -11,6 +11,7 @@ import com.bravo.bravomerchant.R;
 import com.bravo.bravomerchant.activities.MainActivity;
 import com.bravo.bravomerchant.dialogs.BravoAlertDialog;
 import com.bravo.https.apicalls.CommonAPICalls;
+import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,12 +19,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 /**
  * This class is implementing async login, running in background
- * @author Daniel
- * @email danniel1205@gmail.com
+ * @author jiawl
  */
 public class AsyncLogin extends AsyncTask<String, Void, String>{
+	
 	private Context context;
+	
 	public AsyncLogin(Context context) {
+		
 		this.context = context;
 	}
 	
@@ -38,24 +41,25 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 		
 		String loginStatus = null;
 		try {
+			
 			loginStatus = CommonAPICalls.login(username, password, roletype, domain, ip, context);
 		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (UnrecoverableKeyException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		
@@ -67,20 +71,23 @@ public class AsyncLogin extends AsyncTask<String, Void, String>{
 	 */
 	@Override
 	protected void onPostExecute(String result) {
-		System.err.println("Result code is: " + result);
+		
 		/** if login successfully, forward to Main activity temporarily**/
-		if (result != null && !result.equals("404")) {
+		String status = HttpResponseHandler.parseJson(result, "status");
+		String msg = HttpResponseHandler.parseJson(result, "message");
+		
+		if (status != null && !status.equals("404")) {
 			
 			Intent toMainActivity = new Intent(context, MainActivity.class);
-//			Intent toMainActivity = new Intent(context, OrderConfirmActivity.class);
 			toMainActivity.putExtra("Activity", "Login");
 	    	context.startActivity(toMainActivity);
 	    	((Activity) context).overridePendingTransition(com.bravo.bravomerchant.R.anim.go_back_enter, R.anim.go_back_out);
 		} else {
+			
 			/** if login unsuccessfully, showing the alert dialog**/
-			System.out.println("Debugging for showing login dialog"); // this should be removed
-			new BravoAlertDialog(context).showDialog("Login Failed", "Please check your authentication or network connection", "OK");
+			new BravoAlertDialog(context).showDialog("Login Failed", msg, "OK");
 		}
+		
 	}
 	
 }
