@@ -8,6 +8,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,6 +33,7 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 	
 	private Context context;
 	private Double totalPrice = 0d;
+	private static final Logger logger = Logger.getLogger(AsyncPurchase.class.getName());
 	
 	public AsyncPurchase(Context context) {
 		this.context = context;
@@ -127,6 +129,8 @@ public class AsyncPurchase extends AsyncTask<String, Void, String>{
 			res.add(new BasicNameValuePair("orderItemList["+i+"].unit", String.valueOf(orderItem.getUnit())));
 			totalPrice = ArithUtil.add(totalPrice, orderItem.getTotalPrice());
 		}
+		
+		logger.warning("Card info is" + cardInfo);
 		
 		res.add(new BasicNameValuePair("encryptedInfo", cardInfo));
 		res.add(new BasicNameValuePair("merchantTimestamp", String.valueOf(System.currentTimeMillis())));

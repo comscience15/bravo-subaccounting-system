@@ -9,6 +9,7 @@ import com.bravo.bravomerchant.bean.Order;
 import com.bravo.bravomerchant.bean.OrderItem;
 import com.bravo.bravomerchant.util.ArithUtil;
 import com.bravo.bravomerchant.util.JsonUtil;
+import com.bravo.bravomerchant.util.NFCHandler;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,7 +29,7 @@ import android.widget.Toast;
  *
  */
 public class OrderConfirmActivity extends ListActivity {
-    //Õ¹Ê¾µÄÎÄ×Ö
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	private List<OrderItem> orderItemList;
     private Intent getIntentSource;
     private Order order;
@@ -67,7 +68,9 @@ public class OrderConfirmActivity extends ListActivity {
 			
 			@Override
 			public void onClick(View v) {
-
+				// Check availability of NFC
+				NFCHandler.checkNFCAvailability(OrderConfirmActivity.this);
+				
 				Intent toCardScanIntent = new Intent();
 				toCardScanIntent.setClass(OrderConfirmActivity.this, ScannerActivity.class);
 				try {
@@ -95,7 +98,7 @@ public class OrderConfirmActivity extends ListActivity {
 		});
         
         
-        //ÉèÖÃÒ»¸öAdapter,Ê¹ÓÃ×Ô¶¨ÒåµÄAdapter
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Adapter,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Adapter
         OrderListAdapter orderListAdapter = new OrderListAdapter(this);
         setListAdapter(orderListAdapter);
     }
@@ -145,7 +148,7 @@ public class OrderConfirmActivity extends ListActivity {
 			this.mContext=context;
 		}
         /**
-         * ÔªËØµÄ¸öÊý
+         * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
          */
 		public int getCount() {
 			return orderItemList.size();
@@ -158,10 +161,10 @@ public class OrderConfirmActivity extends ListActivity {
 		public long getItemId(int position) {
 			return 0;
 		}
-		//ÓÃÒÔÉú³ÉÔÚListViewÖÐÕ¹Ê¾µÄÒ»¸ö¸öÔªËØView
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ListViewï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½View
 		public View getView(int position, View convertView, ViewGroup parent) {
 //			@+id/order_item_name @+id/order_item_unit @+id/order_item_tax @+id/order_item_price @+id/order_item_remove_button
-			//ÓÅ»¯ListView
+			//ï¿½ï¿½ï¿½ï¿½ListView
 			if(convertView==null){
 				convertView=LayoutInflater.from(mContext).inflate(R.layout.order_item, null);
 				ItemViewCache viewCache=new ItemViewCache();
@@ -173,7 +176,7 @@ public class OrderConfirmActivity extends ListActivity {
 				convertView.setTag(viewCache);
 			}
 			ItemViewCache cache=(ItemViewCache)convertView.getTag();
-			//ÉèÖÃÎÄ±¾ºÍÍ¼Æ¬£¬È»ºó·µ»ØÕâ¸öView£¬ÓÃÓÚListViewµÄItemµÄÕ¹Ê¾
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Viewï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ListViewï¿½ï¿½Itemï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			OrderItem orderItem = orderItemList.get(position);
 			cache.orderItemNameTextView.setText("NAME:"+orderItem.getName()+"("+orderItem.getBarCode()+")");
 			cache.orderItemUnitTextView.setText("UNIT:"+String.valueOf(orderItem.getUnit()));
@@ -203,7 +206,7 @@ public class OrderConfirmActivity extends ListActivity {
 			return convertView;
 		}
     }
-    //ÔªËØµÄ»º³åÀà,ÓÃÓÚÓÅ»¯ListView
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ListView
     private static class ItemViewCache{
 		public TextView orderItemNameTextView;
 		public TextView orderItemUnitTextView;
