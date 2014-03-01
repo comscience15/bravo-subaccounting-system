@@ -9,6 +9,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.nfc.FormatException;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
@@ -20,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
  
 import com.actionbarsherlock.app.SherlockFragment;
 import com.bravo.bravoclient.R;
@@ -40,13 +47,16 @@ import com.bravo.bravoclient.util.Encryption;
  * @author Jia Wenlong
  * @author Daniel danniel1205@gmail.com
  */
-public class CardsTabFragment extends SherlockFragment{
+public class CardsTabFragment extends SherlockFragment implements CreateNdefMessageCallback{
 	/** Declare the button icons used in Card Tab */
 	private final SparseIntArray imageViewBg = new SparseIntArray();
 	/** Declare the pressed button icons used in Card Tab */
 	private final static SparseIntArray imageViewPressedBg = new SparseIntArray();
 	private Logger logger = Logger.getLogger(CardsTabFragment.class.getName());
-	private static String cardId;
+	private static String cardId = "";
+	private static String encryptedData = "";
+	
+	private NfcAdapter nfcAdapter;
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -220,18 +230,32 @@ public class CardsTabFragment extends SherlockFragment{
 	}
 	
 	private void payImpl() {
-		// TODO: This should be changed once the listView has been implemented
 		Card defaultCard = getSelectedCard();
 		logger.log(Level.INFO, "Default cardID is: " + defaultCard.getCardId());
+		
+		// Checking the NFC availability
+		logger.info("Checking the availability of NFC");
+		nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
+		if (nfcAdapter == null || nfcAdapter.isEnabled() == false) {
+			logger.warning("NFC is not enabled");
+			Toast.makeText(getActivity(), "NFC is not enabled", Toast.LENGTH_LONG).show();
+		} else {
+			nfcAdapter.setNdefPushMessageCallback(this, getActivity());
+		}
 		
 		// Generate the encrypted data, the public key has already gotten when login
 		Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
 		String inputData = "{\"cardID\":\""+ defaultCard.getCardId() +"\", \"customerTimestamp\":\""+ System.currentTimeMillis() +"\"}";
-		String encryptedData = encryptionObj.generateEncryptedData(inputData);
+		encryptedData = encryptionObj.generateEncryptedData(inputData);
 		
 		// Generate QRCode for encrypted data
-		BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
-		paymentDialog.generateQRCode(encryptedData);
+		if (encryptedData.equals("") == false) {
+			BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
+			paymentDialog.generateQRCode(encryptedData);
+		} else {
+			logger.warning("Cannot generate encrypted data");
+			Toast.makeText(getActivity(), "Cannot generate encrypted data for payment", Toast.LENGTH_LONG).show();
+		}
 	}
 	
 	private void cardsListImpl() {
@@ -258,6 +282,21 @@ public class CardsTabFragment extends SherlockFragment{
 		} else {
 			return true;
 		}
+	}
+
+	/**
+	 * The callback method to send nfc message
+	 */
+	@SuppressLint("NewApi")
+	@Override
+	public NdefMessage createNdefMessage(NfcEvent event) {
+		logger.info("Creating the NFC message");
+		String nfcText = encryptedData;
+		NdefMessage msg = new NdefMessage(
+                new NdefRecord[] { NdefRecord.createMime(
+                        "application/com.bravo.bravoclient.beam", nfcText.getBytes())
+        });
+		return msg;
 	}
 	
 }
