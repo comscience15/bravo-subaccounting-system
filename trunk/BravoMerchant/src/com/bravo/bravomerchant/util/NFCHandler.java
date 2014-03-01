@@ -20,7 +20,7 @@ public class NFCHandler {
 	public static void checkNFCAvailability(Context context) {
 		// Check for available NFC Adapter
         NfcAdapter mNfcAdapter = NfcAdapter.getDefaultAdapter(context);
-        if (mNfcAdapter == null) {
+        if (mNfcAdapter == null || mNfcAdapter.isEnabled() == false ) {
             Toast.makeText(context, "NFC is not available", Toast.LENGTH_LONG).show();
         }
 	}
