@@ -153,7 +153,6 @@ public class MainActivity extends SherlockFragmentActivity {
         if (fromActivity != null && fromActivity.equals("CardsList")) {
         	cardsTab.select();
         }
-        
     }
     
     /**
