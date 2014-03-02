@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CardsListActivity extends ListActivity{
@@ -33,14 +34,22 @@ public class CardsListActivity extends ListActivity{
 	    setContentView(R.layout.activity_cards_list);
 	    
 	    final ListView listView = (ListView) findViewById(android.R.id.list);
+	    TextView emptyText = (TextView)findViewById(android.R.id.empty);
+	    listView.setEmptyView(emptyText);
+	    
 	    CardListDAO cardListDAO = new CardListDAO(CardsListActivity.this);
 	    cardListDAO.openDB();
-	    final ArrayList<Card> cardList = cardListDAO.getAllCards();
+	    ArrayList<Card> cardList = cardListDAO.getAllCards();
 	    cardListDAO.closeDB();
+	    
+	    // If Card list from db is null, then initiate cardList, make it to empty istead of null
+	    if (cardList == null) cardList = new ArrayList<Card>();
 	    
 	    final CardsListAdapter adapter = new CardsListAdapter(CardsListActivity.this, R.layout.card_list_row, R.id.cardsList_content, cardList);
 	    
 	    listView.setAdapter(adapter);
+	    
+	    if (cardList.isEmpty() == false) {
 	    
 	    // Initiate the default card view
 	    listView.post(new Runnable() {
@@ -77,7 +86,7 @@ public class CardsListActivity extends ListActivity{
 //                LayoutParams.WRAP_CONTENT));
 //        progressBar.setIndeterminate(true);
 //        getListView().setEmptyView(progressBar);
-
+	    }
 	}
 	
 	@Override

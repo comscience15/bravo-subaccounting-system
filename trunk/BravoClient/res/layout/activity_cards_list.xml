@@ -8,8 +8,16 @@
          
      <ListView android:id="@android:id/list"
                android:layout_width="match_parent"
-               android:layout_height="match_parent"
+               android:layout_height="0dip"
                android:background="@color/solid_main"
                android:layout_weight="1"
                android:drawSelectorOnTop="false"/>
+     
+     <TextView android:id="@android:id/empty"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="@color/solid_main"
+               android:text="Card list is empty."
+               android:textSize="16sp"
+               android:gravity="center"/>
  </LinearLayout>

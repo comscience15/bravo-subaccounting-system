@@ -210,17 +210,16 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 	 */
 	private void displayCardBalance() {
 		Card selectedCard = getSelectedCard();
-		String balance = "0.00";
+		String balanceText = "0.00";
+		
+		// Check if selected card is null. This can because db issue or just registered user has no card
 		if (selectedCard != null) {
-			balance = String.valueOf(selectedCard.getBalance());
+			balanceText = String.valueOf(selectedCard.getBalance());
 			logger.info("Card balance is: " + selectedCard.getBalance());
-		} else {
-			// something wrong when update local db when getting card list, this can caused by a bad api request or network issue
-			logger.severe("Get selected card return null value");
-			new BravoAlertDialog(getActivity()).showDialog("Get selected card Failed", "Please try logout and login again", "OK");
-		}
+		} 
+		
 		EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
-		cardBalanceEditText.setText(getString(R.string.currency) + balance);
+		cardBalanceEditText.setText(getString(R.string.currency) + balanceText);
 	}
 	
 	private void showLoginActivity() {
@@ -231,6 +230,13 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 	
 	private void payImpl() {
 		Card defaultCard = getSelectedCard();
+		
+		// Do not do payment if get selected card returns null
+		if (defaultCard == null) {
+			Toast.makeText(getActivity(), "You did not add card for payment", Toast.LENGTH_LONG).show();
+			return;
+		}
+		
 		logger.log(Level.INFO, "Default cardID is: " + defaultCard.getCardId());
 		
 		// Checking the NFC availability
@@ -265,6 +271,12 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 	}
 	
 	private void reloadImpl() {
+		// Do not do reloading if there is no card has been selected
+		if (cardId.equals("") || cardId == null) {
+			Toast.makeText(getActivity(), "You did not added card for reloading", Toast.LENGTH_LONG).show();
+			return;
+		} 
+		
 		Intent toReloadMoneyActivity = new Intent(getActivity(), ReloadMoneyActivity.class);
 		toReloadMoneyActivity.putExtra("cardID", cardId);
 		getActivity().startActivity(toReloadMoneyActivity);

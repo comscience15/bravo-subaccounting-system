@@ -199,7 +199,7 @@ public class CardListDAO {
 			}
 			cursor.close();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Failed to get all cards from db");
+			logger.log(Level.WARNING, "Failed to get all cards from db");
 		} finally {
 			localDB.endTransaction();
 		}
