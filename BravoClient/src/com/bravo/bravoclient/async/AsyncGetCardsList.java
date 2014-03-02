@@ -23,6 +23,7 @@ import com.bravo.https.util.HttpResponseHandler;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 	private Context context;
@@ -40,12 +41,14 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 				jsonResponse = ClientAPICalls.getCardListByCustID(ip, context);
 				String status = HttpResponseHandler.parseJson(jsonResponse, "status");
 				String msg = HttpResponseHandler.parseJson(jsonResponse, "message");
-				if (jsonResponse != null && status.equals("404") == false) {
+				if (jsonResponse != null && status.equals(BravoStatus.OPERATION_SUCCESS)) {
 					cardList = HttpResponseHandler.toArrayList(msg);
 					CardListDAO cardListDAO = new CardListDAO(context);
 					cardListDAO.openDB();
 					cardListDAO.insertCards(cardList);
 					cardListDAO.closeDB();
+				} else if (jsonResponse != null && status.equals(BravoStatus.OPERATION_NO_CONTENT_RESPONSE)) {
+					return BravoStatus.OPERATION_NO_CONTENT_RESPONSE;
 				} else {
 					return BravoStatus.OPERATION_FAILED;
 				}
@@ -74,7 +77,9 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 	protected void onPostExecute(String result) {
 		if (result.equals(BravoStatus.OPERATION_FAILED)) {
 			String msg = context.getResources().getString(R.string.failure_get_card_list);
-			new BravoAlertDialog(context).showDialog("Get Card List Failed", msg, "OK");
-		} 
+			new BravoAlertDialog(context).showDialog("Get Card List Failed.", msg, "OK");
+		} else if (result.equals(BravoStatus.OPERATION_NO_CONTENT_RESPONSE)) {
+			Toast.makeText(context, "Currently have not cards found", Toast.LENGTH_LONG).show();
+		}
 	}
 }
