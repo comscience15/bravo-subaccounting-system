@@ -10,6 +10,8 @@ import java.security.cert.CertificateException;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
+import com.bravo.bravoclient.model.Card;
+import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.CommonAPICalls;
 import com.bravo.https.util.HttpResponseHandler;
 
@@ -68,6 +70,13 @@ public class AsyncLogout extends AsyncTask<String, Void, String>{
 		String status = HttpResponseHandler.parseJson(result, "status");
 		String msg = HttpResponseHandler.parseJson(result, "message");
 		if (status != null && (status.equals("404") == false)) {
+			
+			//Clean up local db
+			CardListDAO cardListDAO = new CardListDAO(context);
+			cardListDAO.openDB();
+			cardListDAO.deleteAllCards();
+			cardListDAO.closeDB();
+			
 			CharSequence text = context.getString(R.string.logout_toast);
 	    	int duration = Toast.LENGTH_SHORT;
 	    	Toast toast = Toast.makeText(context, text, duration);
