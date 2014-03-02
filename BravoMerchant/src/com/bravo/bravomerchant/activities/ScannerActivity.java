@@ -31,9 +31,9 @@ public class ScannerActivity extends FragmentActivity{
 	
 	private static final Logger logger = Logger.getLogger(ScannerActivity.class.getName());
 	
-	private String scanResult;
-	private ArrayList<String> productBarCodesList;
-	private String orderItemListJsonStr;
+	private static String scanResult;
+	private static ArrayList<String> productBarCodesList;
+	private static String orderItemListJsonStr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -155,13 +155,12 @@ public class ScannerActivity extends FragmentActivity{
 			Intent zxingIntent = new Intent("com.google.zxing.client.android.SCAN");
 			if(orderItemListJsonStr != null
 					&& !"".equals(orderItemListJsonStr)){
-				zxingIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+				//zxingIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
 			}
 			zxingIntent.putExtra("SCAN_WIDTH", width);
 			zxingIntent.putExtra("SCAN_HEIGHT", height);
 			startActivityForResult(zxingIntent, 0);
 		} catch (Exception e) {
-
 			logger.log(Level.WARNING, "Can not start barcode scanner: " + e.toString());
 		}
 	}
