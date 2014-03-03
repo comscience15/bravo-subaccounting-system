@@ -34,6 +34,7 @@ import com.bravo.bravoclient.activities.CardsListActivity;
 import com.bravo.bravoclient.activities.LoginActivity;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.activities.ReloadMoneyActivity;
+import com.bravo.bravoclient.async.AsyncGetCardsList;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
@@ -52,7 +53,7 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 	private final SparseIntArray imageViewBg = new SparseIntArray();
 	/** Declare the pressed button icons used in Card Tab */
 	private final static SparseIntArray imageViewPressedBg = new SparseIntArray();
-	private Logger logger = Logger.getLogger(CardsTabFragment.class.getName());
+	private final static Logger logger = Logger.getLogger(CardsTabFragment.class.getName());
 	private static String cardId = "";
 	private static String encryptedData = "";
 	
@@ -148,9 +149,18 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 		cardSendGiftButton.setOnTouchListener(buttonTouchListener);
 		cardTransactionHistoryButton.setOnTouchListener(buttonTouchListener);
 		cardCardsListButton.setOnTouchListener(buttonTouchListener);
-        
-		// Display card balance
-		displayCardBalance();
+		
+		
+		String fromActivity = getActivity().getIntent().getStringExtra("Activity");
+		if (fromActivity != null) {
+        	if (fromActivity.equals("Login") || fromActivity.equals("Register") || fromActivity.equals("ReloadMoney")) {
+        		// Get card list in background once login successfully
+        		new AsyncGetCardsList(getActivity(), getView()).execute(getString(R.string.IP_Address));
+        	} else if (fromActivity.equals("CardsList")) {
+        		// Display card balance without network updating
+        		displayCardBalance();
+        	}
+		}
     }
     
     /**
@@ -210,7 +220,7 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 	 */
 	private void displayCardBalance() {
 		Card selectedCard = getSelectedCard();
-		String balanceText = "0.00";
+		String balanceText = ""; // Default value if the selected card returns null
 		
 		// Check if selected card is null. This can because db issue or just registered user has no card
 		if (selectedCard != null) {
@@ -219,7 +229,9 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 		} 
 		
 		EditText cardBalanceEditText = (EditText)getView().findViewById(R.id.cardBalanceEditText);
-		cardBalanceEditText.setText(getString(R.string.currency) + balanceText);
+		if (balanceText.equals("") == false) {
+			cardBalanceEditText.setText(getString(R.string.currency) + balanceText);
+		}
 	}
 	
 	private void showLoginActivity() {

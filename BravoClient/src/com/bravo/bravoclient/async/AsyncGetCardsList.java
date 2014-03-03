@@ -14,22 +14,38 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.activities.CardsListActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
+import com.bravo.bravoclient.model.Card;
 import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.ClientAPICalls;
 import com.bravo.https.util.BravoAuthenticationException;
 import com.bravo.https.util.BravoStatus;
 import com.bravo.https.util.HttpResponseHandler;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
-public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
+public class AsyncGetCardsList extends AsyncTask<String, Integer, String>{
 	private Context context;
+	private View view;
 	private Logger logger = Logger.getLogger(AsyncGetCardsList.class.getName());
-	public AsyncGetCardsList(Context context) {
+	private static int waitingTime = 2;
+	private static ProgressDialog progressDialog;
+	
+	public AsyncGetCardsList(Context context, View view) {
 		this.context = context;
+		this.view = view;
+		progressDialog = new ProgressDialog(context);
+		progressDialog.setCancelable(false);
+		progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.setMessage("Loading cards......");
+		progressDialog.setMax(100);
 	}
 	
 	@Override
@@ -47,6 +63,8 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 					cardListDAO.openDB();
 					cardListDAO.insertCards(cardList);
 					cardListDAO.closeDB();
+					postProgress(waitingTime);
+					return BravoStatus.OPERATION_SUCCESS;
 				} else if (jsonResponse != null && status.equals(BravoStatus.OPERATION_NO_CONTENT_RESPONSE)) {
 					return BravoStatus.OPERATION_NO_CONTENT_RESPONSE;
 				} else {
@@ -70,8 +88,21 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-		return BravoStatus.OPERATION_SUCCESS;
+		return BravoStatus.OPERATION_FAILED;
 	}
+	
+	protected void onProgressUpdate(Integer... progress) {
+		progressDialog.setProgress(progress[0]);
+		if (progress[0] == 0) progressDialog.show();
+		if (progress[0] >= waitingTime) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				logger.severe("Timer has been stopped");
+			}
+			progressDialog.dismiss();
+		}
+    }
 
 	@Override
 	protected void onPostExecute(String result) {
@@ -80,6 +111,32 @@ public class AsyncGetCardsList extends AsyncTask<String, Void, String>{
 			new BravoAlertDialog(context).showDialog("Get Card List Failed.", msg, "OK");
 		} else if (result.equals(BravoStatus.OPERATION_NO_CONTENT_RESPONSE)) {
 			Toast.makeText(context, "Currently have not cards found", Toast.LENGTH_LONG).show();
+		} else {
+			updateBalance();
 		}
+	}
+	
+	private void postProgress(int sec) {
+		for (int i=0; i <= sec; i++) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				logger.severe("Timer has been stopped");
+			}
+			publishProgress(i);
+		}
+	}
+	
+	private void updateBalance() {
+		CardListDAO cardListDAO = new CardListDAO(context);
+		SharedPreferences settings = context.getSharedPreferences(CardsListActivity.CHOOSE_CARD, context.MODE_PRIVATE);
+		int selectedCardRowId = settings.getInt("SELECTED_CARD", 0);
+		
+		cardListDAO.openDB();
+		Card card = cardListDAO.getCard(selectedCardRowId);
+		cardListDAO.closeDB();
+		
+		EditText cardBalanceEditText = (EditText)view.findViewById(R.id.cardBalanceEditText);
+		cardBalanceEditText.setText(context.getString(R.string.currency) + card.getBalance());
 	}
 }

@@ -22,7 +22,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.adapters.PagerAdapter;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
-import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncLogout;
  
 /**
@@ -106,8 +105,11 @@ public class MainActivity extends SherlockFragmentActivity {
             	/** If Cards tab is selected*/
             	if (tab.getPosition() == 1) {
             		/** Check if user has been login already**/
-            		if(isLogin == false) showLoginActivity();
-            		cardsTab.select();
+            		if(isLogin == false) {
+            			showLoginActivity();
+            		} else {
+            			//cardsTab.select();
+            		}
             	}
                 mPager.setCurrentItem(tab.getPosition());
             }
@@ -146,8 +148,6 @@ public class MainActivity extends SherlockFragmentActivity {
         if(fromActivity != null && (fromActivity.equals("Login") || fromActivity.equals("Register") || fromActivity.equals("ReloadMoney"))) {
         	isLogin = true;
         	cardsTab.select();
-        	// Get card list in background once login successfully
-        	new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address));
         }
         
         if (fromActivity != null && fromActivity.equals("CardsList")) {
@@ -199,7 +199,7 @@ public class MainActivity extends SherlockFragmentActivity {
             	new AsyncLogout(MainActivity.this).execute(ip);
                 return true;
             case R.id.setting_refresh:
-            	new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address));
+            	//new AsyncGetCardsList(MainActivity.this).execute(getString(R.string.IP_Address), getView());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
