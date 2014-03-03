@@ -80,12 +80,7 @@ public class CardsListActivity extends ListActivity{
 				logger.log(Level.INFO, "Card " + id +"has been clicked");
 			}
 		});
-//	    // Create a progress bar to display while the list loads
-//        ProgressBar progressBar = new ProgressBar(this);
-//        progressBar.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-//                LayoutParams.WRAP_CONTENT));
-//        progressBar.setIndeterminate(true);
-//        getListView().setEmptyView(progressBar);
+
 	    }
 	}
 	

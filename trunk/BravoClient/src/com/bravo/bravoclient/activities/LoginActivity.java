@@ -6,12 +6,14 @@ import com.bravo.bravoclient.common.CommonViewHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 /**
@@ -121,6 +123,10 @@ public class LoginActivity extends Activity {
 			public void onClick(View v) {
 				/** When login button is pressed, it will go to asynchronized task for process **/
 				new AsyncLogin(LoginActivity.this).execute(username, password, roleType, domain ,ip);
+				
+				// Close soft keyboard after button is clicked
+				InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(passwordField.getWindowToken(), 0);
 			}
 		});
 		
