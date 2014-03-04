@@ -79,6 +79,8 @@ public class CardListDAO {
 	 * @param cardList
 	 */
 	public void insertCards(ArrayList<JSONObject> cardList) {
+		if (cardList == null) return;
+		
 		// Delete all current cards before inserting cardList
 		deleteAllCards();
 		
