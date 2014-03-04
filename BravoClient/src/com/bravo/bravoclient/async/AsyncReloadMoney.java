@@ -22,6 +22,7 @@ import com.bravo.https.apicalls.ClientAPICalls;
 import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,12 +34,20 @@ import android.widget.Toast;
  * @author daniel
  *
  */
-public class AsyncReloadMoney extends AsyncTask<Object, Void, String>{
+public class AsyncReloadMoney extends AsyncTask<Object, Integer, String>{
 	private Context context;
+	private static String jsonResponse;
+	private static ProgressDialog progressDialog;
 	private static final Logger logger = Logger.getLogger(AsyncReloadMoney.class.getName());
 	
 	public AsyncReloadMoney(Context context) {
 		this.context = context;
+		this.jsonResponse = "";
+		progressDialog = new ProgressDialog(context);
+		progressDialog.setCancelable(false);
+		progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.setMessage("Now reloading money......");
+		progressDialog.setMax(100);
 	}
 	
 	/**
@@ -47,9 +56,9 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, String>{
 	 */
 	@Override
 	protected String doInBackground(Object... params) {
-		String ip;
-		ArrayList<NameValuePair> apiParaList;
-		String jsonResponse = null;
+		final String ip;
+		final ArrayList<NameValuePair> apiParaList;
+		
 		if (params[1] instanceof ArrayList && params[0] instanceof String) {
 			apiParaList = (ArrayList<NameValuePair>) params[1];
 			ip = (String) params[0];
@@ -58,30 +67,29 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, String>{
 			return null;
 		}
 		
-		try {
-			jsonResponse = ClientAPICalls.reloadMoneyByCreditCard(ip, context, apiParaList);
-		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnrecoverableKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				doReloadMoneyByCreditCard(ip, apiParaList);
+			}
+		}).start();
+		
+		postProgress();
 		
 		return jsonResponse;
 	}
+	
+	protected void onProgressUpdate(Integer...sec) {
+		progressDialog.setProgress(sec[0]);
+		if (sec[0] == 0) {
+			progressDialog.show();
+		} else if (sec[0] == -1) {
+			progressDialog.dismiss();
+		} else if (sec[0] == Integer.MAX_VALUE) {
+			progressDialog.dismiss();
+			Toast.makeText(context, "Reload money timeout", Toast.LENGTH_LONG).show();
+		}
+    } 
 	
 	/**
 	 * @param The parameter is from doInBackground()
@@ -111,6 +119,43 @@ public class AsyncReloadMoney extends AsyncTask<Object, Void, String>{
 		} else {
 			new BravoAlertDialog(context).showDialog("Reload Money Failed", msg, "OK");
 		}
+	}
+	
+	private void doReloadMoneyByCreditCard(String ip, ArrayList<NameValuePair> apiParaList) {
+		try {
+			jsonResponse = ClientAPICalls.reloadMoneyByCreditCard(ip, context, apiParaList);
+		} catch (KeyManagementException e) {
+			logger.severe(e.getMessage());
+		} catch (UnrecoverableKeyException e) {
+			logger.severe(e.getMessage());
+		} catch (CertificateException e) {
+			logger.severe(e.getMessage());
+		} catch (KeyStoreException e) {
+			logger.severe(e.getMessage());
+		} catch (NoSuchAlgorithmException e) {
+			logger.severe(e.getMessage());
+		} catch (IOException e) {
+			logger.severe(e.getMessage());
+		}
+	}
+	
+	private void postProgress() {
+		int sec = 0;
+		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
+		while (jsonResponse == null || jsonResponse.equals("")) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				logger.severe("Timer has been stopped");
+			}
+			publishProgress(sec);
+			sec ++;
+			if (sec >= timeout) {
+				publishProgress(Integer.MAX_VALUE);
+			}
+		}
+		// if network response is got by api call, post -1 to onProgressUpdate
+		publishProgress(-1);
 	}
 
 }
