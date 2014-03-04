@@ -17,9 +17,13 @@ import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 
+import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.https.apicalls.ClientAPICalls;
 import com.bravo.https.util.HttpResponseHandler;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 
 /**
@@ -30,10 +34,12 @@ import android.content.Context;
 public class Encryption {
 	private static final String ALGORITHM = "RSA";
 	private static PublicKey publicKey;
+	private static String jsonResponse;
 	private Context context;
 	private Logger logger = Logger.getLogger(Encryption.class.getName());
 	public Encryption(Context context) {
 		this.context = context;
+		this.jsonResponse = ""; //Reset the jsonResponse for each single time this class is initiated.
 	}
 	
 	/**
@@ -53,39 +59,27 @@ public class Encryption {
 	/**
 	 * This method is going to call server side API to get public key for RSA encryption
 	 */
-	public PublicKey getPublicKey(String IP) {
+	public PublicKey getPublicKey(final String IP) {
 		KeyFactory factory = null;
 		PublicKey pub = null;
 		
 		// Call the api in order to get the exponent and modulus which are used by RSA for generating the public key
-		String jsonResposne = null;
 		String status = null;
 		String msg = null;
-		try {
-			jsonResposne = ClientAPICalls.getPublicKey(IP, context);
-			status = HttpResponseHandler.parseJson(jsonResposne, "status");
-			msg = HttpResponseHandler.parseJson(jsonResposne, "message");
-		} catch (KeyManagementException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (UnrecoverableKeyException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (CertificateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (KeyStoreException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}	
 		
-		if (jsonResposne != null && status.equals("404") == false) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				doGetPublicKey(IP);
+			}
+		}).start();
+		
+		postProgress();
+
+		status = HttpResponseHandler.parseJson(jsonResponse, "status");
+		msg = HttpResponseHandler.parseJson(jsonResponse, "message");
+		
+		if (jsonResponse != null && status.equals("404") == false) {
 			String e = HttpResponseHandler.parseJson(msg, "e");
 			String n = HttpResponseHandler.parseJson(msg, "n");
 			
@@ -149,5 +143,38 @@ public class Encryption {
 		return result.toString();
 	}
 	
+	private void doGetPublicKey(String IP) {
+		try {
+			jsonResponse = ClientAPICalls.getPublicKey(IP, context);
+		} catch (KeyManagementException e1) {
+			logger.severe(e1.getMessage());
+		} catch (UnrecoverableKeyException e1) {
+			logger.severe(e1.getMessage());
+		} catch (CertificateException e1) {
+			logger.severe(e1.getMessage());
+		} catch (KeyStoreException e1) {
+			logger.severe(e1.getMessage());
+		} catch (NoSuchAlgorithmException e1) {
+			logger.severe(e1.getMessage());
+		} catch (IOException e1) {
+			logger.severe(e1.getMessage());
+		}	
+	}
+	
+	private void postProgress() {
+		int sec = 0;
+		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
+		while (jsonResponse == null || jsonResponse.equals("")) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				logger.severe("Timer has been stopped");
+			}
+			sec ++;
+			if (sec >= timeout) {
+				new BravoAlertDialog(context).showDialog("Encryption", "Getting public key for encryption time out", "OK");
+			}
+		}
+	}
 
 }

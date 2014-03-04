@@ -6,23 +6,14 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
-import com.bravo.bravoclient.dialogs.BravoProgressDialog;
-import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.bravoclient.util.Encryption;
-import com.bravo.https.apicalls.ClientAPICalls;
 import com.bravo.https.apicalls.CommonAPICalls;
-import com.bravo.https.util.BravoAuthenticationException;
-import com.bravo.https.util.BravoStatus;
 import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
@@ -39,13 +30,13 @@ import android.widget.Toast;
 public class AsyncLogin extends AsyncTask<String, Integer, String>{
 	public static Encryption EncryptionObj;
 	private Context context;
-	private static int waitingTime = 1;
+	private static String jsonResponse;
 	private static Logger logger = Logger.getLogger(AsyncLogin.class.getName());
 	private static ProgressDialog progressDialog;
-	private static String ip;
 	
 	public AsyncLogin(Context context) {
 		this.context = context;
+		this.jsonResponse = ""; // Reset the login response each single time when this class is called.
 		progressDialog = new ProgressDialog(context);
 		progressDialog.setCancelable(false);
 		progressDialog.setCanceledOnTouchOutside(false);
@@ -55,57 +46,41 @@ public class AsyncLogin extends AsyncTask<String, Integer, String>{
 	
 	@Override
 	protected String doInBackground(String... loginInfo) {
-
 		final String username = loginInfo[0];
 		final String password = loginInfo[1];
 		final String roletype = loginInfo[2];
 		final String domain = loginInfo[3];
-		ip = loginInfo[4];
+		final String ip = loginInfo[4];
 		
-		String loginResponse = null;
-		try {
-			loginResponse = CommonAPICalls.login(username, password, roletype, domain, ip, context);
-		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnrecoverableKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// Do login in new thread, in order to do the real time watching for the response
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				doLogin(username, password, roletype, domain, ip);
+			}
+		}).start();
+		
+		postProgress();
+		
+		if (jsonResponse != null && jsonResponse.equals("") == false) {
+			// After login, we should get the public key at the same time 
+			EncryptionObj = new Encryption(context);
+			EncryptionObj.getPublicKey(ip);
 		}
-		// After login, we should get the public key at the same time 
-		EncryptionObj = new Encryption(context);
-		EncryptionObj.getPublicKey(ip);
-		
-		postProgress(waitingTime);
-		
-		return loginResponse;
+		return jsonResponse;
 	}
 	
-	protected void onProgressUpdate(Integer... progress) {
-		progressDialog.setProgress(progress[0]);
-		if (progress[0] == 0) progressDialog.show();
-		if (progress[0] >= waitingTime) {
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				logger.severe("Timer has been stopped");
-			}
+	protected void onProgressUpdate(Integer...sec) {
+		progressDialog.setProgress(sec[0]);
+		if (sec[0] == 0) {
+			progressDialog.show();
+		} else if (sec[0] == -1) {
 			progressDialog.dismiss();
+		} else if (sec[0] == Integer.MAX_VALUE) {
+			progressDialog.dismiss();
+			Toast.makeText(context, "Login timeout", Toast.LENGTH_LONG).show();
 		}
     }
-	
 	
 	/**
 	 * @param The parameter is from doInBackground()
@@ -126,14 +101,41 @@ public class AsyncLogin extends AsyncTask<String, Integer, String>{
 		}
 	}
 	
-	private void postProgress(int sec) {
-		for (int i=0; i <= sec; i++) {
+	// Doing the really login here
+	private void doLogin(String username, String password, String roletype, String domain, String ip) {
+		try {
+			jsonResponse = CommonAPICalls.login(username, password, roletype, domain, ip, context);
+		} catch (KeyManagementException e) {
+			logger.severe(e.getMessage());
+		} catch (UnrecoverableKeyException e) {
+			logger.severe(e.getMessage());
+		} catch (CertificateException e) {
+			logger.severe(e.getMessage());
+		} catch (KeyStoreException e) {
+			logger.severe(e.getMessage());
+		} catch (NoSuchAlgorithmException e) {
+			logger.severe(e.getMessage());
+		} catch (IOException e) {
+			logger.severe(e.getMessage());
+		}
+	}
+	
+	private void postProgress() {
+		int sec = 0;
+		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
+		while (jsonResponse == null || jsonResponse.equals("")) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				logger.severe("Timer has been stopped");
 			}
-			publishProgress(i);
+			publishProgress(sec);
+			sec ++;
+			if (sec >= timeout) {
+				publishProgress(Integer.MAX_VALUE);
+			}
 		}
+		// if network response is got by api call, post -1 to onProgressUpdate
+		publishProgress(-1);
 	}
 }
