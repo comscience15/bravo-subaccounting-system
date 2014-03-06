@@ -1,10 +1,14 @@
 package com.bravo.bravoclient.activities;
 
+import java.util.logging.Logger;
+
 import com.bravo.bravoclient.R;
+import com.bravo.bravoclient.common.CommonScannerHandler;
 import com.bravo.bravoclient.dialogs.ScanResultDialog;
 import com.bravo.bravoclient.dialogs.ScanResultDialog.ScanResultListener;
 
 import android.os.Bundle;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.support.v4.app.DialogFragment;
@@ -12,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.Window;
+import android.widget.Toast;
 
 /**
  * This class is the activity for barcode scanning feature on home tab.
@@ -25,6 +30,7 @@ public class ScannerActivity extends FragmentActivity implements
 		ScanResultListener {
 	private String scanResult;
 	private String format;
+	private static final Logger logger = Logger.getLogger(ScannerActivity.class.getName());
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +41,13 @@ public class ScannerActivity extends FragmentActivity implements
 
 		setContentView(R.layout.activity_scanner);
 		
-		startScanner();
+		CommonScannerHandler.startScanner(ScannerActivity.this);
 	}
 	
 	/**
 	 * This method is to handle the result from scanner
 	 */
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == 0) {
 			if (resultCode == RESULT_OK) {
@@ -52,36 +59,15 @@ public class ScannerActivity extends FragmentActivity implements
 				/** If scanning failed, will intent to main screen*/
 				try {
 					Intent toMainPageIntent = new Intent(this, MainActivity.class);
+					toMainPageIntent.putExtra("Activity", "Scanner");
+					toMainPageIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(toMainPageIntent);
+					overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);
 				} catch (Exception e) {
 					// go to main page exception, we should some how catch it
-					System.err.println("Can not catch the scanning result: " + e.toString());
+					logger.severe("Cannot catch the scan resutl" + e.getMessage());
 				}
 			}
-		}
-	}
-	
-	/**
-	 *  This method is going to start scanner from zxing library
-	 */
-	public void startScanner() {
-		/** Getting screen size */
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-		int height = displayMetrics.heightPixels;
-		int width = displayMetrics.widthPixels;
-
-		/** Referring to zxing barcode scanner library */
-		try {
-			Intent zxingIntent = new Intent(
-					"com.google.zxing.client.android.SCAN");
-			// intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-			zxingIntent.putExtra("SCAN_WIDTH", width);
-			zxingIntent.putExtra("SCAN_HEIGHT", height);
-			startActivityForResult(zxingIntent, 0);
-		} catch (Exception e) {
-			// Barcode scanner exception, we should somehow catch it
-			System.err.println("Can not start barcode scanner: " + e.toString());
 		}
 	}
 	
