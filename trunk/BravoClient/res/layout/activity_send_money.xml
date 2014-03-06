@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/send_money_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/solid_main"
+    android:fillViewport="true"
+    android:orientation="vertical" >
+
+    <!-- Header  Starts -->
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@layout/header"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip" >
+
+        <!-- Logo Start -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/logo" />
+        <!-- Logo Ends -->
+    </RelativeLayout>
+    <!-- Header Ends -->
+
+
+    <!-- Footer Start -->
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="90dip"
+        android:layout_alignParentBottom="true"
+        android:background="@layout/footer"
+        android:orientation="horizontal" >
+    </LinearLayout>
+    <!-- Footer Ends -->
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dip" >
+
+            <!-- Amount -->
+            <EditText
+                android:id="@+id/send_money_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/edit_text"
+                android:hint="Amount"
+                android:inputType="numberDecimal"
+                android:minHeight="45dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textCursorDrawable="@null" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" >
+
+                <View
+                    android:layout_width="0dip"
+                    android:layout_height="1dip"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/divider" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/note_send_money_choose_method"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="0dip"
+                    android:layout_height="1dip"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/divider" />
+            </LinearLayout>
+
+            <!-- Using email -->
+            <EditText
+                android:id="@+id/send_money_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/edit_text"
+                android:hint="Email of reciepient"
+                android:minHeight="45dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textCursorDrawable="@null" />
+
+            <TextView
+                android:id="@+id/send_money_email_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:text="@string/note_send_money_email"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/send_money_email_or_scanner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dip"
+                android:text="@string/send_money_email_or_scanner_text"
+                android:textSize="13sp" />
+
+            <!-- Scanner Button -->
+            <Button
+                android:id="@+id/send_money_scanner_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Use Scanner" />
+
+            <TextView
+                android:id="@+id/send_money_scanner_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:text="@string/note_send_money_scanner"
+                android:textSize="12sp" />
+			
+			<!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="1"
+                android:background="@color/divider" />
+
+            <!-- Memo -->
+            <EditText
+                android:id="@+id/send_money_memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:layout_marginTop="5dip"
+                android:layout_marginBottom="20dip"
+                android:background="@drawable/edit_text"
+                android:hint="Memo(Optional)"
+                android:minHeight="45dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textCursorDrawable="@null" />
+            
+            <!-- Confirm Button -->
+            <Button
+                android:id="@+id/send_money_email_confirm_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirm" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

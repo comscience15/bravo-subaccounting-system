@@ -62,7 +62,7 @@ public class CommonValidationHandler {
 	
 	public static boolean amountValidation(String amount) {
 		try {
-			if (amount != null && Double.parseDouble(amount) != 0) {
+			if (amount != null && Double.parseDouble(amount) > 0 && amount.matches("[0-9]+\\.{0,1}[0-9]{0,2}")) {
 				return true;
 			} else {
 				return false;

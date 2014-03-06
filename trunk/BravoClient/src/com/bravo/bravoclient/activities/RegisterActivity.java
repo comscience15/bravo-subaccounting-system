@@ -80,7 +80,6 @@ public class RegisterActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				System.out.println(username + "\n" + password + "\n" + confirmPassword + "\n" + street +"\n"+ state +"\n"+ zipCode +"\n"); // debug
 				new AsyncRegister(RegisterActivity.this).execute(username, password, street, city, state, zipCode, roleType, domain, ip);
 			}
 		});
