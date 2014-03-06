@@ -12,8 +12,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.NFC"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +25,7 @@
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -79,6 +80,14 @@
         <activity
             android:name="com.bravo.bravoclient.activities.ReloadMoneyActivity"
             android:label="@string/title_activity_reload_money" >
+        </activity>
+        <activity
+            android:name="com.bravo.bravoclient.activities.AddCardActivity"
+            android:label="@string/title_activity_add_card" >
+        </activity>
+        <activity
+            android:name="com.bravo.bravoclient.activities.SendMoneyActivity"
+            android:label="@string/title_activity_send_money" >
         </activity>
     </application>
 
