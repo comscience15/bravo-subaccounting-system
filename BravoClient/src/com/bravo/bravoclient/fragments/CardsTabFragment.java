@@ -4,7 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
@@ -34,6 +36,7 @@ import com.bravo.bravoclient.activities.CardsListActivity;
 import com.bravo.bravoclient.activities.LoginActivity;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.activities.ReloadMoneyActivity;
+import com.bravo.bravoclient.activities.SendMoneyActivity;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
@@ -87,7 +90,7 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
         final ImageView cardPayButton = (ImageView) getView().findViewById(R.id.cardPayButton);
         final ImageView cardReloadButton = (ImageView) getView().findViewById(R.id.cardReloadButton);
         final ImageView cardSelfCheckoutButton = (ImageView) getView().findViewById(R.id.cardSelfCheckoutButton);
-        final ImageView cardSendGiftButton = (ImageView) getView().findViewById(R.id.cardSendGiftButton);
+        final ImageView cardMoneyTransfer = (ImageView) getView().findViewById(R.id.cardMoneyTransferButton);
         final ImageView cardTransactionHistoryButton = (ImageView) getView().findViewById(R.id.cardTransactionHistoryButton);
         final ImageView cardCardsListButton = (ImageView) getView().findViewById(R.id.cardCardsListButton);
         
@@ -97,19 +100,17 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 				
 				if (isAuthenticated() == false) return;
 				if(v.equals(cardPayButton)) {
-					// TODO: when pay button be pressed
 					payImpl();
 				} else if (v.equals(cardReloadButton)){
-					// TODO: when reload button be pressed
 					reloadImpl();
 				} else if (v.equals(cardSelfCheckoutButton)){
 					// TODO: when selfCheckout button be pressed
-				} else if (v.equals(cardSendGiftButton)){
+				} else if (v.equals(cardMoneyTransfer)){
 					// TODO: when send gift button be pressed
+					moneyTransferImpl();
 				} else if (v.equals(cardTransactionHistoryButton)){
 					// TODO: when transaction history button be pressed
 				} else if (v.equals(cardCardsListButton)){
-					// TODO: when cards list button be pressed
 					cardsListImpl();
 				}
 			}
@@ -118,11 +119,11 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
         cardPayButton.setOnClickListener(buttonListener);
         cardReloadButton.setOnClickListener(buttonListener);
         cardSelfCheckoutButton.setOnClickListener(buttonListener);
-        cardSendGiftButton.setOnClickListener(buttonListener);
+        cardMoneyTransfer.setOnClickListener(buttonListener);
         cardTransactionHistoryButton.setOnClickListener(buttonListener);
         cardCardsListButton.setOnClickListener(buttonListener);
         
-        initImageViewBgMap(cardPayButton, cardReloadButton, cardSelfCheckoutButton, cardSendGiftButton, cardTransactionHistoryButton, cardCardsListButton);
+        initImageViewBgMap(cardPayButton, cardReloadButton, cardSelfCheckoutButton, cardMoneyTransfer, cardTransactionHistoryButton, cardCardsListButton);
         
         OnTouchListener buttonTouchListener = new OnTouchListener() {
 			@Override
@@ -146,7 +147,7 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 		cardPayButton.setOnTouchListener(buttonTouchListener);
 		cardReloadButton.setOnTouchListener(buttonTouchListener);
 		cardSelfCheckoutButton.setOnTouchListener(buttonTouchListener);
-		cardSendGiftButton.setOnTouchListener(buttonTouchListener);
+		cardMoneyTransfer.setOnTouchListener(buttonTouchListener);
 		cardTransactionHistoryButton.setOnTouchListener(buttonTouchListener);
 		cardCardsListButton.setOnTouchListener(buttonTouchListener);
 		
@@ -175,14 +176,14 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 	private void initImageViewBgMap(final ImageView cardPayButton,
 			final ImageView cardReloadButton,
 			final ImageView cardSelfCheckoutButton,
-			final ImageView cardSendGiftButton,
+			final ImageView cardMoneyTransferButton,
 			final ImageView cardTransactionHistoryButton,
 			final ImageView cardReceiveMoneyButton) {
 		if(imageViewBg != null){
         	imageViewBg.put(cardPayButton.getId(),R.drawable.pay);
         	imageViewBg.put(cardReloadButton.getId(),R.drawable.reload);
         	imageViewBg.put(cardSelfCheckoutButton.getId(),R.drawable.self_checkout);
-        	imageViewBg.put(cardSendGiftButton.getId(),R.drawable.send_gift);
+        	imageViewBg.put(cardMoneyTransferButton.getId(),R.drawable.money_transfer);
         	imageViewBg.put(cardTransactionHistoryButton.getId(),R.drawable.transaction_history);
         	imageViewBg.put(cardReceiveMoneyButton.getId(),R.drawable.receive_money);
         }
@@ -191,7 +192,7 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
         	imageViewPressedBg.put(cardPayButton.getId(),R.drawable.pay_pressed);
         	imageViewPressedBg.put(cardReloadButton.getId(),R.drawable.reload_pressed);
         	imageViewPressedBg.put(cardSelfCheckoutButton.getId(),R.drawable.self_checkout_pressed);
-        	imageViewPressedBg.put(cardSendGiftButton.getId(),R.drawable.send_gift_pressed);
+        	imageViewPressedBg.put(cardMoneyTransferButton.getId(),R.drawable.send_gift_pressed);
         	imageViewPressedBg.put(cardTransactionHistoryButton.getId(),R.drawable.transaction_history_pressed);
         	imageViewPressedBg.put(cardReceiveMoneyButton.getId(),R.drawable.receive_money_pressed);
         }
@@ -292,7 +293,43 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 		Intent toReloadMoneyActivity = new Intent(getActivity(), ReloadMoneyActivity.class);
 		toReloadMoneyActivity.putExtra("cardID", cardId);
 		getActivity().startActivity(toReloadMoneyActivity);
+		// TODO: we should change the animation in the future
 		getActivity().overridePendingTransition(R.anim.cards_list_enter, R.anim.cards_list_out);
+	}
+	
+	private void moneyTransferImpl() {
+		AlertDialog.Builder moneyTransferBuilder = new AlertDialog.Builder(getActivity());
+		moneyTransferBuilder.setTitle(R.string.title_money_transfer_dialog);
+		// TODO: Set the view for this dialog
+		moneyTransferBuilder.setItems(R.array.money_transfer_array, new DialogInterface.OnClickListener(){
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == 0) {
+					// Go to SendMoneyActivity
+					Intent toSendMoneyActivity = new Intent(getActivity(), SendMoneyActivity.class);
+					getActivity().startActivity(toSendMoneyActivity);
+					// TODO: we should change the animation in the future
+					getActivity().overridePendingTransition(R.anim.cards_list_enter, R.anim.cards_list_out);
+					
+				} else if (which == 1) {
+					/** This is for get money **/
+					// Get selected card first, the money will be deposited into your selected card
+					getSelectedCard();
+					
+					// Encrypted with the public key for security purpose
+					Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
+					String inputData = "{\"cardID\":\""+ cardId +"\"}";
+					encryptedData = encryptionObj.generateEncryptedData(inputData);
+					
+					// Show the encrypted cardID
+					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
+					paymentDialog.generateQRCode(encryptedData);
+				}
+			}
+		});
+		
+		AlertDialog dialog = moneyTransferBuilder.create();
+		dialog.show();
 	}
 	
 	/**

@@ -116,14 +116,14 @@
             android:layout_weight="1" >
 
             <ImageView
-                android:id="@+id/cardSendGiftButton"
+                android:id="@+id/cardMoneyTransferButton"
                 style="@style/CardsIconViewTheme"
                 android:src="@drawable/money_transfer" />
 
             <TextView
-                android:id="@+id/cardSendGiftText"
+                android:id="@+id/cardMoneyTransferText"
                 style="@style/CardTextViewTheme.CenterHorizontal"
-                android:layout_below="@id/cardSendGiftButton"
+                android:layout_below="@id/cardMoneyTransferButton"
                 android:text="@string/money_transfer" />
         </RelativeLayout>
 

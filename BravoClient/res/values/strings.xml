@@ -13,6 +13,8 @@
     <string name="logout_toast">Logout Successfully</string>
     <string name="invalid_username">Please verify the email</string>
     <string name="invalid_password">Please verify the password</string>
+    <string name="send_money_invalid_email">Please verify your email address</string>
+    <string name="send_money_invalid_amount">Please verify your amount</string>
     <string name="reg_password_not_match">Password is not match</string>
     <string name="reg_invalid_username">Please type in the valid email</string>
     <string name="reg_invalid_password">Password should not be empty or less than 6 characters</string>
@@ -37,16 +39,30 @@
     <string name="cards_list">Cards List</string>
     <string name="transaction_history">Transaction History</string>
     <string name="currency">$ </string>
+    <string name="title_money_transfer_dialog">Money Transfer</string>
     <string name="IP_Address">https://50.156.103.190:8181/subAccountAPI/</string>
     <!-- <string name="IP_Address">http://10.0.2.2:8080/subAccountAPI/</string> -->
     <string name="network_timeout">15</string>
-    <string name="failure_get_card_list">Failed to get card list.</string>
-
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_cards_list">Cards List</string>
     <string name="title_activity_reload_money">Reload Money</string>
+    <string name="failure_get_card_list">Failed to get card list.</string>
+    <string name="failure_start_scanner">Cannot start scanner</string>
+    <string name="note_send_money_email">Money will be deposited to the primary card of recipient</string>
+    <string name="note_send_money_scanner">Money will by depostied to current card of recipient</string>
+    <string name="note_send_money_choose_method">Please choose transfer methods</string>
+    <string name="send_money_email_or_scanner_text">OR</string>
+    <string name="alert_send_money_confirm_scanner">Are you sure to use scanner instead of using email address?</string>
+    <string name="alert_send_money_confirm_info_title">Send money details</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_confirm">Confirm</string>
 
+    <!-- The array list of operations of money transfer -->
+    <string-array name="money_transfer_array">
+        <item>Send Money</item>
+        <item>Get Money</item>
+    </string-array>
     <!-- The array list of states or provinces -->
     <string-array name="state_array">
         <item>Alabama</item>
@@ -100,30 +116,28 @@
         <item>Wisconsin</item>
         <item>Wyoming</item>
     </string-array>
-    
     <string-array name="reload_money_expiration_month">
-    	<item>01</item>
-    	<item>02</item>
-    	<item>03</item>
-    	<item>04</item>
-    	<item>05</item>
-    	<item>06</item>
-    	<item>07</item>
-    	<item>08</item>
-    	<item>09</item>
-    	<item>10</item>
-    	<item>11</item>
-    	<item>12</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
     </string-array>
-    
     <string-array name="reload_money_expiration_year">
-    	<item>14</item>
-    	<item>15</item>
-    	<item>16</item>
-    	<item>17</item>
-    	<item>18</item>
-    	<item>19</item>
-    	<item>20</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
     </string-array>
 
     <string name="state_promote">Choose State</string>
@@ -135,5 +149,8 @@
     <color name="outline_icon">#729896</color>
     <color name="lable_text_color">#FFFFFF</color>
     <color name="divider">#FFFFFF</color>
+
+    <string name="title_activity_add_card">AddCardActivity</string>
+    <string name="title_activity_send_money">SendMoneyActivity</string>
 
 </resources>

@@ -70,7 +70,8 @@ public class AsyncGetCardsList extends AsyncTask<String, Integer, String>{
 			progressDialog.dismiss();
 		} else if (progress[0] == Integer.MAX_VALUE) {
 			progressDialog.dismiss();
-			Toast.makeText(context, "Get card list timeout", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "Get card list timeout", Toast.LENGTH_SHORT).show();
+			return;
 		}
     }
 
@@ -94,7 +95,7 @@ public class AsyncGetCardsList extends AsyncTask<String, Integer, String>{
 			Toast.makeText(context, "Currently have not cards found", Toast.LENGTH_LONG).show();
 		} else {
 			String msg1 = context.getString(R.string.failure_get_card_list);
-			new BravoAlertDialog(context).showDialog("Get Card List Failed.", msg1, "OK");
+			new BravoAlertDialog(context).showDialog("Get card list", msg1, "OK");
 		}
 	}
 	
