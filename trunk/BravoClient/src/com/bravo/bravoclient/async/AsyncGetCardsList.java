@@ -91,7 +91,7 @@ public class AsyncGetCardsList extends AsyncTask<String, Integer, String>{
 			cardListDAO.insertCards(cardList);
 			cardListDAO.closeDB();
 			updateBalance();
-		} else if (jsonResponse != null && status.equals(BravoStatus.OPERATION_NO_CONTENT_RESPONSE)) {
+		} else if (status != null && status.equals(BravoStatus.OPERATION_NO_CONTENT_RESPONSE)) {
 			Toast.makeText(context, "Currently have not cards found", Toast.LENGTH_LONG).show();
 		} else {
 			String msg1 = context.getString(R.string.failure_get_card_list);

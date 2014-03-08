@@ -10,6 +10,11 @@ import android.widget.Toast;
 
 import com.bravo.bravoclient.R;
 
+/**
+ * This class is the common place to star the scanner
+ * @author daniel
+ *
+ */
 public class CommonScannerHandler {
 
 	private static final Logger logger = Logger.getLogger(CommonScannerHandler.class.getName());

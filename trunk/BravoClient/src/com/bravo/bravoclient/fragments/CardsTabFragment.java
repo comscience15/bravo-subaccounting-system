@@ -154,13 +154,17 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 		
 		String fromActivity = getActivity().getIntent().getStringExtra("Activity");
 		if (fromActivity != null) {
-        	if (fromActivity.equals("Login") || fromActivity.equals("Register") || fromActivity.equals("ReloadMoney")) {
+        	if (fromActivity.equals("Login") || fromActivity.equals("Register") || fromActivity.equals("Reload_Money") || fromActivity.equals("Send_Money")) {
         		// Get card list in background once login successfully
         		new AsyncGetCardsList(getActivity(), getView()).execute(getString(R.string.IP_Address));
+        		getSelectedCard();
         	} else if (fromActivity.equals("CardsList")) {
         		// Display card balance without network updating
         		displayCardBalance();
         	}
+		} else {
+			// if not from other intent, just display the balance.
+			displayCardBalance();
 		}
     }
     
@@ -307,6 +311,7 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 				if (which == 0) {
 					// Go to SendMoneyActivity
 					Intent toSendMoneyActivity = new Intent(getActivity(), SendMoneyActivity.class);
+					toSendMoneyActivity.putExtra("cardID", cardId);
 					getActivity().startActivity(toSendMoneyActivity);
 					// TODO: we should change the animation in the future
 					getActivity().overridePendingTransition(R.anim.cards_list_enter, R.anim.cards_list_out);
@@ -318,8 +323,10 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 					
 					// Encrypted with the public key for security purpose
 					Encryption encryptionObj = AsyncLogin.EncryptionObj == null ? AsyncRegister.EncryptionObj : AsyncLogin.EncryptionObj;
-					String inputData = "{\"cardID\":\""+ cardId +"\"}";
+					String inputData = "{\"cardID\":\""+ cardId +"\", \"customerTimestamp\":\""+ System.currentTimeMillis() +"\"}";
 					encryptedData = encryptionObj.generateEncryptedData(inputData);
+					
+					logger.info("Encrypted data is: " + encryptedData);
 					
 					// Show the encrypted cardID
 					BravoPaymentDialog paymentDialog = new BravoPaymentDialog(getActivity());
