@@ -30,6 +30,9 @@ import com.bravo.webapp.transaction.MerchantTransactionService;
 import com.bravo.webapp.util.CollectionUtil;
 import com.bravo.webapp.util.Encryption;
 
+/**
+ * @author Daniel
+ */
 @Controller
 @RequestMapping("/merchant/transaction")
 public class MerchantTransactionController {
@@ -50,8 +53,7 @@ public class MerchantTransactionController {
 	public @ResponseBody
 	String loadCustomerMoney(@RequestParam String customerEmail,
 			@RequestParam String location, @RequestParam BigDecimal totalAmount) {
-		System.out.println("Load Customer Money");
-
+        logger.info("Load customer money");
 		// Prepare the transaction record
 		Timestamp transactionDate = new Timestamp(System.currentTimeMillis());
 		Transaction transaction = new Transaction();
@@ -77,20 +79,20 @@ public class MerchantTransactionController {
 			@ModelAttribute Transaction transaction, @RequestParam int days) {
 		// Check the refund item list, if there are duplicate productID
 		// If though, sum them up.
-		System.out.println("Get Refund Tx by Email");
+        logger.info("Get refund transaction by email");
 
 		// Union the refund items
 		// Combine the same productID into the same record
 		List<OrderItem> refundItemList = transaction.getOrderItemList();
 		Map<String, OrderItem> refundItemMap = CollectionUtil
 				.uniqueListToMap(refundItemList);
-		System.out.println(transaction.toString());
+        logger.info("Refund items are: " + transaction.toString());
 
 		// Perform to get the refundable receipts from the customer email and refund item list
 		List<Transaction> refundableTxList = merchantTxService
 				.getRefundTxByEmail(customerEmail, refundItemMap, days);
-		System.out.println("nRefundableTxList: " + refundableTxList.size());
-		System.out.println(refundableTxList.toString());
+        logger.info("Number of transactions are found: " + refundableTxList.size());
+        logger.info("Transaction list: " + refundableTxList.toString());
 
 		return refundableTxList;
 	}
@@ -100,22 +102,22 @@ public class MerchantTransactionController {
 	public @ResponseBody
 	List<Transaction> getRefundTxByCard(@RequestParam String cardID,
 			@ModelAttribute Transaction transaction, @RequestParam int days) {
-		System.out.println("Get Refund Tx by Card");
+        logger.info("Get refund transaction by cardID");
 
 		// Union the refund items
 		// Combine the same productID into the same record
 		List<OrderItem> refundItemList = transaction.getOrderItemList();
 		Map<String, OrderItem> refundItemMap = CollectionUtil
 				.uniqueListToMap(refundItemList);
-		System.out.println(transaction.toString());
+        logger.info("Refund items are: " + transaction.toString());
 
 		// Perform to get the refundable receipts from the customer card and refund item list
-		List<Transaction> tempTxList = merchantTxService.getRefundTxByCard(
+		List<Transaction> refundableTxList = merchantTxService.getRefundTxByCard(
 				cardID, refundItemMap, days);
-		System.out.println("tempTxList: " + tempTxList.size());
-		System.out.println(tempTxList.toString());
+        logger.info("Number of transactions are found: " + refundableTxList.size());
+        logger.info("Transaction list: " + refundableTxList.toString());
 
-		return tempTxList;
+		return refundableTxList;
 	}
 
 	// Perform the refund through the receipt and refund item list
@@ -124,19 +126,19 @@ public class MerchantTransactionController {
 	Transaction refundMoneyByUnit(@ModelAttribute Transaction transaction,
 			@RequestParam int days) {
 		int receiptNo = transaction.getReceiptNo();
-		System.out.println("Refund Money by unit w/ receiptNo: " + receiptNo);
+        logger.info("Refund money by receipt number: " + receiptNo);
 
 		// Union the refund items
 		// Combine the same productID into the same record
 		List<OrderItem> refundItemList = transaction.getOrderItemList();
 		Map<String, OrderItem> refundMap = CollectionUtil
 				.uniqueListToMap(refundItemList);
-		System.out.println(refundMap.toString());
+        logger.info("Refund items are: " + transaction.toString());
 
 		// Perform the refund through the receipt and refund item list
-		System.out.println("before call: " + transaction.toString());
+        logger.info("Before doing refund: " + transaction.toString());
 		merchantTxService.refundMoneyByUnit(transaction, refundMap, days);
-		System.out.println("after call: " + transaction.toString());
+        logger.info("After doing refund " + transaction.toString() );
 
 		return transaction;
 
