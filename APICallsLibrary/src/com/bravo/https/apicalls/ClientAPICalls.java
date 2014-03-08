@@ -138,4 +138,49 @@ public class ClientAPICalls {
 		
 		return JSONString;
 	}
+	
+	/**
+	 * This is the api call to send money to another customer
+	 * @param IP
+	 * @param androidContext
+	 * @param senderCardID
+	 * @param senderNote
+	 * @param receiverEmail
+	 * @param encryptedReceiverInfo
+	 * @param totalAmount
+	 * @return
+	 * @throws KeyManagementException
+	 * @throws UnrecoverableKeyException
+	 * @throws CertificateException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
+	public static String sendMoney(String IP, Context androidContext, String senderCardID, String senderNote, String receiverEmail, String encryptedReceiverInfo, String totalAmount) 
+			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
+		final String ip = IP;
+		final String path = "/service/customer/transaction/sendMoney";
+		final String URL = ip + path;
+		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
+		
+		String cookie = CookieHandler.getCookie(androidContext);
+		
+		/**Creating parameters*/
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("senderCardID", senderCardID));
+		nameValuePair.add(new BasicNameValuePair("senderNote", senderNote));
+		nameValuePair.add(new BasicNameValuePair("receiverEmail", receiverEmail));
+		nameValuePair.add(new BasicNameValuePair("encryptedReceiverInfo", encryptedReceiverInfo));
+		nameValuePair.add(new BasicNameValuePair("totalAmount", totalAmount));
+
+		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, nameValuePair, cookie, "loadMoneyByCreditCard", androidContext);
+		
+		String JSONString = HttpResponseHandler.toString(response);
+		
+		logger.info(JSONString);
+		return JSONString;
+	}
 }
