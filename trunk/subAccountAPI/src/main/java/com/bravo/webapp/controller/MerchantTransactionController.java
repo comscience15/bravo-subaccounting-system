@@ -2,13 +2,16 @@ package com.bravo.webapp.controller;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.bravo.webapp.util.Global;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -63,7 +66,7 @@ public class MerchantTransactionController {
 		Card card = merchantTxService.loadCustomerMoney(customerEmail,
 				location, transaction);
 
-		return "{\"balance\":\"" + card.getBalance() + "\"}";
+		return MessageFormat.format(Global.SUCCESS_RESPONSE, card.getBalance());//"{\"balance\":\"" + card.getBalance() + "\"}";
 
 	}
 
@@ -142,7 +145,7 @@ public class MerchantTransactionController {
 	// Perform the purchase the items
 	@RequestMapping(method = RequestMethod.POST, value = "/purchaseItems", produces = "application/json")
 	public @ResponseBody
-	Transaction purchaseItems(HttpServletRequest request,
+	Hashtable<String, Object> purchaseItems(HttpServletRequest request,
 			@RequestParam String encryptedInfo,
 			@RequestParam long merchantTimestamp,
 			@ModelAttribute Transaction transaction) {
@@ -181,7 +184,11 @@ public class MerchantTransactionController {
 		// Perform the purchase
 		transaction = checkoutService.checkoutItems(cardID, transaction);
 
-		return transaction;
+        Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
+        hashtable.put("status", "200");
+        hashtable.put("message", transaction);
+
+		return hashtable;
 
 	}
 

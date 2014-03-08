@@ -1,6 +1,7 @@
 package com.bravo.webapp.transaction;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,8 @@ import com.bravo.webapp.security.LoginInformation;
 import com.bravo.webapp.util.IdGenerator;
 
 public class CustomerService {
+
+    private static Logger logger = Logger.getLogger(CustomerService.class.getName());
 
 	@Autowired
 	private CustomerDAO customerDAO;
@@ -147,10 +150,9 @@ public class CustomerService {
 
 	public List<Card> getCardListByCustID() {
 		String customerID = LoginInformation.getCustomerID();
-		System.out.println("customerID: " + customerID);
-		System.out.println("merchantAccNo: "
-				+ LoginInformation.getMerchantAccNo());
-		System.out.println("username: " + LoginInformation.getUsername());
+        logger.info("Customer ID is: " + customerID);
+		logger.info("Merchant ID is: " + LoginInformation.getMerchantAccNo());
+        logger.info("Login customer username is: " + LoginInformation.getUsername());
 
 		return cardDAO.getCardListByCustID(customerID);
 	}

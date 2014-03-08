@@ -166,7 +166,7 @@
 	<beans:bean id="loginSuccessHandler"
 	    class="com.bravo.webapp.security.AjaxAuthenticationSuccessHandler" >
 	    <beans:constructor-arg ref="defaultSuccessHandler"></beans:constructor-arg>
-	    <beans:property name="jsonMessage" value='{"success":true}' />
+	    <beans:property name="jsonMessage" value='{"status":"200", "message":"Login successful"}' />
 	</beans:bean>
 	
 	<beans:bean id="defaultSuccessHandler"

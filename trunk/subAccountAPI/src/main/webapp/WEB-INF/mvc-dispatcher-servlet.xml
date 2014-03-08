@@ -61,7 +61,6 @@
     <bean id="encryption" class="com.bravo.webapp.util.Encryption">
         <!-- The encrypt public key length -->
         <constructor-arg name="encryptBitLen" type="int" value="512" />
-        <constructor-arg name="genNewKey" type="boolean" value="false" />
     </bean>
   	
     

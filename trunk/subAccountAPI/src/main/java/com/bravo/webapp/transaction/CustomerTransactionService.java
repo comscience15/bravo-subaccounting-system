@@ -2,6 +2,7 @@ package com.bravo.webapp.transaction;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,8 @@ public class CustomerTransactionService {
 
 	@Autowired
 	private ClearTranAPIController clearTran;
+
+    private static final Logger logger = Logger.getLogger(CustomerTransactionService.class.getName());
 
 	public PaymentProfile getPaymentProfile(PaymentProfile paymentProfile) {
 		String customerID = LoginInformation.getCustomerID();
@@ -153,7 +156,10 @@ public class CustomerTransactionService {
 
 		// Get sender card information
 		// and check if the card is belong to sender.
-		System.out.println("Begin get card");
+        logger.info("Begin get card");
+        logger.info("MerchantAccNo: " + merchantAccNo);
+        logger.info("SenderID: " + senderID);
+        logger.info("SenderCardID" + senderCardID);
 		Card senderCard = cardDAO
 				.getCard(merchantAccNo, senderID, senderCardID);
 		if (senderCard == null) {
@@ -166,13 +172,12 @@ public class CustomerTransactionService {
 		}
 		// Check if the sender's card balance is enough.
 		if (senderCard.getBalance().compareTo(amount) < 0) {
-			throw new UnknownResourceException(senderCardID
-					+ " does not contain enough money.");
+			throw new UnknownResourceException("Your current card does not have enough money.");
 		}
 		Card receiverCard = cardDAO.getCard(merchantAccNo, receiverCardID);
 		if (receiverCard == null) {
 			throw new UnknownResourceException(
-					"Can not retrieve the receiver's card.");
+					"Can not retrieve the recipient's card.");
 		}
 		// Check if card is enabled
 		if (!receiverCard.isEnabled()) {

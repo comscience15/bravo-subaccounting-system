@@ -25,6 +25,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class JCryptionUtil {
 
     private static Logger logger = Logger.getLogger(JCryptionUtil.class.getName());
+    public static long keyGeneratedTime;
 
 	/**
 	 * Constructor
@@ -43,8 +44,10 @@ public class JCryptionUtil {
 	 *             if the RSA algorithm not supported
 	 */
 	public KeyPair generateKeypair(int keyLength) {
+        logger.info("Generate new key pair");
+        keyGeneratedTime = System.currentTimeMillis();
 		try {
-			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+			KeyPairGenerator kpg = KeyPairGenerator.getInstance(Encryption.algorithm);
 			kpg.initialize(keyLength);
 			KeyPair keyPair = kpg.generateKeyPair();
 			/*
