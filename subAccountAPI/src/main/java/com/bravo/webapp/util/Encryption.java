@@ -1,9 +1,6 @@
 package com.bravo.webapp.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -29,8 +26,9 @@ import com.bravo.webapp.bean.DecryptedInfo;
 import com.bravo.webapp.exception.UnknownResourceException;
 
 public class Encryption {
-	private int encryptBitLen = 512;
-	private boolean genNewKey;
+	private static int encryptBitLen = 512;
+    public static final String algorithm = "RSA";
+    public static final long sevenDays = 7 * 24 * 60 * 60 * 1000;
     private final Logger logger = Logger.getLogger(Encryption.this.getClass().getName());
 
 	public Encryption() {
@@ -38,15 +36,9 @@ public class Encryption {
 		this.encryptBitLen = 512;
 	}
 
-	public Encryption(int encryptBit) {
-        this(encryptBit, false);
+	public Encryption(int encryptBitLen) {
         logger.log(Level.INFO, "The one arg Encryption C is called");
-	}
-
-	public Encryption(int encryptBitLen, boolean genNewKey) {
-        logger.log(Level.INFO, "The two arg Encryption C is called");
-		this.encryptBitLen = encryptBitLen;
-		this.genNewKey = genNewKey;
+        this.encryptBitLen = encryptBitLen;
 	}
 
 	public DecryptedInfo infoDecryption(HttpServletRequest request,
@@ -64,7 +56,7 @@ public class Encryption {
 		KeyPair keys = null;
 
 		try {
-			keys = loadKeyPair(path, "RSA");
+			keys = loadKeyPair(path, algorithm);
 
 			String decryptedInfo = JCryptionUtil.decrypt(info, keys);
 
@@ -93,7 +85,7 @@ public class Encryption {
 			DecryptedInfo result = new DecryptedInfo(cardNumber,
 					customerTimestamp);
 			logger.info("Card ID is: " + result.getCardID());
-			logger.info("Customer timsstamp is: " + result.getCustomerTimestamp());
+			logger.info("Customer timestamp is: " + result.getCustomerTimestamp());
 
 			return result;
 
@@ -121,34 +113,38 @@ public class Encryption {
 
 		JCryptionUtil jCryptionUtil = new JCryptionUtil();
 
-//		File file = new File(path + "/public.key");
-
 		KeyPair keys = null;
 
-		try {
-
-			if (genNewKey) {
-                logger.log(Level.INFO, "Getting new public keys");
-				keys = loadKeyPair(path, "RSA");
-
-			} else {
-				genNewKey = true;
-                logger.log(Level.INFO, "Getting old public key");
-				keys = jCryptionUtil.generateKeypair(encryptBitLen);
-				saveKeyPair(path, keys);
-
-			}
-
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        // More than 7 days, we will refresh the key pairs
+        if (System.currentTimeMillis() - JCryptionUtil.keyGeneratedTime < sevenDays) {
+		    try {
+                //Try to load exist key pairs first
+                keys = loadKeyPair(path, algorithm);
+		    } catch (IOException e) {
+			    // If no key pair exists, go to generate one
+                if (e instanceof FileNotFoundException) {
+                    logger.info("Key pairs do not exist right now");
+                    keys = jCryptionUtil.generateKeypair(encryptBitLen);
+                    try {
+                        saveKeyPair(path, keys);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            } catch (NoSuchAlgorithmException e) {
+			    e.printStackTrace();
+		    } catch (InvalidKeySpecException e) {
+			    e.printStackTrace();
+		    }
+        } else {
+            // generate new keys and save it
+            keys = jCryptionUtil.generateKeypair(encryptBitLen);
+            try {
+                saveKeyPair(path, keys);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
 
 		String e = JCryptionUtil.getPublicKeyExponent(keys);
 		String n = JCryptionUtil.getPublicKeyModulus(keys);
@@ -177,7 +173,7 @@ public class Encryption {
 		// Store Public Key.
 		X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
 				publicKey.getEncoded());
-		System.out.println(path + "/public.key");
+		logger.info("Store keys to " + path);
 
 		FileOutputStream fos = new FileOutputStream(path + "/public.key");
 		fos.write(x509EncodedKeySpec.getEncoded());
@@ -195,6 +191,7 @@ public class Encryption {
 	public KeyPair loadKeyPair(String path, String algorithm)
 			throws IOException, NoSuchAlgorithmException,
 			InvalidKeySpecException {
+        logger.info("Load exist key pairs");
 		// Read Public Key.
 		File filePublicKey = new File(path + "/public.key");
 		FileInputStream fis = new FileInputStream(path + "/public.key");

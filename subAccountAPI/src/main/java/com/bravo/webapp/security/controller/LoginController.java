@@ -3,6 +3,8 @@ package com.bravo.webapp.security.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bravo.webapp.util.Global;
+import com.bravo.webapp.util.LocalStringManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import com.bravo.webapp.security.LoginInformation;
 import com.bravo.webapp.security.bean.LoginStatusBean;
 import com.bravo.webapp.transaction.LoginService;
 
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,27 +36,26 @@ public class LoginController {
     @RequestMapping(value = "/loginStatus")
 	public @ResponseBody
 	String loginStatus() {
-		return "{\"success\":true}";
-
+        String response = MessageFormat.format(Global.SUCCESS_RESPONSE, LocalStringManager.getLocalString("success.login"));
+		return response;
 	}
 
 	@RequestMapping(value = "/loginFailed", produces = "application/json")
 	public @ResponseBody
 	String loginError() {
         logger.log(Level.WARNING, "Login failed");
-		throw new UnknownResourceException("Login failed.");
-
+		throw new UnknownResourceException(LocalStringManager.getLocalString("failure.login"));
 	}
 
 	@RequestMapping(value = "/logout")
 	public @ResponseBody
-	LoginStatusBean logout() {
+	String logout() {
         // did not really logged out !!!!!!!!!!!!!!!!!!!!!!!!!!
 		Authentication auth = LoginInformation.getAuthentication();
         logger.log(Level.INFO, "logout user is :" + auth.getName());
-		return new LoginStatusBean(true, false, auth.getName(),
-				"Logout Successful.");
-
+//		return new LoginStatusBean(true, false, auth.getName(),
+//				"Logout Successful.");
+        return MessageFormat.format(Global.SUCCESS_RESPONSE, LocalStringManager.getLocalString("success.logout"));
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -67,12 +69,12 @@ public class LoginController {
 			// Auto Login
 			loginService.authenticate(request, response);
 
-			return "{\"success\":true}";
+			return MessageFormat.format(Global.SUCCESS_RESPONSE, LocalStringManager.getLocalString("success.sign.up"));
 
 			// Fail to add new customer into the database
 		} else {
 			// return new LoginStatusBean(false, false, null, "Signup failed.");
-			throw new UnknownResourceException("User name exist: Signup failed");
+			throw new UnknownResourceException(LocalStringManager.getLocalString("failure.sign.up.username.exist"));
 		}
 
 	}
@@ -104,10 +106,10 @@ public class LoginController {
 
 		if (loginService.changePassword(request, response, oldPassword,
 				newPassword)) {
-			return "{\"success\":\"true\"}";
+			return MessageFormat.format(Global.SUCCESS_RESPONSE, LocalStringManager.getLocalString("success.change.password"));
 		}
 
-		throw new UnknownResourceException("Authentication failed.");
+		throw new UnknownResourceException(LocalStringManager.getLocalString("failure.authentication"));
 	}
 
 }

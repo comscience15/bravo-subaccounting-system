@@ -1,11 +1,16 @@
 package com.bravo.webapp.controller;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.bravo.webapp.bean.DecryptedInfo;
+import com.bravo.webapp.util.Encryption;
+import com.bravo.webapp.util.Global;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,6 +25,8 @@ import com.bravo.webapp.exception.UnknownResourceException;
 import com.bravo.webapp.security.LoginInformation;
 import com.bravo.webapp.transaction.CustomerService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/customer/account")
 public class CustomerController {
@@ -28,6 +35,9 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
+
+    @Autowired
+    private Encryption encryption;
 
 	// Add a new card to the customer's account for particular merchantAccNo
 	@RequestMapping(method = RequestMethod.POST, value = "/addCard", produces = "application/json")
@@ -91,28 +101,44 @@ public class CustomerController {
 	// Get the cards of the customer for particular merchantAccNo
 	@RequestMapping(method = RequestMethod.POST, value = "/getCardList", produces = "application/json")
 	public @ResponseBody
-	List<Card> getCardList() {
+	Hashtable<String, Object> getCardList() {
 
 		List<Card> cardList = customerService.getCardList();
-		if (cardList == null || cardList.isEmpty()) {
-			throw new UnknownResourceException("Can not get the card list");
-		}
-
-		return cardList;
+        Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
+        if (cardList.isEmpty()) {
+            hashtable.put("status", "204");
+            hashtable.put("message", "Can not get card list");
+            //throw new UnknownResourceException("Can not get the card list");
+        } else if(cardList == null) {
+            hashtable.put("status", "404");
+            hashtable.put("message", "Can not get card list");
+        } else {
+            hashtable.put("status", "200");
+            hashtable.put("message", cardList);
+        }
+		return hashtable;
 	}
 
 	// Get all cards belong to the customer
 	@RequestMapping(method = RequestMethod.POST, value = "/getCardListByCustID", produces = "application/json")
 	public @ResponseBody
-	List<Card> getCardListByCustID() {
+	Hashtable<String, Object> getCardListByCustID() {
         logger.log(Level.INFO, "Get card list by customer ID");
 
 		List<Card> cardList = customerService.getCardListByCustID();
-		if (cardList == null || cardList.isEmpty()) {
-			throw new UnknownResourceException("Can not get the card list");
-		}
-
-		return cardList;
+        Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
+		if (cardList.isEmpty()) {
+            hashtable.put("status", "204");
+            hashtable.put("message", "Can not get card list");
+			//throw new UnknownResourceException("Can not get the card list");
+		} else if(cardList == null) {
+            hashtable.put("status", "404");
+            hashtable.put("message", "Can not get card list");
+        } else {
+            hashtable.put("status", "200");
+            hashtable.put("message", cardList);
+        }
+		return hashtable;
 	}
 
 	// Save a new payment profile of the customer

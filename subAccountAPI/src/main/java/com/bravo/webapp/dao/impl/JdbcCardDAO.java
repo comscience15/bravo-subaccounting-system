@@ -3,6 +3,7 @@ package com.bravo.webapp.dao.impl;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -13,6 +14,8 @@ import com.bravo.webapp.dao.CardDAO;
 import com.bravo.webapp.exception.UnknownResourceException;
 
 public class JdbcCardDAO extends JdbcDaoSupport implements CardDAO {
+
+    private static Logger logger = Logger.getLogger(JdbcCardDAO.class.getName());
 
 	@Override
 	public boolean addCard(Card card) {
@@ -281,12 +284,8 @@ public class JdbcCardDAO extends JdbcDaoSupport implements CardDAO {
 			List<Card> cardList = getJdbcTemplate().query(sql,
 					new BeanPropertyRowMapper<Card>(Card.class), merchantAccNo,
 					customerID);
-			System.out.println("get card list: " + merchantAccNo + " "
-					+ customerID + ", nCard: " + cardList.size());
-			if (cardList != null) {
-				System.out.println("nCard: " + cardList.size());
-			}
-			
+            logger.info("Get card list from merchant: " + merchantAccNo + ", number of cards found: " + cardList.size());
+
 			return cardList;
 		} catch (DataAccessException ex) {
 			ex.printStackTrace();
@@ -305,7 +304,7 @@ public class JdbcCardDAO extends JdbcDaoSupport implements CardDAO {
 
 			List<Card> cardList = this.getJdbcTemplate().query(sql,
 					new BeanPropertyRowMapper<Card>(Card.class), customerID);
-			System.out.println("card List: " + cardList);
+			logger.info("Card list is: " + cardList);
 
 			return cardList;
 		} catch (DataAccessException ex) {

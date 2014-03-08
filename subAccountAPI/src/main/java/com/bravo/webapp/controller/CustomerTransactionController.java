@@ -2,8 +2,10 @@ package com.bravo.webapp.controller;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -11,6 +13,9 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.bravo.webapp.bean.*;
+import com.bravo.webapp.util.Global;
+import com.bravo.webapp.util.LocalStringManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,11 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bravo.webapp.bean.CheckTransaction;
-import com.bravo.webapp.bean.CreditTransaction;
-import com.bravo.webapp.bean.OrderItem;
-import com.bravo.webapp.bean.PaymentProfile;
-import com.bravo.webapp.bean.Transaction;
 import com.bravo.webapp.constant.TransactionType;
 import com.bravo.webapp.exception.UnknownResourceException;
 import com.bravo.webapp.transaction.CheckoutService;
@@ -54,10 +54,10 @@ public class CustomerTransactionController {
 			@ModelAttribute PaymentProfile paymentProfile,
 			@RequestParam boolean saveProfile,
 			@RequestParam boolean existProfile) {
-		System.out.println("load money");
-		System.out.println("amount: " + totalAmount);
-		System.out.println("payment profile: " + paymentProfile.toString());
-		System.out.println(saveProfile + ":" + existProfile);
+        logger.info("load money");
+        logger.info("amount: " + totalAmount);
+        logger.info("payment profile: " + paymentProfile.toString());
+        logger.info(saveProfile + ":" + existProfile);
 
 		Timestamp transactionDate = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat checkDateFormat = new SimpleDateFormat("MMddyyyy");
@@ -133,29 +133,40 @@ public class CustomerTransactionController {
 		// Load money into customer card and return the new card balance
 		BigDecimal balance = customerTxService.loadMoney(cardID, transaction,
 				paymentProfile, existProfile);
-		System.out.println("{\"cardBalance\":\"" + balance + "\"}");
+        logger.info("{\"cardBalance\":\"" + balance + "\"}");
 
-		return "{\"cardBalance\":\"" + balance + "\"}";
+		return MessageFormat.format(Global.SUCCESS_RESPONSE, balance);//"{\"cardBalance\":\"" + balance + "\"}";
 
 	}
 
 	// Send Gift from customer's card to the other one's primary card
-	@RequestMapping(method = RequestMethod.POST, value = "/sendGift", produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/sendMoney", produces = "application/json")
 	public @ResponseBody
-	String sendGift(@RequestParam String senderCardID,
+	String sendGift(HttpServletRequest request,
+            @RequestParam String senderCardID,
 			@RequestParam String senderNote,
 			@RequestParam String receiverEmail,
+            @RequestParam String encryptedReceiverInfo,
 			@RequestParam BigDecimal totalAmount) {
 
-		System.out.println("Send Gift");
 		String receiverNote = "";
+        String receiverCardID;
 		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
 			throw new UnknownResourceException(
 					"Total amount must greater than zero.");
 		}
 
-		String receiverCardID = customerTxService
-				.getPrimaryCardID(receiverEmail);
+        if (encryptedReceiverInfo != null && encryptedReceiverInfo.isEmpty() == false) {
+            logger.info("Send money by using QR Code");
+            // Decrypt customer card number
+            String path = "/WEB-INF";
+            DecryptedInfo decryptedInfo = encryption.infoDecryption(request, path,
+                    encryptedReceiverInfo);
+            receiverCardID = decryptedInfo.getCardID();
+        } else {
+            logger.info("Send money by using email address");
+            receiverCardID = customerTxService.getPrimaryCardID(receiverEmail);
+        }
 
 		// Check if the card is belong to sender.
 		if (senderCardID.equals(receiverCardID)) {
@@ -183,7 +194,8 @@ public class CustomerTransactionController {
 		BigDecimal balance = customerTxService.sendGift(senderCardID, senderTx,
 				receiverCardID, receiverTx, totalAmount);
 
-		return "{\"balance\":\"" + balance + "\"}";
+		//return "{\"balance\":\"" + balance + "\"}";
+        return MessageFormat.format(Global.SUCCESS_RESPONSE, balance);
 
 	}
 
@@ -232,9 +244,7 @@ public class CustomerTransactionController {
 	// Get the public key for encryption
 	@RequestMapping(method = RequestMethod.POST, value = "/getKey")
 	public @ResponseBody
-	String getKey(HttpServletRequest request) {
-
-        logger.log(Level.INFO, "Get Key is called");
+	Hashtable<String, Object> getKey(HttpServletRequest request) {
 
 		String path = request.getSession().getServletContext()
 				.getRealPath("/WEB-INF");
@@ -243,7 +253,10 @@ public class CustomerTransactionController {
 
         logger.log(Level.INFO, "Key is: " + result);
 
-		return result;
+        Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
+        hashtable.put("status", "200");
+        hashtable.put("message", result);
+		return hashtable;
 	}
 
 	// Perform the self-checkout
