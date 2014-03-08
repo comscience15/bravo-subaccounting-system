@@ -47,7 +47,8 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_cards_list">Cards List</string>
     <string name="title_activity_reload_money">Reload Money</string>
-    <string name="failure_get_card_list">Failed to get card list.</string>
+    <string name="failure_get_card_list">Failed to get card list</string>
+    <string name="faulure_send_money">Failed to send money</string>
     <string name="failure_start_scanner">Cannot start scanner</string>
     <string name="note_send_money_email">Money will be deposited to the primary card of recipient</string>
     <string name="note_send_money_scanner">Money will by depostied to current card of recipient</string>

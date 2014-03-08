@@ -112,7 +112,7 @@ public class AsyncReloadMoney extends AsyncTask<Object, Integer, String>{
 			Toast.makeText(context,msgToast, Toast.LENGTH_SHORT).show();
 			
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
-			toCardsFragment.putExtra("Activity", "ReloadMoney");
+			toCardsFragment.putExtra("Activity", "Reload_Money");
 			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    	context.startActivity(toCardsFragment);
 	    	((Activity) context).overridePendingTransition(R.anim.go_back_enter, R.anim.go_back_out);

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.bravo.bravoclient.R;
 import com.bravo.bravoclient.R.layout;
+import com.bravo.bravoclient.async.AsyncSendMoney;
 import com.bravo.bravoclient.common.CommonScannerHandler;
 import com.bravo.bravoclient.common.CommonValidationHandler;
 import com.bravo.bravoclient.common.CommonViewHandler;
@@ -175,10 +176,13 @@ public class SendMoneyActivity extends Activity{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.alert_send_money_confirm_info_title);
 		String msg = "Send money to: {0} \nAmount: {1}{2} \nMemo: {3}";
+		memo = CommonViewHandler.getEditTextValue(memoField);
 		if (scanResult != null && scanResult.isEmpty() == false) {
-			msg = MessageFormat.format(msg, "QRCode provider", getString(R.string.currency), amount, CommonViewHandler.getEditTextValue(memoField));
+			email = "";
+			msg = MessageFormat.format(msg, "QRCode provider", getString(R.string.currency), amount, memo);
 		} else if (email != null && email.isEmpty() == false){
-			msg = MessageFormat.format(msg, email, amount, getString(R.string.currency), CommonViewHandler.getEditTextValue(memoField));
+			scanResult = "";
+			msg = MessageFormat.format(msg, email, amount, getString(R.string.currency), memo);
 		}
 		builder.setMessage(msg);
 		builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
@@ -189,6 +193,9 @@ public class SendMoneyActivity extends Activity{
 		builder.setPositiveButton(R.string.button_confirm, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				//TODO: Call API
+				new AsyncSendMoney(SendMoneyActivity.this).execute(getString(R.string.IP_Address), getIntent().getStringExtra("cardID"), 
+						memo, email, scanResult, amount);
 			}
 		});
 		builder.create().show();
