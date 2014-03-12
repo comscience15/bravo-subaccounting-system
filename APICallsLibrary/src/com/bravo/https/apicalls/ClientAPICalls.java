@@ -183,4 +183,29 @@ public class ClientAPICalls {
 		logger.info(JSONString);
 		return JSONString;
 	}
+	
+	public static String getTransactionHistory(String IP, Context androidContext, String cardID) 
+			throws KeyManagementException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException {
+		final String ip = IP;
+		final String path = "/service/customer/transaction/viewTransaction";
+		final String URL = ip + path;
+		
+		if (BravoHttpsClient.checkNetworkConnectivity(androidContext) == false) {
+			return CommonAPICalls.NO_CONNECTION;
+		}
+		
+		String cookie = CookieHandler.getCookie(androidContext);
+		
+		/**Creating parameters*/
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("cardID", cardID));
+
+		HttpResponse response = BravoHttpsClient.doHttpsPost(URL, nameValuePair, cookie, "loadMoneyByCreditCard", androidContext);
+		
+		String JSONString = HttpResponseHandler.toString(response);
+		
+		logger.info(JSONString);
+		return JSONString;
+		
+	}
 }
