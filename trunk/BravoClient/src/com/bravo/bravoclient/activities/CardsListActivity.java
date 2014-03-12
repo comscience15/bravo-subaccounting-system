@@ -45,7 +45,7 @@ public class CardsListActivity extends ListActivity{
 	    // If Card list from db is null, then initiate cardList, make it to empty istead of null
 	    if (cardList == null) cardList = new ArrayList<Card>();
 	    
-	    final CardsListAdapter adapter = new CardsListAdapter(CardsListActivity.this, R.layout.card_list_row, R.id.cardsList_content, cardList);
+	    final CardsListAdapter adapter = new CardsListAdapter(CardsListActivity.this, R.layout.card_list_row, R.id.card_list_content, cardList);
 	    
 	    listView.setAdapter(adapter);
 	    
@@ -55,7 +55,7 @@ public class CardsListActivity extends ListActivity{
 	    listView.post(new Runnable() {
 			@Override
 			public void run() {
-				listView.getChildAt(getSelectedCardPosition()).findViewById(R.id.check_icon).setVisibility(View.VISIBLE);
+				listView.getChildAt(getSelectedCardPosition()).findViewById(R.id.card_list_check_icon).setVisibility(View.VISIBLE);
 			}
 	    });
 
@@ -66,11 +66,11 @@ public class CardsListActivity extends ListActivity{
 				
 				// Reset unselected card item
 				View resetRowView = (View) parent.getChildAt(getSelectedCardPosition());
-				ImageView resetImageView = (ImageView) resetRowView.findViewById(R.id.check_icon);
+				ImageView resetImageView = (ImageView) resetRowView.findViewById(R.id.card_list_check_icon);
 				resetImageView.setVisibility(View.INVISIBLE);
 				
 				// Change the current card list item icon on click
-				ImageView selectedImageView = (ImageView) view.findViewById(R.id.check_icon);
+				ImageView selectedImageView = (ImageView) view.findViewById(R.id.card_list_check_icon);
 				selectedImageView.setVisibility(View.VISIBLE);
 				
 				// store selected card, using id here is because position is just a relative position in the current view

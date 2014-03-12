@@ -14,6 +14,7 @@ import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
 import com.bravo.bravoclient.util.Encryption;
 import com.bravo.https.apicalls.CommonAPICalls;
+import com.bravo.https.util.BravoStatus;
 import com.bravo.https.util.HttpResponseHandler;
 
 import android.app.Activity;
@@ -90,7 +91,7 @@ public class AsyncLogin extends AsyncTask<String, Integer, String>{
 		/** if login successfully, forward to Main activity temporarily**/
 		String status = HttpResponseHandler.parseJson(result, "status");
 		String msg = HttpResponseHandler.parseJson(result, "message");
-		if (status != null && status.equals("200")) {
+		if (status != null && status.equals(BravoStatus.OPERATION_SUCCESS)) {
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "Login");
 			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
