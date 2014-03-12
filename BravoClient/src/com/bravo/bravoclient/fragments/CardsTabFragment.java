@@ -37,7 +37,9 @@ import com.bravo.bravoclient.activities.LoginActivity;
 import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.activities.ReloadMoneyActivity;
 import com.bravo.bravoclient.activities.SendMoneyActivity;
+import com.bravo.bravoclient.activities.TransactionListActivity;
 import com.bravo.bravoclient.async.AsyncGetCardsList;
+import com.bravo.bravoclient.async.AsyncGetTransactionHistory;
 import com.bravo.bravoclient.async.AsyncLogin;
 import com.bravo.bravoclient.async.AsyncRegister;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
@@ -106,10 +108,9 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 				} else if (v.equals(cardSelfCheckoutButton)){
 					// TODO: when selfCheckout button be pressed
 				} else if (v.equals(cardMoneyTransfer)){
-					// TODO: when send gift button be pressed
 					moneyTransferImpl();
 				} else if (v.equals(cardTransactionHistoryButton)){
-					// TODO: when transaction history button be pressed
+					transactionHistoryImpl();
 				} else if (v.equals(cardCardsListButton)){
 					cardsListImpl();
 				}
@@ -337,6 +338,10 @@ public class CardsTabFragment extends SherlockFragment implements CreateNdefMess
 		
 		AlertDialog dialog = moneyTransferBuilder.create();
 		dialog.show();
+	}
+	
+	private void transactionHistoryImpl() {
+		new AsyncGetTransactionHistory(getActivity()).execute(getString(R.string.IP_Address), cardId);
 	}
 	
 	/**

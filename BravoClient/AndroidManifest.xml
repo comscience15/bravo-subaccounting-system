@@ -89,6 +89,10 @@
             android:name="com.bravo.bravoclient.activities.SendMoneyActivity"
             android:label="@string/title_activity_send_money" >
         </activity>
+        <activity
+            android:name="com.bravo.bravoclient.activities.TransactionListActivity"
+            android:label="@string/title_activity_transaction_list" >
+        </activity>
     </application>
 
 </manifest>
