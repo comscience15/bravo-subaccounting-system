@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 /**
  * Async task for reloading money
+ * This class did not extends the basic async task, is because we are passing object into this class
  * @author daniel
  *
  */
@@ -152,10 +153,11 @@ public class AsyncReloadMoney extends AsyncTask<Object, Integer, String>{
 			sec ++;
 			if (sec >= timeout) {
 				publishProgress(Integer.MAX_VALUE);
+				break;
 			}
 		}
 		// if network response is got by api call, post -1 to onProgressUpdate
-		publishProgress(-1);
+		if (jsonResponse != null && jsonResponse.equals("") == false) publishProgress(-1);
 	}
 
 }

@@ -28,21 +28,12 @@ import android.widget.Toast;
  * @author Daniel
  * @email danniel1205@gmail.com
  */
-public class AsyncLogin extends AsyncTask<String, Integer, String>{
+public class AsyncLogin extends BasicAsyncTask{
 	public static Encryption EncryptionObj;
-	private Context context;
-	private static String jsonResponse;
 	private static Logger logger = Logger.getLogger(AsyncLogin.class.getName());
-	private static ProgressDialog progressDialog;
 	
 	public AsyncLogin(Context context) {
-		this.context = context;
-		this.jsonResponse = ""; // Reset the login response each single time when this class is called.
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setCancelable(false);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.setMessage("Now Login......");
-		progressDialog.setMax(100);
+		super(context, context.getString(R.string.async_login));
 	}
 	
 	@Override
@@ -71,18 +62,6 @@ public class AsyncLogin extends AsyncTask<String, Integer, String>{
 		return jsonResponse;
 	}
 	
-	protected void onProgressUpdate(Integer...sec) {
-		progressDialog.setProgress(sec[0]);
-		if (sec[0] == 0) {
-			progressDialog.show();
-		} else if (sec[0] == -1) {
-			progressDialog.dismiss();
-		} else if (sec[0] == Integer.MAX_VALUE) {
-			progressDialog.dismiss();
-			Toast.makeText(context, "Login timeout", Toast.LENGTH_LONG).show();
-		}
-    }
-	
 	/**
 	 * @param The parameter is from doInBackground()
 	 */
@@ -91,7 +70,8 @@ public class AsyncLogin extends AsyncTask<String, Integer, String>{
 		/** if login successfully, forward to Main activity temporarily**/
 		String status = HttpResponseHandler.parseJson(result, "status");
 		String msg = HttpResponseHandler.parseJson(result, "message");
-		if (status != null && status.equals(BravoStatus.OPERATION_SUCCESS)) {
+		if (status == null) return; // Connection timeout, just return
+		if (status.equals(BravoStatus.OPERATION_SUCCESS) == true) {
 			Intent toCardsFragment = new Intent(context, MainActivity.class);
 			toCardsFragment.putExtra("Activity", "Login");
 			toCardsFragment.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -119,24 +99,5 @@ public class AsyncLogin extends AsyncTask<String, Integer, String>{
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
 		}
-	}
-	
-	private void postProgress() {
-		int sec = 0;
-		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
-		while (jsonResponse == null || jsonResponse.equals("")) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				logger.severe("Timer has been stopped");
-			}
-			publishProgress(sec);
-			sec ++;
-			if (sec >= timeout) {
-				publishProgress(Integer.MAX_VALUE);
-			}
-		}
-		// if network response is got by api call, post -1 to onProgressUpdate
-		publishProgress(-1);
 	}
 }
