@@ -51,6 +51,16 @@
     <string name="failure_get_transaction_history">Failed to get transaction history</string>
     <string name="faulure_send_money">Failed to send money</string>
     <string name="failure_start_scanner">Cannot start scanner</string>
+    <string name="timeout_add_card">Adding new card timeout</string>
+    <string name="async_login">Logging in</string>
+	<string name="async_logout">Logging out</string>
+	<string name="async_get_card_list">Getting card list</string>
+	<string name="async_register">Registering</string>
+	<string name="async_reload_money">Reloading money</string>
+	<string name="async_send_money">Sending money</string>
+	<string name="async_get_transaction_history">Getting transaction history</string>
+	
+	    
     <string name="note_send_money_email">Money will be deposited to the primary card of recipient</string>
     <string name="note_send_money_scanner">Money will by depostied to current card of recipient</string>
     <string name="note_send_money_choose_method">Please choose transfer methods</string>

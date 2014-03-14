@@ -31,22 +31,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class AsyncGetCardsList extends AsyncTask<String, Integer, String>{
-	private Context context;
+public class AsyncGetCardsList extends BasicAsyncTask{
 	private View view;
-	private static String jsonResponse;
 	private Logger logger = Logger.getLogger(AsyncGetCardsList.class.getName());
-	private static ProgressDialog progressDialog;
 	
 	public AsyncGetCardsList(Context context, View view) {
-		this.context = context;
+		super(context, context.getString(R.string.async_get_card_list));
 		this.view = view;
-		this.jsonResponse = "";
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setCancelable(false);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.setMessage("Loading cards......");
-		progressDialog.setMax(100);
 	}
 	
 	@Override
@@ -61,19 +52,6 @@ public class AsyncGetCardsList extends AsyncTask<String, Integer, String>{
 		postProgress();
 		return jsonResponse;
 	}
-	
-	protected void onProgressUpdate(Integer... progress) {
-		progressDialog.setProgress(progress[0]);
-		if (progress[0] == 0) {
-			progressDialog.show();
-		} else if (progress[0] == -1 ) {
-			progressDialog.dismiss();
-		} else if (progress[0] == Integer.MAX_VALUE) {
-			progressDialog.dismiss();
-			Toast.makeText(context, "Get card list timeout", Toast.LENGTH_SHORT).show();
-			return;
-		}
-    }
 
 	@Override
 	protected void onPostExecute(String result) {
@@ -97,25 +75,6 @@ public class AsyncGetCardsList extends AsyncTask<String, Integer, String>{
 			String msg1 = context.getString(R.string.failure_get_card_list);
 			new BravoAlertDialog(context).showDialog("Get card list", msg1, "OK");
 		}
-	}
-	
-	private void postProgress() {
-		int sec = 0;
-		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
-		while (jsonResponse == null || jsonResponse.equals("")) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				logger.severe("Timer has been stopped");
-			}
-			publishProgress(sec);
-			sec ++;
-			if (sec >= timeout) {
-				publishProgress(Integer.MAX_VALUE);
-			}
-		}
-		// if network response is gotten by api call, post -1 to onProgressUpdate
-		publishProgress(-1);
 	}
 	
 	private void doGetCardListByCusID(String ip) {

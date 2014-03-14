@@ -27,21 +27,12 @@ import android.widget.Toast;
  * @email danniel1205@gmail.com
  *
  */
-public class AsyncRegister extends AsyncTask<String, Integer, String>{
-	private Context context;
-	private static String jsonResponse;
+public class AsyncRegister extends BasicAsyncTask{
 	public static Encryption EncryptionObj;
-	private static ProgressDialog progressDialog;
 	private static final Logger logger = Logger.getLogger(AsyncRegister.class.getName());
 	
 	public AsyncRegister(Context context) {
-		this.jsonResponse = "";
-		this.context = context;
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setCancelable(false);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.setMessage("Now Registering......");
-		progressDialog.setMax(100);
+		super(context, context.getString(R.string.async_register));
 	}
 	
 	@Override
@@ -72,18 +63,6 @@ public class AsyncRegister extends AsyncTask<String, Integer, String>{
 		}
 		return jsonResponse;
 	}
-	
-	protected void onProgressUpdate(Integer...sec) {
-		progressDialog.setProgress(sec[0]);
-		if (sec[0] == 0) {
-			progressDialog.show();
-		} else if (sec[0] == -1) {
-			progressDialog.dismiss();
-		} else if (sec[0] == Integer.MAX_VALUE) {
-			progressDialog.dismiss();
-			Toast.makeText(context, "Registeration timeout", Toast.LENGTH_LONG).show();
-		}
-    }
 	
 	/**
 	 * @param The parameter is from doInBackground()
@@ -121,24 +100,5 @@ public class AsyncRegister extends AsyncTask<String, Integer, String>{
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
 		}
-	}
-	
-	private void postProgress() {
-		int sec = 0;
-		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
-		while (jsonResponse == null || jsonResponse.equals("")) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				logger.severe("Timer has been stopped");
-			}
-			publishProgress(sec);
-			sec ++;
-			if (sec >= timeout) {
-				publishProgress(Integer.MAX_VALUE);
-			}
-		}
-		// if network response is got by api call, post -1 to onProgressUpdate
-		publishProgress(-1);
 	}
 }

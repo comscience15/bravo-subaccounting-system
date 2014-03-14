@@ -22,20 +22,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-public class AsyncSendMoney extends AsyncTask<String, Integer, String>{
-	private Context context;
-	private static String jsonResponse;
+public class AsyncSendMoney extends BasicAsyncTask{
 	private Logger logger = Logger.getLogger(AsyncSendMoney.class.getName());
-	private static ProgressDialog progressDialog;
 	
 	public AsyncSendMoney(Context context) {
-		this.context = context;
-		this.jsonResponse = "";
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setCancelable(false);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.setMessage("Sending money......");
-		progressDialog.setMax(100);
+		super(context, context.getString(R.string.async_send_money));
 	}
 	
 	@Override
@@ -56,19 +47,6 @@ public class AsyncSendMoney extends AsyncTask<String, Integer, String>{
 		return jsonResponse;
 	}
 	
-	protected void onProgressUpdate(Integer...progress){
-		progressDialog.setProgress(progress[0]);
-		if (progress[0] == 0) {
-			progressDialog.show();
-		} else if (progress[0] == -1 ) {
-			progressDialog.dismiss();
-		} else if (progress[0] == Integer.MAX_VALUE) {
-			progressDialog.dismiss();
-			Toast.makeText(context, "Send money timeout", Toast.LENGTH_SHORT).show();
-			return;
-		}
-	}
-	
 	@Override
 	protected void onPostExecute(String result) {
 		String status = HttpResponseHandler.parseJson(result, "status");
@@ -84,28 +62,8 @@ public class AsyncSendMoney extends AsyncTask<String, Integer, String>{
 			String msg1 = context.getString(R.string.faulure_send_money);
 			new BravoAlertDialog(context).showDialog("Send money", msg1, "OK");
 		}
-		
 	}
 	
-	private void postProgress() {
-		int sec = 0;
-		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
-		while (jsonResponse == null || jsonResponse.equals("")) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				logger.severe("Timer has been stopped");
-			}
-			publishProgress(sec);
-			sec ++;
-			if (sec >= timeout) {
-				publishProgress(Integer.MAX_VALUE);
-			}
-		}
-		// if network response is gotten by api call, post -1 to onProgressUpdate
-		publishProgress(-1);
-	}
-
 	private void doSendMoney(String ip, String senderCardID, String senderNote, String receiverEmail, String encryptedReceiverInfo, String totalAmount) {
 		try {
 			jsonResponse = ClientAPICalls.sendMoney(ip, context, senderCardID, senderNote, receiverEmail, encryptedReceiverInfo, totalAmount);

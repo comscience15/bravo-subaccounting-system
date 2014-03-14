@@ -9,14 +9,11 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bravo.bravoclient.R;
-import com.bravo.bravoclient.activities.MainActivity;
 import com.bravo.bravoclient.activities.TransactionListActivity;
 import com.bravo.bravoclient.dialogs.BravoAlertDialog;
-import com.bravo.bravoclient.persistence.CardListDAO;
 import com.bravo.https.apicalls.ClientAPICalls;
 import com.bravo.https.util.BravoStatus;
 import com.bravo.https.util.HttpResponseHandler;
@@ -28,21 +25,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-public class AsyncGetTransactionHistory extends AsyncTask<String, Integer, String>{
+public class AsyncGetTransactionHistory extends BasicAsyncTask{
 
-	private Context context;
-	private static String jsonResponse;
-	private static ProgressDialog progressDialog;
 	private Logger logger = Logger.getLogger(AsyncGetTransactionHistory.class.getName());
 	
 	public AsyncGetTransactionHistory(Context context) {
-		this.context = context;
-		this.jsonResponse = "";
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setCancelable(false);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.setMessage("Loading transaction history......");
-		progressDialog.setMax(100);
+		super(context, context.getString(R.string.async_get_transaction_history));
 	}
 	
 	@Override
@@ -98,37 +86,4 @@ public class AsyncGetTransactionHistory extends AsyncTask<String, Integer, Strin
 		}
 		
 	}
-	
-	protected void onProgressUpdate(Integer... progress) {
-		progressDialog.setProgress(progress[0]);
-		if (progress[0] == 0) {
-			progressDialog.show();
-		} else if (progress[0] == -1 ) {
-			progressDialog.dismiss();
-		} else if (progress[0] == Integer.MAX_VALUE) {
-			progressDialog.dismiss();
-			Toast.makeText(context, "Get transaction list timeout", Toast.LENGTH_SHORT).show();
-			return;
-		}
-    }
-
-	private void postProgress() {
-		int sec = 0;
-		int timeout = Integer.valueOf(context.getString(R.string.network_timeout));
-		while (jsonResponse == null || jsonResponse.equals("")) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				logger.severe("Timer has been stopped");
-			}
-			publishProgress(sec);
-			sec ++;
-			if (sec >= timeout) {
-				publishProgress(Integer.MAX_VALUE);
-			}
-		}
-		// if network response is gotten by api call, post -1 to onProgressUpdate
-		publishProgress(-1);
-	}
-
 }
